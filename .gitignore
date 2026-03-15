@@ -9,3 +9,10 @@ dist/
 build/
 .venv/
 venv/
+.run/
+logs/
+replies/handled_replies.json
+replies/reply_log.json
+leads/incoming/
+leads/processed/
+webhook_events.jsonl
