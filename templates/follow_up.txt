@@ -1,0 +1,13 @@
+Subject: Following up - ${first_name}
+
+Hi ${first_name},
+
+I wanted to follow up on my previous email. I know things get busy, so I'll keep this brief.
+
+I'd love to connect for a quick chat about how we can help ${company} drive more results. Even a 10-minute call could be valuable.
+
+Would any time this week or next work for you?
+
+Thanks,
+Dylan
+dylan.realside@gmail.com

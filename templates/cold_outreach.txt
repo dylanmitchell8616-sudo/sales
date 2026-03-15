@@ -1,0 +1,13 @@
+Subject: Quick question about ${company}
+
+Hi ${first_name},
+
+I came across ${company} and was impressed by the work you're doing as ${role}. I wanted to reach out because I think there's a great opportunity for us to collaborate.
+
+We help companies like ${company} streamline their sales process and close deals faster. I'd love to share a few ideas specific to your team.
+
+Would you be open to a quick 15-minute call this week?
+
+Best,
+Dylan
+dylan.realside@gmail.com
