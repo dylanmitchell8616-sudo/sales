@@ -1,0 +1,86 @@
+# Batch Campaign Configurations
+# Pre-built niche/location combos for scaling outreach across verticals
+# Usage: Load this config to spin up campaigns targeting new markets
+
+campaigns:
+  # --- Dental ---
+  - niche: "dentists"
+    location: "Houston TX"
+    limit: 200
+    template: "Dental Office Outreach"
+
+  - niche: "dentists"
+    location: "Phoenix AZ"
+    limit: 200
+    template: "Dental Office Outreach"
+
+  # --- HVAC ---
+  - niche: "hvac"
+    location: "Dallas TX"
+    limit: 200
+    template: "HVAC Company Outreach"
+
+  - niche: "hvac"
+    location: "Atlanta GA"
+    limit: 200
+    template: "HVAC Company Outreach"
+
+  # --- Roofing ---
+  - niche: "roofing"
+    location: "Tampa FL"
+    limit: 200
+    template: "Roofing Contractor Outreach"
+
+  - niche: "roofing"
+    location: "Denver CO"
+    limit: 200
+    template: "Roofing Contractor Outreach"
+
+  # --- Insurance ---
+  - niche: "insurance"
+    location: "Charlotte NC"
+    limit: 200
+    template: "Insurance Agency Outreach"
+
+  - niche: "insurance"
+    location: "Nashville TN"
+    limit: 200
+    template: "Insurance Agency Outreach"
+
+  # --- Blue Collar / Trades ---
+  - niche: "blue_collar"
+    location: "Columbus OH"
+    limit: 200
+    template: "Blue Collar Trades Outreach"
+
+  - niche: "blue_collar"
+    location: "Indianapolis IN"
+    limit: 200
+    template: "Blue Collar Trades Outreach"
+
+  # --- Private Clinics ---
+  - niche: "private_clinics"
+    location: "San Diego CA"
+    limit: 200
+    template: "Private Clinic Outreach"
+
+  - niche: "private_clinics"
+    location: "Austin TX"
+    limit: 200
+    template: "Private Clinic Outreach"
+
+  # --- Estate Lynx / Real Estate ---
+  - niche: "real_estate"
+    location: "Miami FL"
+    limit: 200
+    template: "Real Estate Outreach"
+
+  - niche: "real_estate"
+    location: "Las Vegas NV"
+    limit: 200
+    template: "Real Estate Outreach"
+
+  - niche: "real_estate"
+    location: "Raleigh NC"
+    limit: 150
+    template: "Real Estate Outreach"
