@@ -1,0 +1,44 @@
+# Cold Email Automation Configuration
+
+# Sending settings
+sending:
+  emails_per_day_per_inbox: 30        # Keep under 50 for safety
+  warmup_days: 14                      # Days to warm up new inboxes
+  warmup_increase_per_day: 2           # Increase daily send by this amount
+  delay_between_emails_seconds: 90     # Random delay range (60-120)
+  sending_window_start: "08:00"        # Send emails after this time
+  sending_window_end: "17:00"          # Send emails before this time
+  timezone: "America/New_York"
+
+# Campaign defaults
+campaigns:
+  default_sequence_delay_days: 3       # Days between follow-ups
+  max_follow_ups: 3                    # Max follow-up emails per lead
+  track_opens: true
+  track_clicks: false                  # Keep false for better deliverability
+  auto_variant_testing: true           # A/B test subject lines
+
+# Inbox provisioning
+inboxes:
+  # Strategy: "outlook_free", "zoho_free", "custom_domain"
+  strategy: "outlook_free"
+  inboxes_per_campaign: 5
+  # For custom domain strategy
+  domain_registrar: "namecheap"        # namecheap, cloudflare
+  email_provider: "zoho"              # zoho (free), outlook
+
+# Lead management
+leads:
+  auto_deduplicate: true
+  skip_catch_all: false
+  required_fields:
+    - email
+    - first_name
+    - company
+
+# Deliverability
+deliverability:
+  spintax_enabled: true
+  custom_tracking_domain: false
+  max_bounce_rate_percent: 5
+  auto_pause_on_high_bounce: true

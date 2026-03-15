@@ -1,0 +1,11 @@
+.env
+__pycache__/
+*.pyc
+*.pyo
+inboxes/*_registry.json
+inboxes/inbox_plan.csv
+*.egg-info/
+dist/
+build/
+.venv/
+venv/

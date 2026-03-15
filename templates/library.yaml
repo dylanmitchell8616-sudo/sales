@@ -1,0 +1,189 @@
+# Cold Email Template Library
+# All templates support:
+#   - Spintax: {Hello|Hi|Hey}
+#   - Variables: {{first_name}}, {{company}}, {{title}}, {{website}}
+
+sequences:
+  - name: "SaaS Cold Outreach"
+    description: "General SaaS product outreach for B2B decision makers"
+    steps:
+      - subject: "{Quick question|Thought for} {{company}}"
+        body: |
+          {Hi|Hey} {{first_name}},
+
+          {I came across|I noticed|I found} {{company}} and {was impressed by what you're building|really liked your approach}.
+
+          We help companies like {{company}} {save time|boost efficiency|scale faster} with {our platform|our tool}. {Thought it might be relevant|Figured it could help} given your role as {{title}}.
+
+          {Would you be open to|Any interest in} a quick 15-min chat this week?
+
+          {Best|Cheers},
+          {{sender_name}}
+        delay_days: 0
+
+      - subject: "Re: {Quick question|Thought for} {{company}}"
+        body: |
+          {Hi|Hey} {{first_name}},
+
+          {Just bumping this up|Wanted to follow up on my last note}. {I know you're busy|Totally understand if the timing isn't right}.
+
+          {Would love to show you|Happy to share} how we've helped similar companies {increase revenue by 30%|cut costs significantly|streamline their workflow}.
+
+          {Worth a quick chat?|Open to connecting?}
+
+          {Best|Thanks},
+          {{sender_name}}
+        delay_days: 3
+
+      - subject: "Re: {Quick question|Thought for} {{company}}"
+        body: |
+          {{first_name}} - {last try on this|one more follow up}.
+
+          {If the timing isn't right, no worries at all|Totally fine if now isn't the right time}. {Just let me know|Feel free to reach out whenever}.
+
+          {Would it make sense to reconnect in a few months?|Should I check back in Q3?}
+
+          {Best|Cheers},
+          {{sender_name}}
+        delay_days: 5
+
+  - name: "Agency Services"
+    description: "Agency pitching services to potential clients"
+    steps:
+      - subject: "{{company}}'s {growth|online presence|marketing}"
+        body: |
+          {Hi|Hey} {{first_name}},
+
+          {I took a look at|I checked out} {{website}} and {had a few ideas|noticed some opportunities} that could {help you grow|boost your results}.
+
+          We're a {boutique|specialized} agency that helps companies like {{company}} with {lead generation|growth marketing|content strategy}. {We've helped similar companies in your space|Our clients typically see results within 30 days}.
+
+          {Would you be open to|Interested in} a quick call to share {a few specific ideas|what we found}?
+
+          {Best|Cheers},
+          {{sender_name}}
+        delay_days: 0
+
+      - subject: "Re: {{company}}'s {growth|online presence|marketing}"
+        body: |
+          {Hey|Hi} {{first_name}},
+
+          {Following up|Circling back} on my {last email|previous note}. {I put together a few specific ideas for {{company}}|I've got some concrete suggestions for your team}.
+
+          {Happy to share them over a quick call|Can walk you through them in 10 minutes}. {No pitch, just value|Just actionable ideas}.
+
+          {Sound good?|Worth chatting?}
+
+          {{sender_name}}
+        delay_days: 3
+
+      - subject: "Re: {{company}}'s {growth|online presence|marketing}"
+        body: |
+          {{first_name}},
+
+          {Don't want to be a pest|Last note from me on this}. {If you're not interested, totally understand|No worries if the timing is off}.
+
+          {If things change, I'm always here|Feel free to reach out anytime}. {Wishing you and the team at {{company}} continued success|Best of luck with everything at {{company}}}.
+
+          {{sender_name}}
+        delay_days: 5
+
+  - name: "Partnership"
+    description: "Partnership and collaboration outreach"
+    steps:
+      - subject: "{Partnership idea|Collaboration opportunity} - {{company}}"
+        body: |
+          {Hi|Hey} {{first_name}},
+
+          {I've been following|I'm a big fan of} what {{company}} is doing in the space. {Really impressive work|Love the direction you're heading}.
+
+          I think there's a {natural synergy|great opportunity for collaboration} between our companies. {Our audiences overlap nicely|We serve complementary markets} and {a partnership could benefit both sides|I think we could create something great together}.
+
+          {Would you be open to|Any interest in} exploring this over a {quick call|brief chat}?
+
+          {Best|Looking forward to hearing from you},
+          {{sender_name}}
+        delay_days: 0
+
+      - subject: "Re: {Partnership idea|Collaboration opportunity} - {{company}}"
+        body: |
+          {Hi|Hey} {{first_name}},
+
+          {Wanted to bump this|Following up on my partnership idea}. {I think {{company}} would be a perfect fit|Still excited about the potential here}.
+
+          {A few specific ideas|Here's what I'm thinking}:
+          - {Co-marketing campaign|Joint webinar} to reach both our audiences
+          - {Integration between our platforms|Cross-promotion opportunity}
+          - {Shared content collaboration|Referral partnership}
+
+          {Worth 15 minutes to discuss?|Happy to hop on a quick call?}
+
+          {{sender_name}}
+        delay_days: 4
+
+  - name: "Recruiting"
+    description: "Recruiting outreach for hiring talent"
+    steps:
+      - subject: "{Exciting opportunity|Role you'd be perfect for} at our company"
+        body: |
+          {Hi|Hey} {{first_name}},
+
+          {I came across your profile|Your background caught my eye} and {I'm really impressed|I think you'd be a great fit} for a {{title}} role we're hiring for.
+
+          {Here's why I thought of you|What stood out to me}:
+          - Your experience at {{company}} {is exactly what we're looking for|aligns perfectly with our needs}
+          - {The role offers|You'd get to work on} {cutting-edge projects|exciting challenges in a fast-growing team}
+
+          {Would you be open to|Any interest in} {learning more|a quick chat to explore this}?
+
+          {Best|Cheers},
+          {{sender_name}}
+        delay_days: 0
+
+      - subject: "Re: {Exciting opportunity|Role you'd be perfect for}"
+        body: |
+          {Hi|Hey} {{first_name}},
+
+          {Just following up|Wanted to circle back} on my {last message|previous email}. {Even if you're not actively looking|Whether or not you're on the market}, {I'd love to connect|happy to just chat about the space}.
+
+          {No pressure at all|Totally informal} - {just a conversation to see if there's mutual interest|would love to hear about what you're working on at {{company}}}.
+
+          {{sender_name}}
+        delay_days: 4
+
+  - name: "Consulting"
+    description: "Consulting services outreach"
+    steps:
+      - subject: "{Idea for|Thought about} {{company}}'s {strategy|operations}"
+        body: |
+          {Hi|Hey} {{first_name}},
+
+          {I've been studying|I took a deep look at} {{company}}'s {recent moves|approach} and {had a few strategic thoughts|identified some opportunities}.
+
+          As a {consultant|advisor} specializing in {your industry|this space}, I've helped companies {similar to {{company}}|at your stage} {achieve significant results|unlock their next phase of growth}.
+
+          {Would it be valuable to|Interested in} {sharing a few specific insights over a call|discussing some ideas in a quick chat}?
+
+          {Best regards|Cheers},
+          {{sender_name}}
+        delay_days: 0
+
+      - subject: "Re: {Idea for|Thought about} {{company}}'s {strategy|operations}"
+        body: |
+          {{first_name}},
+
+          {Quick follow-up|Just bumping this}. {I put together some specific recommendations for {{company}}|I've got a few actionable ideas to share}.
+
+          {If now isn't the right time, I completely understand|No worries if the timing doesn't work}. {But if you're interested, I'd love to share them|Happy to connect whenever it makes sense}.
+
+          {{sender_name}}
+        delay_days: 4
+
+      - subject: "Re: {Idea for|Thought about} {{company}}'s {strategy|operations}"
+        body: |
+          {Hey|Hi} {{first_name}} - {final follow-up from me|last note on this}.
+
+          {If there's ever a good time to chat, my door is always open|Feel free to reach out anytime if things change}. {Wishing {{company}} continued success|All the best with everything at {{company}}}.
+
+          {{sender_name}}
+        delay_days: 5
