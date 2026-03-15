@@ -1,0 +1,303 @@
+================================================================================
+  COLD EMAIL AUTOMATION SYSTEM — COMPLETE GUIDE
+  Built for Dylan | RealSide AI Recruiting
+  Last updated: 2026-03-15
+================================================================================
+
+
+1. QUICK START
+──────────────────────────────────────────────────────────────────────────────
+
+  Start everything:     ./start.sh
+  Stop everything:      ./stop.sh
+  Add leads:            Drop a .csv file into leads/incoming/
+  View logs:            tail -f logs/process_manager.log
+  View reply log:       cat replies/reply_log.json
+
+
+2. WHAT EACH FILE DOES
+──────────────────────────────────────────────────────────────────────────────
+
+  FILE                              WHAT IT DOES
+  ─────────────────────────────────────────────────────────────────────────
+
+  start.sh                          One command to launch the entire system.
+                                    Starts the process manager in the
+                                    background and tails the log. Safe to
+                                    run multiple times (won't duplicate).
+
+  stop.sh                           Gracefully shuts down all running
+                                    processes. Sends SIGTERM, waits 30s,
+                                    then SIGKILL if needed.
+
+  run_forever.py                    Process manager / supervisor. Keeps
+                                    reply_monitor.py and lead_watcher.py
+                                    running 24/7. Auto-restarts any process
+                                    that crashes. Uses PID file to prevent
+                                    duplicate instances.
+
+  reply_monitor.py                  Polls Instantly every 2 minutes for new
+                                    replies across all 3 campaigns. Classifies
+                                    each reply into 8 categories and sends
+                                    an appropriate auto-response with the
+                                    Calendly booking link. Removes leads who
+                                    say "not interested." Logs all activity
+                                    to replies/reply_log.json.
+
+  lead_watcher.py                   Watches the leads/incoming/ folder every
+                                    30 seconds. When you drop a CSV in there,
+                                    it reads it, deduplicates by email, splits
+                                    leads evenly across the 3 campaigns for
+                                    A/B testing, uploads them to Instantly,
+                                    and moves the file to leads/processed/.
+
+  replies/responder.py              The brain behind auto-replies. Classifies
+                                    incoming replies into 8 categories:
+                                      - positive (interested)
+                                      - objection_budget
+                                      - objection_timing
+                                      - objection_competitor
+                                      - objection_not_relevant
+                                      - not_interested
+                                      - out_of_office
+                                      - question
+                                    Generates a tailored response for each
+                                    category. Every engagement reply includes
+                                    the Calendly link:
+                                    https://calendly.com/realsideai
+
+  instantly/client.py               Core API client for Instantly.ai v2.
+                                    Handles all HTTP requests with Bearer
+                                    token auth, automatic retries on 5xx
+                                    and 429 errors, and rate limit backoff.
+
+  instantly/campaigns.py            Creates, configures, and launches
+                                    campaigns in Instantly. Handles email
+                                    sequences, sending schedules, account
+                                    assignment, and lead import.
+
+  instantly/accounts.py             Manages email sending accounts (inboxes).
+                                    Adds accounts with SMTP/IMAP config,
+                                    enables warmup, sets daily send limits.
+
+  instantly/leads.py                Lead management utilities. CSV import,
+                                    deduplication, field normalization,
+                                    required field validation.
+
+  campaigns/ai_recruiting_sequences.yaml
+                                    The 3 live AI recruiting email sequences:
+                                      1. Cost Angle (4 emails)
+                                      2. Time Angle (3 emails)
+                                      3. Social Proof (3 emails)
+                                    Clean copy, no spintax. Sender: Dylan.
+                                    All positioned around "AI handles all
+                                    recruiting up to the final interview."
+
+  campaigns/automation.py           CampaignAutomation class for creating
+                                    campaigns from YAML templates end-to-end.
+
+  campaigns/batch_campaigns.yaml    15 pre-built niche/location combos for
+                                    batch campaign creation (dental, HVAC,
+                                    roofing, insurance, etc.)
+
+  campaigns/niche_templates.yaml    7 industry-specific email sequences
+                                    (dental, HVAC, roofing, insurance,
+                                    blue collar, clinics, real estate).
+
+  templates/library.yaml            5 ready-to-use sequences: SaaS Cold
+                                    Outreach, Agency Services, Partnership,
+                                    Recruiting, Consulting.
+
+  templates/engine.py               Template engine with personalization
+                                    variable support ({{firstName}},
+                                    {{companyName}}, etc.).
+
+  leads/scraper.py                  Lead scraper with Apollo.io and Google
+                                    Maps support. Requires API keys.
+
+  autopilot.py                      Full pipeline automation: scrape leads,
+                                    select templates, create campaigns,
+                                    assign inboxes, import leads, launch.
+                                    Supports --niche, --location, --source,
+                                    --batch modes.
+
+  automate_everything.py            One-click full automation for inbox
+                                    setup + campaign creation.
+
+  setup_outlook_inboxes.py          Interactive/batch/quick modes for
+                                    creating Outlook inboxes and connecting
+                                    them to Instantly with warmup enabled.
+
+  inboxes/bulk_creator.py           Orchestrates bulk inbox creation across
+                                    providers (Outlook, Zoho, custom domain).
+
+  inboxes/outlook_creator.py        Generates professional Outlook email
+                                    variations and manages creation workflow.
+
+  inboxes/zoho_creator.py           Zoho Mail inbox provisioning (requires
+                                    a custom domain).
+
+  inboxes/dns_setup.py              DNS record management for email
+                                    deliverability (SPF, DKIM, DMARC).
+                                    Supports Cloudflare API for auto-setup.
+
+  webhooks/receiver.py              Flask webhook server (port 8000) for
+                                    real-time reply notifications from
+                                    Instantly. Alternative to polling.
+
+  webhooks/setup_webhooks.py        CLI tool to register/list/delete
+                                    Instantly webhooks.
+
+  main.py                           CLI entry point with 7 command groups
+                                    and 20+ commands. Run: python main.py --help
+
+  config.yaml                       Global configuration: sending limits,
+                                    schedule (8am-5pm ET), warmup settings,
+                                    deliverability thresholds.
+
+  .env                              API key storage (INSTANTLY_API_KEY).
+
+
+3. LIVE CAMPAIGNS IN INSTANTLY
+──────────────────────────────────────────────────────────────────────────────
+
+  Campaign                ID                                      Emails
+  ─────────────────────────────────────────────────────────────────────────
+  Cost Angle              672fa45d-ed45-463e-9198-6137ee7043d9    4 steps
+  Time Angle              c5d69ff5-357b-42c6-bd3a-f5eff9c8ca22    3 steps
+  Social Proof            0571c68e-e187-41c6-9e32-0cf7b8a7d84d    3 steps
+
+  All 43 warm inboxes are assigned to all 3 campaigns.
+  Schedule: Monday-Friday, 8:00 AM - 5:00 PM Eastern (America/Detroit).
+
+
+4. HOW LEADS GET PROCESSED
+──────────────────────────────────────────────────────────────────────────────
+
+  1. You drop a CSV into leads/incoming/
+  2. lead_watcher.py detects it within 30 seconds
+  3. Reads and validates the CSV (handles any column naming)
+  4. Deduplicates by email address
+  5. Splits leads into 3 equal groups
+  6. Uploads each group to one of the 3 campaigns (A/B test)
+  7. Moves the CSV to leads/processed/ with a timestamp
+  8. Logs everything to logs/lead_watcher.log
+
+  Supported CSV columns (flexible naming):
+    - email / email address / e-mail
+    - first name / first_name / firstname / fname
+    - last name / last_name / lastname / lname
+    - company / company name / organization
+    - title / job title / role / position
+    - website / url / domain
+    - phone / phone number
+    - linkedin / linkedin url
+
+
+5. HOW REPLIES GET HANDLED
+──────────────────────────────────────────────────────────────────────────────
+
+  1. reply_monitor.py polls Instantly every 2 minutes
+  2. Fetches all replies for the 3 campaigns
+  3. Skips already-handled replies (tracked in handled_replies.json)
+  4. Classifies the reply text into one of 8 categories
+  5. Generates a tailored response:
+
+     POSITIVE        → Expresses excitement, offers to book a call via
+                       Calendly, keeps it conversational
+
+     BUDGET          → Addresses cost concerns (AI replaces expensive
+                       recruiter fees), offers Calendly
+
+     TIMING          → Acknowledges timing, positions as future-proofing,
+                       offers quick intro call via Calendly
+
+     COMPETITOR      → Differentiates (AI does the work, not just a
+                       database), offers Calendly
+
+     NOT RELEVANT    → Polite acknowledgment, light redirect, offers
+                       Calendly if they know someone
+
+     NOT INTERESTED  → Respectful close, removes lead from campaign
+
+     OUT OF OFFICE   → Skipped entirely (no response sent)
+
+     QUESTION        → Provides helpful info about the AI recruiting
+                       service, offers Calendly
+
+  6. Sends the response via Instantly API
+  7. Logs to replies/reply_log.json
+
+
+6. FOLDER STRUCTURE
+──────────────────────────────────────────────────────────────────────────────
+
+  sales/
+  ├── .env                          API keys
+  ├── config.yaml                   Global config
+  ├── start.sh                      Start everything
+  ├── stop.sh                       Stop everything
+  ├── run_forever.py                Process supervisor
+  ├── reply_monitor.py              Reply auto-responder daemon
+  ├── lead_watcher.py               CSV auto-import daemon
+  ├── autopilot.py                  Full pipeline automation
+  ├── automate_everything.py        One-click setup
+  ├── setup_outlook_inboxes.py      Outlook inbox creator
+  ├── main.py                       CLI tool
+  ├── requirements.txt              Python dependencies
+  │
+  ├── instantly/                    Instantly API integration
+  │   ├── client.py                 API client (v2, Bearer auth)
+  │   ├── campaigns.py              Campaign management
+  │   ├── accounts.py               Inbox/account management
+  │   └── leads.py                  Lead management
+  │
+  ├── campaigns/                    Campaign templates & config
+  │   ├── ai_recruiting_sequences.yaml
+  │   ├── automation.py
+  │   ├── batch_campaigns.yaml
+  │   └── niche_templates.yaml
+  │
+  ├── templates/                    Email template library
+  │   ├── library.yaml
+  │   └── engine.py
+  │
+  ├── replies/                      Reply handling
+  │   ├── responder.py              Classification + response generation
+  │   ├── handled_replies.json      Already-processed reply IDs
+  │   └── reply_log.json            Full reply activity log
+  │
+  ├── leads/                        Lead management
+  │   ├── scraper.py                Lead scraping (Apollo, Google Maps)
+  │   ├── incoming/                 DROP CSV FILES HERE
+  │   ├── processed/                Completed imports moved here
+  │   └── sample_leads.csv
+  │
+  ├── inboxes/                      Inbox provisioning
+  │   ├── bulk_creator.py
+  │   ├── outlook_creator.py
+  │   ├── zoho_creator.py
+  │   └── dns_setup.py
+  │
+  ├── webhooks/                     Real-time event handling
+  │   ├── receiver.py               Flask webhook server
+  │   └── setup_webhooks.py         Webhook registration CLI
+  │
+  └── logs/                         All log files
+      ├── process_manager.log
+      ├── lead_watcher.log
+      └── webhook_events.log
+
+
+7. DEPENDENCIES
+──────────────────────────────────────────────────────────────────────────────
+
+  pip install -r requirements.txt
+
+  Packages: requests, python-dotenv, beautifulsoup4, rich, click,
+            pyyaml, schedule, flask
+
+
+================================================================================
+  That's it. Drop leads, walk away. The system handles everything.
+================================================================================
