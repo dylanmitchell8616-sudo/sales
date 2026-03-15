@@ -122,12 +122,14 @@ class CampaignManager:
         tz = sending.get("timezone", "America/New_York")
 
         # Monday-Friday schedule
-        return [{
-            "days": {"1": True, "2": True, "3": True, "4": True, "5": True,
-                     "6": False, "7": False},
-            "timezone": tz,
-            "timing": {"from": start, "to": end},
-        }]
+        return {
+            "schedules": [{
+                "name": "Default",
+                "days": {"1": True, "2": True, "3": True, "4": True, "5": True},
+                "timezone": tz,
+                "timing": {"from": start, "to": end},
+            }],
+        }
 
     @staticmethod
     def _calc_rate(numerator: int, denominator: int) -> str:

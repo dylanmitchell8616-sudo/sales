@@ -8,7 +8,7 @@ sending:
   delay_between_emails_seconds: 90     # Random delay range (60-120)
   sending_window_start: "08:00"        # Send emails after this time
   sending_window_end: "17:00"          # Send emails before this time
-  timezone: "America/New_York"
+  timezone: "America/Detroit"
 
 # Campaign defaults
 campaigns:

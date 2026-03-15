@@ -1,0 +1,176 @@
+# AI Recruiting Campaign - Optimized Cold Email Sequences
+# Product: AI handles all recruiting up until the final interview
+# Target: HR Directors, VPs of People, Founders, COOs at companies actively hiring
+
+sequences:
+
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  # SEQUENCE A: "The Cost Angle" (PAS Framework)
+  # Best for: Mid-market companies (50-500 employees)
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  - name: "AI Recruiting - Cost Angle"
+    description: "Leads with the cost of bad hires and slow recruiting"
+    steps:
+      - subject: "{Quick question about|Thought on} hiring at {{company}}"
+        body: |
+          {{first_name}},
+
+          {Saw|Noticed} {{company}} has {a few open roles|some positions open} right now.
+
+          {Most companies|A lot of teams} at your stage are spending {$4,000+|thousands} per hire and {waiting 40+ days to fill roles|still taking over a month to fill seats}. {That adds up fast|It kills momentum}.
+
+          We built an AI that {handles your entire recruiting process|runs your full hiring pipeline} — sourcing, screening, scheduling — {all the way up to|everything before} the final interview. {You just show up and make the call|Your team only steps in for the final conversation}.
+
+          {Would it make sense to|Worth it to} {show you how it works|walk you through a quick demo}? Takes {10 minutes|less than 15 min}.
+
+          {Best|Cheers},
+          {{sender_name}}
+        delay_days: 0
+
+      - subject: "Re: {Quick question about|Thought on} hiring at {{company}}"
+        body: |
+          {{first_name}},
+
+          {Quick follow-up|Bumping this up}. {Didn't want this to get buried|Just in case this slipped through}.
+
+          {One thing I should've mentioned|To put it in perspective} — companies using our AI are {filling roles 3x faster|cutting time-to-hire by 68%} and {saving $2,800+ per hire|spending a fraction of what they used to on recruiting}.
+
+          {The AI handles|It takes care of}:
+          → {Sourcing candidates from 30+ channels|Finding qualified candidates automatically}
+          → {Screening and ranking them by fit|Running structured interviews and scoring}
+          → {Scheduling interviews with your team|Coordinating everything on your calendar}
+
+          {You literally just do the final interview|All you do is meet the top candidates and decide}.
+
+          {Open to a quick chat?|Want to see it in action?}
+
+          {{sender_name}}
+        delay_days: 3
+
+      - subject: "Re: {Quick question about|Thought on} hiring at {{company}}"
+        body: |
+          {Hey|Hi} {{first_name}} — {last note from me on this|final follow-up}.
+
+          {If hiring isn't a priority right now, totally get it|No worries if the timing is off}. {But if you're spending too much time or money on recruiting|But if filling roles is eating up your team's time}, {this could save you a lot of both|happy to show you a better way}.
+
+          {Either way, wishing {{company}} the best|Rooting for you and the team at {{company}}}.
+
+          {{sender_name}}
+
+          {P.S. Happy to share a case study if that's more helpful|P.S. Can send over some results from similar companies if you're curious}.
+        delay_days: 4
+
+      - subject: "{{first_name}} - {one last thing|thought you'd find this interesting}"
+        body: |
+          {{first_name}},
+
+          {Wanted to share this|Thought this might be relevant} — one of our clients {went from 45-day average time-to-hire to 12 days|cut their recruiting costs by 73% in the first quarter}.
+
+          {They were in a similar spot to {{company}}|Similar size company, similar hiring challenges}. {Happy to share the full breakdown if you're interested|Let me know if you'd want to see how they did it}.
+
+          {No pressure at all|Totally understand if now isn't the time}.
+
+          {{sender_name}}
+        delay_days: 5
+
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  # SEQUENCE B: "The Time Angle" (Before/After Framework)
+  # Best for: Fast-growing startups and scale-ups
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  - name: "AI Recruiting - Time Angle"
+    description: "Focuses on time savings and speed of hiring"
+    steps:
+      - subject: "{{company}}'s {hiring process|open roles}"
+        body: |
+          {Hi|Hey} {{first_name}},
+
+          {Quick question|Genuine question} — how many hours a week is {your team|someone on your team} spending on {recruiting|sourcing and screening candidates}?
+
+          {For most companies we talk to, it's 15-20+ hours|Most people I ask say it's way more than they'd like}. {That's basically a part-time job just on hiring|That's half a person's week gone}.
+
+          We {built an AI|have an AI system} that {takes over the entire process|does all of it} — from {finding candidates to screening them to booking interviews|sourcing through scheduling} — and {hands you a shortlist of qualified people ready for a final interview|only puts pre-vetted candidates in front of you}.
+
+          {What if recruiting took you 0 hours a week instead of 20?|Imagine getting your 20 hours back and still hiring faster.}
+
+          {Worth a quick call to see how?|Want me to show you how it works?}
+
+          {{sender_name}}
+        delay_days: 0
+
+      - subject: "Re: {{company}}'s {hiring process|open roles}"
+        body: |
+          {{first_name}},
+
+          {Following up|Circling back} — {here's what changes look like|here's the before/after} for teams that switch to AI recruiting:
+
+          {BEFORE|Without AI}: {15-20 hrs/week on recruiting|Manually reviewing hundreds of resumes}, {40+ day time-to-hire|Weeks of back-and-forth scheduling}, {$4,700 average cost per hire|Thousands per placement}
+
+          {AFTER|With AI}: {0 hrs/week on sourcing and screening|AI handles everything automatically}, {12 day average time-to-hire|Roles filled in under 2 weeks}, {73% lower cost per hire|Fraction of the cost}
+
+          {Your team literally just shows up for the final interview|You just meet the best candidates and say yes or no}.
+
+          {10 minutes and I can show you exactly how it'd work for {{company}}|Quick demo?}
+
+          {{sender_name}}
+        delay_days: 3
+
+      - subject: "Re: {{company}}'s {hiring process|open roles}"
+        body: |
+          {{first_name}} — {closing the loop on this|last message from me}.
+
+          {If hiring isn't painful right now, ignore me|If you've got recruiting handled, all good}. {But if it's eating your time|But if it's a bottleneck}, {I think 10 minutes would be worth it|this is worth a look}.
+
+          {Here either way if things change|My inbox is always open if you want to revisit later}.
+
+          {{sender_name}}
+        delay_days: 4
+
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  # SEQUENCE C: "The Competitor Angle" (Social Proof Framework)
+  # Best for: Enterprise / larger companies
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  - name: "AI Recruiting - Social Proof"
+    description: "Leads with competitor adoption and results"
+    steps:
+      - subject: "{How|The way} companies like {{company}} are {hiring now|filling roles in 2026}"
+        body: |
+          {{first_name}},
+
+          {Wanted to share something|Thought you'd find this relevant} — {a growing number of|more and more} companies {in your space|at {{company}}'s stage} are {replacing their recruiting process with AI|letting AI handle recruiting end-to-end}.
+
+          {Not just sourcing|I'm not talking about AI resume screening}. {The full thing|Everything} — sourcing, screening, {skills assessments|structured interviews}, scheduling — {right up to the final interview|all the way through}. {A human only steps in at the very end|Your team only touches the last conversation}.
+
+          {The results are wild|The numbers are hard to ignore}:
+          → {68% faster time-to-hire|Roles filled in under 2 weeks}
+          → {73% lower cost per hire|Cost per hire drops dramatically}
+          → {4.2x more qualified shortlists|Way better candidate quality}
+
+          {I'd love to show you how it works for {{company}}'s roles|Want to see a quick demo tailored to your open positions?}
+
+          {{sender_name}}
+        delay_days: 0
+
+      - subject: "Re: {How|The way} companies like {{company}} are {hiring now|filling roles in 2026}"
+        body: |
+          {{first_name}},
+
+          {One more thing|Quick add to my last email} — {I pulled up {{company}}'s open roles|I looked at what you're hiring for} and {mapped out exactly how the AI would handle them|put together a rough plan for how this would work for your team}.
+
+          {Happy to walk you through it|Can share it over a 10-min call}. {No commitment, just want to show you what's possible|Just figured it'd be more useful than a generic pitch}.
+
+          {Let me know|Does this week work?}
+
+          {{sender_name}}
+        delay_days: 3
+
+      - subject: "Re: {How|The way} companies like {{company}} are {hiring now|filling roles in 2026}"
+        body: |
+          {Hey|Hi} {{first_name}},
+
+          {Final follow-up|Last note from me}. {If you ever want to explore this, I'm here|Door's always open if recruiting becomes a bigger priority}.
+
+          {In the meantime|Either way}, {I put together a quick breakdown of how AI recruiting works for companies like {{company}}|happy to send over a case study from a similar company}. {Just say the word|Just reply "send it" and I'll share it}.
+
+          {All the best|Cheers},
+          {{sender_name}}
+        delay_days: 5
