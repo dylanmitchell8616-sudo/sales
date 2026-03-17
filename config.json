@@ -1,0 +1,31 @@
+{
+  "anthropic_api_key": "YOUR_API_KEY_HERE",
+
+  "sender_email": "dylan.realside@gmail.com",
+  "sender_name": "Sales Team",
+  "product_description": "YOUR_PRODUCT_DESCRIPTION_HERE",
+
+  "targets_csv": "targets_sample.csv",
+
+  "icp_description": "",
+  "icp_source": "manual",
+  "icp_batch": "",
+  "icp_limit": 50,
+
+  "competitors": "",
+  "job_keywords": "",
+  "watch_topics": "",
+
+  "case_studies_path": "",
+  "calendar_link": "",
+
+  "event_url": "",
+  "event_name": "",
+  "event_mode": "pre-event",
+
+  "days_back_news": 7,
+  "days_back_social": 14,
+  "days_between_followups": 3,
+
+  "output_dir": "output"
+}
