@@ -58,6 +58,49 @@ def setup_logging(output_dir: str) -> logging.Logger:
     return logger
 
 
+def prepare_competitor_targets(targets: str, output_dir: str) -> str:
+    """Create a targets CSV with 'prospect_company' column for competitor_review_miner."""
+    out_path = os.path.join(output_dir, "_competitor_targets.csv")
+    if not targets or not os.path.exists(targets):
+        return ""
+    with open(targets) as f:
+        reader = csv.DictReader(f)
+        rows = list(reader)
+    if not rows:
+        return ""
+    with open(out_path, "w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=["prospect_company", "prospect_contact", "contact_title", "domain"])
+        writer.writeheader()
+        for row in rows:
+            writer.writerow({
+                "prospect_company": row.get("company_name", ""),
+                "prospect_contact": row.get("contact_name", ""),
+                "contact_title": row.get("contact_title", ""),
+                "domain": row.get("domain", ""),
+            })
+    return out_path
+
+
+def add_sent_date_to_csv(input_path: str, output_path: str) -> str:
+    """Add today's date as sent_date column for followup_generator compatibility."""
+    if not os.path.exists(input_path):
+        return ""
+    today = datetime.now().strftime("%Y-%m-%d")
+    with open(input_path) as f:
+        reader = csv.DictReader(f)
+        rows = list(reader)
+    if not rows:
+        return ""
+    fieldnames = list(rows[0].keys()) + ["sent_date"]
+    with open(output_path, "w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        for row in rows:
+            row["sent_date"] = today
+            writer.writerow(row)
+    return output_path
+
+
 def count_csv_rows(path: str) -> int:
     """Count data rows in a CSV (excludes header)."""
     if not os.path.exists(path):
@@ -74,7 +117,7 @@ def run_script(name: str, cmd: list[str], env: dict, output_dir: str) -> dict:
     start = time.time()
     try:
         result = subprocess.run(
-            cmd, env=env, capture_output=True, text=True, timeout=600
+            cmd, env=env, capture_output=True, text=True, timeout=900
         )
         elapsed = round(time.time() - start, 1)
         with open(log_file, "w") as f:
@@ -191,7 +234,9 @@ def phase2_tasks(cfg: dict, out: str, targets: str) -> list[tuple[str, list[str]
             "--output", cr_out, *common,
         ]
         if targets:
-            cmd.extend(["--targets", targets])
+            comp_targets = prepare_competitor_targets(targets, out)
+            if comp_targets:
+                cmd.extend(["--targets", comp_targets])
         tasks.append(("competitor_review_miner", cmd, cr_out))
 
     # 6. Case study matcher (needs case studies path)
@@ -225,10 +270,13 @@ def phase3_tasks(cfg: dict, out: str) -> list[tuple[str, list[str], str]]:
     tasks = []
     pr_out = os.path.join(out, "prospect_emails.csv")
     if os.path.exists(pr_out) and count_csv_rows(pr_out) > 0:
+        # Add sent_date column so followup_generator can schedule follow-ups
+        pr_dated = os.path.join(out, "_prospect_emails_dated.csv")
+        add_sent_date_to_csv(pr_out, pr_dated)
         fu_out = os.path.join(out, "followup_sequences.csv")
         tasks.append(("followup_generator", [
             sys.executable, str(BASE_DIR / "followup_generator.py"),
-            "--input", pr_out, "--output", fu_out,
+            "--input", pr_dated, "--output", fu_out,
             "--sender-email", cfg.get("sender_email", ""),
             "--sender-name", cfg.get("sender_name", ""),
             "--days-between", str(cfg.get("days_between_followups", 3)),
