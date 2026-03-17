@@ -189,15 +189,58 @@ def run_pipeline(cfg: dict, config_path: str, dry_run: bool = False,
 # Phase 2: Email enrichment (manual step / Clay placeholder)
 # ---------------------------------------------------------------------------
 
+def run_zoominfo_enrichment(cfg: dict, dry_run: bool = False) -> bool:
+    """Run zoominfo_enricher.py if a ZoomInfo API key is configured."""
+    zi_key = cfg.get("zoominfo_api_key", "")
+    zi_user = cfg.get("zoominfo_username", "")
+    if not zi_key and not zi_user:
+        return False  # No ZoomInfo credentials — skip
+
+    script = str(BASE_DIR / "zoominfo_enricher.py")
+    if not os.path.exists(script):
+        print_status("zoominfo_enricher.py not found", "warn")
+        return False
+
+    output_dir = str(BASE_DIR / cfg.get("output_dir", "output"))
+    cmd = [sys.executable, script, "--output-dir", output_dir]
+    if zi_key:
+        cmd.extend(["--api-key", zi_key])
+    if dry_run:
+        cmd.append("--dry-run")
+
+    print_status("Running ZoomInfo contact enrichment...")
+    start = time.time()
+    returncode, stdout, stderr = run_subprocess(cmd, timeout=600)
+    elapsed = round(time.time() - start, 1)
+
+    if stdout:
+        for line in stdout.strip().split("\n")[-20:]:
+            print(f"    | {line}")
+
+    if returncode == 0:
+        print_status(f"ZoomInfo enrichment completed in {elapsed}s", "ok")
+        return True
+    else:
+        print_status(f"ZoomInfo enrichment failed after {elapsed}s", "warn")
+        if stderr:
+            for line in stderr.strip().split("\n")[-5:]:
+                print(f"    | [stderr] {line}")
+        return False
+
+
 def enrich_contacts(cfg: dict, dry_run: bool = False) -> dict:
     """
-    Placeholder for Clay email enrichment.
+    Contact enrichment phase.
 
-    Clay MCP tools are not available in subprocess mode. This phase logs
-    which CSVs have leads that need real email addresses and reminds the
-    user to enrich them manually via Clay or another provider.
+    Runs ZoomInfo enrichment automatically if credentials are in config.
+    Otherwise logs which CSVs need manual enrichment.
     """
-    print_phase(2, "Contact Email Enrichment (Manual Step)")
+    print_phase(2, "Contact Email Enrichment")
+
+    # Try ZoomInfo auto-enrichment first
+    zi_ran = run_zoominfo_enrichment(cfg, dry_run=dry_run)
+    if zi_ran:
+        print()
 
     output_dir = str(BASE_DIR / cfg.get("output_dir", "output"))
     if not os.path.isdir(output_dir):
@@ -413,7 +456,8 @@ def print_summary(results: dict):
         print("    2. Fix issues and re-run with appropriate --skip flags")
     elif needs > 0:
         print("  NEXT STEPS:")
-        print("    1. Enrich leads with real emails (Clay, Apollo, or Hunter.io)")
+        print("    1. Add zoominfo_api_key to config.json for auto-enrichment")
+        print("       Or enrich manually via Clay, Apollo, or Hunter.io")
         print("    2. Re-run with: python run_full_pipeline.py --skip-pipeline")
     elif upload_status:
         print("  NEXT STEPS:")
