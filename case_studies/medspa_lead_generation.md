@@ -1,0 +1,5 @@
+Customer: Arik L's Med Spa
+Industry: Med Spa / Aesthetic Clinic
+Pain Point: Low lead conversion, manual outreach and follow-ups consuming staff time, missed opportunities from slow response times
+Result: Revolutionized lead generation — attracted and converted more high-quality prospects while fully automating outreach and follow-ups. Recovered 30%+ of previously missed calls and increased booked appointments by 15-20%.
+Story: Arik's med spa was losing leads because follow-up was manual and inconsistent. Staff couldn't keep up with inbound calls during peak hours and ad leads went cold within hours. Realside AI deployed both the Inbound AI Receptionist for 24/7 call coverage and the Outbound AI Agent to automatically contact new ad leads within 2 minutes. The result was a complete transformation of their lead pipeline — every call answered, every lead followed up, and significantly more appointments booked without adding headcount.
