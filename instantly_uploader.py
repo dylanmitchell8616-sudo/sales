@@ -160,8 +160,13 @@ def create_campaign(api_key: str, name: str, sending_account: str = None) -> str
                 "steps": [
                     {
                         "type": "email",
-                        "subject": "{{custom_subject}}",
-                        "body": "{{custom_body}}",
+                        "delay": 0,
+                        "variants": [
+                            {
+                                "subject": "{{custom_subject}}",
+                                "body": "{{custom_body}}",
+                            }
+                        ],
                     }
                 ]
             }
@@ -241,13 +246,16 @@ def csv_to_leads(rows: list[dict]) -> list[dict]:
             },
         }
 
-        # Only include email if we have one — otherwise use domain placeholder
+        # Set email — real email, domain placeholder, or skip if neither exists
         if email:
             lead["email"] = email
         elif domain:
             # Placeholder — user should enrich with real emails before sending
             lead["email"] = f"contact@{domain}"
             lead["custom_variables"]["needs_real_email"] = "true"
+        else:
+            # No email and no domain — skip this lead
+            continue
 
         leads.append(lead)
 
@@ -255,28 +263,32 @@ def csv_to_leads(rows: list[dict]) -> list[dict]:
 
 
 def upload_leads(api_key: str, campaign_id: str, leads: list[dict]) -> int:
-    """Upload leads in batches to a campaign."""
+    """Upload leads one at a time to a campaign (Instantly V2 API format)."""
     total_uploaded = 0
 
-    for i in range(0, len(leads), BATCH_SIZE):
-        batch = leads[i : i + BATCH_SIZE]
+    for i, lead in enumerate(leads):
         payload = {
             "campaign": campaign_id,
-            "skip_if_in_workspace": False,
-            "skip_if_in_campaign": True,
-            "leads": batch,
+            "email": lead.get("email", ""),
+            "first_name": lead.get("first_name", ""),
+            "last_name": lead.get("last_name", ""),
+            "company_name": lead.get("company_name", ""),
+            "website": lead.get("website", ""),
+            "personalization": lead.get("custom_variables", {}).get("personalization_hook", ""),
+            "custom_variables": lead.get("custom_variables", {}),
         }
 
         result = api_request("POST", "/leads", api_key, payload)
         if "error" in result:
-            print(f"  Error uploading batch {i // BATCH_SIZE + 1}: {result['error']}")
+            print(f"  Error uploading lead {i + 1} ({lead.get('email', '?')}): {result['error'][:100]}")
         else:
-            uploaded = result.get("upload_count", len(batch))
-            total_uploaded += uploaded
-            print(f"  Uploaded batch {i // BATCH_SIZE + 1}: {uploaded} leads")
+            total_uploaded += 1
 
-        if i + BATCH_SIZE < len(leads):
+        # Rate limit every 5 leads
+        if (i + 1) % 5 == 0:
             time.sleep(RATE_LIMIT_DELAY)
+            if (i + 1) % 20 == 0:
+                print(f"  Uploaded {total_uploaded}/{i + 1} leads...")
 
     return total_uploaded
 
