@@ -16,3 +16,4 @@ replies/reply_log.json
 leads/incoming/
 leads/processed/
 webhook_events.jsonl
+.claude/settings.local.json
