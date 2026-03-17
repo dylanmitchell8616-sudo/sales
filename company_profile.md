@@ -67,6 +67,12 @@ Realside AI builds **AI Employees** for service businesses. These AI Employees a
 - Booking: https://calendly.com/realsideai
 - Email: info@realsideai.com
 
+## Key Metrics Achieved
+- 2,500+ calls handled in a single month by one AI agent
+- 3x revenue increase for a med spa client
+- $50K in revenue recovered with zero ad spend via reactivation
+- 10+ hours/week of manual work reduced to minutes
+
 ## Client Testimonials
 - **Arik L, Founder:** "Realside AI revolutionized our lead generation, helping us attract and convert more high-quality prospects while automating outreach and follow-ups."
 - **Nori M, Owner, Carriage Trade Shop:** "Realside AI completely transformed our operations. Our AI-powered POS system and automated employee scheduling saved us hours every week!"
