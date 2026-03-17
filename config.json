@@ -2,22 +2,22 @@
   "anthropic_api_key": "YOUR_API_KEY_HERE",
 
   "sender_email": "dylan.realside@gmail.com",
-  "sender_name": "Sales Team",
-  "product_description": "YOUR_PRODUCT_DESCRIPTION_HERE",
+  "sender_name": "Dylan Mitchell",
+  "product_description": "Realside AI builds custom AI Voice Agents for local businesses — med spas, dentists, and high-ticket service clinics. Our agents answer every call 24/7, qualify leads, book appointments, and integrate with your CRM, calendar, and SMS. Done-for-you setup from strategy to deployment, so you never miss a lead again.",
 
-  "targets_csv": "targets_sample.csv",
+  "targets_csv": "targets.csv",
 
-  "icp_description": "",
+  "icp_description": "Local service businesses with high customer lifetime value: med spas, dental clinics, dermatology practices, cosmetic surgery centers, chiropractic offices, wellness clinics, high-end salons, fitness studios, home service companies (HVAC, plumbing, roofing). Ideally 5-50 employees, doing $500K-$10M revenue, spending on marketing/ads but losing leads to missed calls and slow follow-up. Owner-operated or small management team that values automation.",
   "icp_source": "manual",
   "icp_batch": "",
   "icp_limit": 50,
 
-  "competitors": "",
-  "job_keywords": "",
-  "watch_topics": "",
+  "competitors": "synthflow,goodcall,dialora,voice.ai,retell ai,vapi,lindy,mysalondesk,spa voices",
+  "job_keywords": "receptionist,front desk,office manager,patient coordinator,appointment scheduler,customer service representative,call center",
+  "watch_topics": "AI voice agents,AI receptionist,missed calls,appointment booking automation,med spa marketing,dental marketing,local business automation,AI for small business",
 
   "case_studies_path": "",
-  "calendar_link": "",
+  "calendar_link": "https://calendly.com/realsideai",
 
   "event_url": "",
   "event_name": "",
