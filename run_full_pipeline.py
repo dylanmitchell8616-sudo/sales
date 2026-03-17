@@ -3,13 +3,15 @@
 Full Sales Pipeline — Master Script
 =====================================
 Single command to run the entire sales pipeline end-to-end:
-  1. Run the sales pipeline (ICP building, outreach generation, follow-ups)
-  2. (Manual step) Enrich contacts with real emails via Clay
+  0. Auto-discover leads matching ICP (Google search → local businesses)
+  1. Run the sales pipeline (ICP scoring, outreach generation, follow-ups)
+  2. Check email enrichment status
   3. Upload campaigns to Instantly.ai
 
 Usage:
-    python run_full_pipeline.py                       # Run everything
+    python run_full_pipeline.py                       # Run everything (fully automated)
     python run_full_pipeline.py --dry-run             # Preview without executing
+    python run_full_pipeline.py --skip-discovery      # Skip lead discovery, use existing targets
     python run_full_pipeline.py --skip-pipeline       # Skip pipeline, just upload to Instantly
     python run_full_pipeline.py --skip-upload         # Run pipeline, skip Instantly upload
     python run_full_pipeline.py --phase 1             # Only run pipeline Phase 1 (ICP)
@@ -95,6 +97,49 @@ def run_subprocess(cmd: list[str], env: dict = None, timeout: int = 1200) -> tup
         return -1, "", f"Timed out after {timeout}s"
     except Exception as e:
         return -1, "", str(e)
+
+
+# ---------------------------------------------------------------------------
+# Phase 0: Auto-discover leads (lead_sourcer.py)
+# ---------------------------------------------------------------------------
+
+def discover_leads(cfg: dict, dry_run: bool = False) -> bool:
+    """Run lead_sourcer.py to auto-discover companies matching the ICP."""
+    print_phase(0, "Lead Discovery (Auto-Source Prospects)")
+
+    script = str(BASE_DIR / "lead_sourcer.py")
+    if not os.path.exists(script):
+        print_status("lead_sourcer.py not found — skipping auto-discovery", "skip")
+        print_status("Using existing targets.csv instead", "info")
+        return True
+
+    targets_csv = str(BASE_DIR / cfg.get("targets_csv", "targets.csv"))
+    limit = cfg.get("icp_limit", 50)
+
+    cmd = [sys.executable, script, "--output", targets_csv, "--limit", str(limit)]
+    if dry_run:
+        cmd.append("--dry-run")
+
+    print_status(f"Searching for businesses matching ICP...")
+    start = time.time()
+
+    returncode, stdout, stderr = run_subprocess(cmd, timeout=600)
+    elapsed = round(time.time() - start, 1)
+
+    if stdout:
+        for line in stdout.strip().split("\n")[-15:]:
+            print(f"    | {line}")
+
+    if returncode == 0:
+        rows = count_csv_rows(targets_csv) if os.path.exists(targets_csv) else 0
+        print_status(f"Discovered {rows} prospects in {elapsed}s", "ok")
+        return True
+    else:
+        print_status(f"Lead discovery failed after {elapsed}s, using existing targets", "warn")
+        if stderr:
+            for line in stderr.strip().split("\n")[-5:]:
+                print(f"    | [stderr] {line}")
+        return True  # Don't block pipeline if discovery fails
 
 
 # ---------------------------------------------------------------------------
@@ -299,6 +344,15 @@ def print_summary(results: dict):
     print("  FULL PIPELINE SUMMARY")
     print(DIVIDER)
 
+    # Discovery
+    discovery_status = results.get("discovery")
+    if discovery_status is None:
+        print_status("Discovery:  SKIPPED", "skip")
+    elif discovery_status:
+        print_status("Discovery:  COMPLETED", "ok")
+    else:
+        print_status("Discovery:  FAILED (used existing targets)", "warn")
+
     # Pipeline
     pipeline_status = results.get("pipeline")
     if pipeline_status is None:
@@ -398,6 +452,10 @@ Examples:
         help="Skip the pipeline phase; only enrich and upload existing CSVs"
     )
     parser.add_argument(
+        "--skip-discovery", action="store_true",
+        help="Skip lead discovery; use existing targets.csv"
+    )
+    parser.add_argument(
         "--skip-upload", action="store_true",
         help="Run the pipeline but skip uploading to Instantly"
     )
@@ -427,6 +485,18 @@ Examples:
     output_dir = str(BASE_DIR / cfg.get("output_dir", "output"))
     results = {"output_dir": output_dir}
     overall_start = time.time()
+
+    # ------------------------------------------------------------------
+    # PHASE 0: Auto-discover leads
+    # ------------------------------------------------------------------
+    if args.skip_pipeline or args.skip_discovery:
+        if not args.skip_pipeline:
+            print_phase(0, "Lead Discovery (SKIPPED)")
+            print_status("Using existing targets.csv", "skip")
+        results["discovery"] = None
+    else:
+        discovery_ok = discover_leads(cfg, dry_run=args.dry_run)
+        results["discovery"] = discovery_ok
 
     # ------------------------------------------------------------------
     # PHASE 1: Run the pipeline
