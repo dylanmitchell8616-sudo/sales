@@ -1,101 +1,154 @@
-# Meeting Booking Ideas with Claude Code + Clay
+# Meeting Booking Ideas — Fully Automated with Claude Code
 
-## 1. Signal-Based Prospecting (Warm Outbound)
-
-**Use Clay to surface buying signals, then Claude Code to act on them instantly.**
-
-- **New hires in target roles**: Use Clay's `current_role_max_months_since_start_date` filter to find new VPs/Directors/Heads of at target accounts who joined in the last 90 days. New leaders are 3x more likely to buy — they have budget and mandate to make changes.
-- **Headcount growth spikes**: Enrich accounts with `Headcount Growth` to find companies scaling fast. Growing teams = growing pain points = budget.
-- **Recent funding rounds**: Use `Latest Funding` enrichment to identify companies that just raised. They have cash to spend and pressure to deploy it.
-- **Open job postings**: Use `Open Jobs` enrichment to find companies hiring for roles your product replaces or augments. If they're hiring 5 SDRs, they might need your sales tool instead.
-- **Tech stack changes**: Use `Tech Stack` enrichment to find companies using a competitor or complementary tool. Build outreach around switching costs or integration value.
-
-## 2. Account Research Automation
-
-**Before every outreach, auto-research the account so messaging is hyper-relevant.**
-
-- Build a script that takes a list of target accounts, uses Clay to pull `Recent News`, `Company Competitors`, `Revenue Model`, and `Website Traffic`, then uses Claude to generate a 2-sentence personalized opener per account.
-- Use `ask-question-about-accounts` on your Salesforce accounts to identify stalled deals that need re-engagement. Ask: "Which accounts had positive Gong calls but no follow-up in 30 days?"
-
-## 3. Multi-Threading into Accounts
-
-**Don't just email one person — build a contact map and multi-thread.**
-
-- Use `find-and-enrich-contacts-at-company` to find 3-5 stakeholders per target account (the economic buyer, the champion, the end user, the blocker).
-- Enrich each with `Email` + `Summarize Work History` + `Find Thought Leadership`.
-- Use Claude Code to generate tailored messages for each persona:
-  - VP gets the ROI pitch
-  - Director gets the operational efficiency angle
-  - End user gets the "make your life easier" angle
-  - Write a sequence where you reference what their colleague said
-
-## 4. Trigger-Based Outreach Sequences
-
-**Build automation scripts in this repo that fire outreach based on events.**
-
-- `job_change_outreach.py` — Daily: find contacts who changed jobs in last 7 days using Clay, generate congratulations + soft pitch email with Claude.
-- `competitor_displacement.py` — Weekly: find companies using a competitor via Tech Stack enrichment, generate displacement messaging.
-- `expansion_signal.py` — Weekly: find existing customers with headcount growth or new funding, generate expansion/upsell outreach.
-- `event_follow_up.py` — After conferences: enrich attendee lists with Clay, generate personalized follow-ups referencing the event.
-
-## 5. ICP Scoring & Prioritization
-
-**Use Clay enrichment + Claude analysis to rank your pipeline.**
-
-- Enrich all accounts with `Annual Revenue`, `Headcount Growth`, `Tech Stack`, `Open Jobs`.
-- Write a Claude Code script that scores each account against your ICP criteria and outputs a ranked list.
-- Focus meeting-booking efforts on the top 20% instead of spray-and-pray.
-
-## 6. Thought Leadership-Based Outreach
-
-**Find what prospects actually care about, then reference it.**
-
-- Use `Find Thought Leadership` on contacts to surface their LinkedIn posts, articles, podcast appearances.
-- Use Claude to craft outreach that references their specific POV: "Saw your post about X — we help companies solve exactly that."
-- This approach gets 3-5x higher reply rates than generic outreach.
-
-## 7. Warm Intro Mapping
-
-**Use Clay data to find paths to warm introductions.**
-
-- Enrich contacts with `Summarize Work History` to find shared employers, schools, or connections.
-- Use `school_names` filter to find prospects who went to the same school as your team.
-- Script that cross-references your team's LinkedIn networks against target contacts.
-
-## 8. Re-Engagement Campaigns
-
-**Mine your existing CRM for low-hanging fruit.**
-
-- Use `get-my-accounts` to pull your Salesforce book of business.
-- Use `ask-question-about-accounts` to identify: "Which accounts had engagement but went cold in the last 6 months?"
-- Enrich those accounts with `Recent News` to find a new reason to reach out.
-- Claude generates re-engagement email: "Hey, saw [recent news]. When we last spoke you were dealing with [pain point]. Has that changed?"
-
-## 9. Competitive Intelligence Outreach
-
-**Target customers of competitors who are vulnerable.**
-
-- Use `Company Competitors` and `Company Customers` enrichments to map the competitive landscape.
-- Find companies using competitors that recently had outages, price increases, or bad press (via `Recent News`).
-- Generate displacement messaging that's timely and relevant.
-
-## 10. Automated Meeting Prep Briefs
-
-**Not about booking — about converting booked meetings to closed deals.**
-
-- Before every meeting, auto-generate a 1-page brief using Clay enrichment:
-  - Company overview (revenue, funding, headcount)
-  - Key stakeholders and their backgrounds
-  - Recent news and trigger events
-  - Competitive landscape
-  - Suggested talking points
-- Higher conversion from meeting → opportunity means each booked meeting is worth more, so you need fewer.
+Everything below can be built as scripts in this repo and run on autopilot with Claude Code + cron/GitHub Actions. No Clay, no manual enrichment — just web scraping, public APIs, and Claude.
 
 ---
 
-## Quick Wins to Start Today
+## 1. Prospect Website Scraper + Personalized Email Generator
 
-1. **Run a new hire search** on your top 10 target accounts (people who started in last 90 days)
-2. **Enrich your stale pipeline** with Recent News to find re-engagement hooks
-3. **Multi-thread** your top 5 deals by finding 3 more contacts per account
-4. **Score your book** against ICP criteria to focus efforts
+**Script: `prospect_researcher.py`**
+
+- Takes a CSV of target company domains
+- Uses web fetching to scrape their homepage, /about, /blog, /careers pages
+- Claude analyzes the content and generates a hyper-personalized cold email per company referencing their actual product, recent blog posts, or job openings
+- Outputs a CSV of ready-to-send emails
+
+**Why it books meetings:** Every email references something real and specific about the company. No generic templates.
+
+---
+
+## 2. Job Board Monitor → Outreach Generator
+
+**Script: `job_signal_monitor.py`**
+
+- Scrapes public job boards (LinkedIn jobs, Indeed, company career pages) for keywords related to your product space
+- If a company posts a job for "Sales Operations Manager" and you sell sales tooling — that's a buying signal
+- Claude generates outreach: "Saw you're hiring a Sales Ops Manager — companies in that stage usually struggle with X. We solve that so your new hire can hit the ground running."
+- Run daily via cron, outputs new leads + draft emails
+
+**Why it books meetings:** You're reaching out at the exact moment they have the pain.
+
+---
+
+## 3. LinkedIn/Twitter Content Monitor → Warm Outreach
+
+**Script: `social_listener.py`**
+
+- Monitors public RSS feeds, blog posts, or social profiles of target prospects
+- When a prospect posts about a topic related to your product, Claude generates a reply or email that references their specific take
+- "Your post about [topic] resonated — we've seen the same thing with our customers. Would love to share what's working."
+
+**Why it books meetings:** Referencing someone's own content is the highest-converting cold outreach pattern.
+
+---
+
+## 4. Automated ICP List Builder from Public Data
+
+**Script: `icp_list_builder.py`**
+
+- Scrapes public directories, YC company lists, ProductHunt launches, Crunchbase (free tier), G2 categories
+- Filters by your ICP criteria (industry, size signals from employee count on LinkedIn, tech keywords on their site)
+- Claude scores and ranks each company, writes a one-liner on why they're a fit
+- Outputs a prioritized prospecting list with personalized angles
+
+**Why it books meetings:** You always have a fresh, ranked list to work from instead of guessing who to target.
+
+---
+
+## 5. Competitor Review Mining → Displacement Outreach
+
+**Script: `competitor_review_miner.py`**
+
+- Scrapes public review sites (G2, Capterra, TrustRadius) for negative reviews of your competitors
+- Identifies common pain points and the companies leaving those reviews
+- Claude generates displacement emails: "Saw your team has been struggling with [specific pain from review] on [Competitor]. We built [Product] specifically to fix that."
+
+**Why it books meetings:** You're targeting people who already expressed dissatisfaction with the status quo. They're pre-qualified.
+
+---
+
+## 6. Conference/Event Attendee Outreach
+
+**Script: `event_outreach.py`**
+
+- Scrapes public speaker lists, attendee lists, sponsor lists from conference websites
+- Cross-references with your target accounts
+- Claude generates pre-event or post-event outreach: "Saw you're speaking at [Event] about [Topic] — would love to connect while we're both there."
+- Can also scrape session recordings/summaries after the event for follow-up hooks
+
+**Why it books meetings:** Events create natural conversation starters and time pressure.
+
+---
+
+## 7. News/PR Trigger Outreach
+
+**Script: `news_trigger.py`**
+
+- Monitors Google News, RSS feeds, or press release sites for target accounts
+- Triggers on: funding announcements, product launches, leadership changes, acquisitions, expansions
+- Claude generates timely outreach tied to the news: "Congrats on the Series B — companies at your stage usually start hitting [pain point]. Happy to share how [similar company] handled it."
+- Run daily, auto-generates drafts
+
+**Why it books meetings:** Timeliness is everything. Reaching out within 48 hours of a trigger event dramatically increases reply rates.
+
+---
+
+## 8. Automated Follow-Up Sequence Writer
+
+**Script: `followup_generator.py`**
+
+- Takes your existing outreach CSV (who you emailed, when, what you said)
+- Claude generates a 3-5 touch follow-up sequence for each prospect, each email adding new value (case study, relevant insight, social proof)
+- Spaces them out on a schedule, outputs calendar-ready send dates
+- Each follow-up is unique — not "just bumping this to the top of your inbox"
+
+**Why it books meetings:** Most meetings are booked on follow-up 3-5, not email 1. Automating follow-ups with real value keeps the pipeline moving.
+
+---
+
+## 9. Case Study Matcher
+
+**Script: `case_study_matcher.py`**
+
+- Maintains a library of your case studies/customer stories (stored as markdown in this repo)
+- When prospecting, Claude matches each prospect to the most relevant case study based on industry, company size, pain point
+- Generates outreach that leads with the matched story: "We helped [Similar Company] do [Result]. Your team at [Prospect] looks like you're in a similar spot."
+
+**Why it books meetings:** Social proof from a similar company is the #1 objection killer.
+
+---
+
+## 10. Inbound Lead Research + Instant Response Drafts
+
+**Script: `inbound_responder.py`**
+
+- When a new inbound lead comes in (via webhook, form submission CSV, or email parse), Claude instantly:
+  - Scrapes their website and LinkedIn
+  - Identifies their likely pain points
+  - Drafts a personalized response that references their company specifically
+  - Suggests 3 meeting times based on your calendar availability
+- Speed-to-lead is the #1 predictor of inbound conversion. This gets you from form fill to personalized reply in under 60 seconds.
+
+**Why it books meetings:** Responding in <5 minutes makes you 100x more likely to connect vs. responding in 30 minutes.
+
+---
+
+## How to Run These
+
+Each script can be:
+- Run manually: `python prospect_researcher.py --input targets.csv`
+- Scheduled via cron: `0 8 * * * cd /home/user/sales && python news_trigger.py`
+- Triggered by GitHub Actions on a schedule
+- Chained together: news_trigger → followup_generator → output ready-to-send emails
+
+All outputs go to CSV files you can import into your email tool or CRM.
+
+---
+
+## Recommended Build Order (Start Here)
+
+1. **Prospect Website Scraper** (#1) — immediate ROI, personalized emails today
+2. **Follow-Up Sequence Writer** (#8) — multiply your existing outreach effort
+3. **News Trigger Outreach** (#7) — daily warm leads on autopilot
+4. **Job Board Monitor** (#2) — intent-based prospecting
+5. **Competitor Review Mining** (#5) — pre-qualified displacement targets
