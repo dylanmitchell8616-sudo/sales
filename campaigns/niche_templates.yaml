@@ -1,0 +1,337 @@
+# Niche-Specific Email Sequences
+# Tailored outreach templates for each vertical
+# Variables: {{first_name}}, {{company_name}}, {{city}}, {{sender_name}}, {{sender_company}}
+
+sequences:
+  # ============================================================
+  # DENTAL OFFICES
+  # ============================================================
+  - name: "Dental Office Outreach"
+    description: "Reach dental offices for marketing/AI services"
+    niche_keywords: ["dental", "dentist", "orthodont", "dental office", "dental practice"]
+    steps:
+      - subject: "Quick question about {{company_name}}"
+        body: |
+          Hi {{first_name}},
+
+          I was looking at dental practices in {{city}} and came across {{company_name}}. {Looks like you've built a solid practice|Really liked what I saw}.
+
+          I work with a handful of dental offices on {their digital marketing and patient acquisition|using AI tools to streamline their front desk and fill more chairs}. One thing that keeps coming up is how much time gets wasted on {no-shows and missed follow-ups|chasing down leads that never book}.
+
+          Would you be open to a quick 10-minute call this week? I have a few ideas that might be worth exploring — no pitch, just want to see if there's a fit.
+
+          Best,
+          {{sender_name}}
+        delay_days: 0
+
+      - subject: "Re: Quick question about {{company_name}}"
+        body: |
+          Hey {{first_name}},
+
+          Just bumping this up in case it got buried. I know running a practice keeps you {slammed|incredibly busy}.
+
+          The short version: we've been helping dental offices in markets like {{city}} {book 15-30 more appointments per month|cut no-show rates by 30-40%} without adding any extra work for the front desk.
+
+          If that sounds interesting, I'm happy to walk you through how it works — takes about 10 minutes.
+
+          Either way, no worries at all.
+
+          {{sender_name}}
+        delay_days: 3
+
+      - subject: "Re: Quick question about {{company_name}}"
+        body: |
+          Hi {{first_name}},
+
+          Last note from me on this — I don't want to be that person who keeps following up forever.
+
+          I put together a {quick breakdown|short case study} of what we did for a dental office similar to yours. Happy to send it over if you're curious, zero strings attached.
+
+          If the timing isn't right, totally understand. Feel free to reach out whenever.
+
+          Thanks,
+          {{sender_name}}
+        delay_days: 5
+
+  # ============================================================
+  # HVAC COMPANIES
+  # ============================================================
+  - name: "HVAC Company Outreach"
+    description: "Reach HVAC companies for lead generation and marketing services"
+    niche_keywords: ["hvac", "heating and cooling", "air conditioning", "furnace"]
+    steps:
+      - subject: "Filling your schedule in {{city}}"
+        body: |
+          Hey {{first_name}},
+
+          I've been working with a few HVAC companies and one thing I keep hearing is that {getting consistent leads is the hardest part of the business|the slow seasons are brutal for cash flow}.
+
+          We've put together a system that {generates exclusive leads for HVAC companies|keeps the phone ringing year-round} in markets like {{city}} — no shared leads, no Angi nonsense.
+
+          Would you have 10 minutes this week for a quick call? I can show you exactly how it works and you can decide if it makes sense for {{company_name}}.
+
+          Talk soon,
+          {{sender_name}}
+        delay_days: 0
+
+      - subject: "Re: Filling your schedule in {{city}}"
+        body: |
+          {{first_name}},
+
+          Just wanted to follow up on my last note. I know you're probably {out on jobs all day|busy running crews} so I'll keep this short.
+
+          We helped an HVAC company in a market similar to {{city}} go from {scrambling for work to turning down jobs|spending $3k/mo on ads with nothing to show for it, to booking 20+ jobs a month}. The whole thing runs on autopilot once it's set up.
+
+          Worth a quick conversation? I promise I won't waste your time.
+
+          {{sender_name}}
+        delay_days: 3
+
+      - subject: "Re: Filling your schedule in {{city}}"
+        body: |
+          Hey {{first_name}},
+
+          I'll keep this one short — just wanted to send one more note before I move on.
+
+          If lead flow is something {{company_name}} is working on right now, I'd love to chat. If not, no hard feelings at all.
+
+          {Either way, hope you guys have a killer season ahead.|Wishing you a great rest of the quarter.}
+
+          {{sender_name}}
+        delay_days: 5
+
+  # ============================================================
+  # ROOFING CONTRACTORS
+  # ============================================================
+  - name: "Roofing Contractor Outreach"
+    description: "Reach roofing contractors for lead generation and marketing"
+    niche_keywords: ["roofing", "roofer", "roof repair", "roof replacement"]
+    steps:
+      - subject: "More roofing jobs in {{city}}?"
+        body: |
+          Hey {{first_name}},
+
+          Found {{company_name}} while looking into roofing companies in {{city}}. {Looks like you guys do great work|Nice reviews — clearly you take care of your customers}.
+
+          I work with roofing contractors on {getting more estimates booked without relying on word of mouth|building a lead gen system that actually produces real jobs, not tire-kickers}. Most of the guys I talk to are either {paying too much for shared leads on HomeAdvisor|stuck relying on referrals and yard signs}.
+
+          Would it be worth a 10-minute call to see if we could help {{company_name}} book more jobs this {season|quarter}? No contracts or commitments, just a conversation.
+
+          Best,
+          {{sender_name}}
+        delay_days: 0
+
+      - subject: "Re: More roofing jobs in {{city}}?"
+        body: |
+          {{first_name}},
+
+          Quick follow-up — I know roofing season keeps you {on rooftops, not checking email|crazy busy}.
+
+          Here's the deal: we set up a system that sends {exclusive roofing leads|homeowners actively looking for roof work} directly to you in your service area. No sharing with 5 other contractors. You get the lead, you close the deal.
+
+          A contractor we work with in a similar market is averaging {12-20 new estimates per month|$40-60k in new revenue monthly} from this.
+
+          Worth a quick chat? I can walk you through the whole thing in under 10 minutes.
+
+          {{sender_name}}
+        delay_days: 3
+
+      - subject: "Re: More roofing jobs in {{city}}?"
+        body: |
+          Hey {{first_name}},
+
+          Last follow-up from me. I know you're busy and I respect that.
+
+          If getting more roofing jobs in {{city}} is on your radar, I'd love to have a quick conversation. If not, I totally get it — feel free to {reach out anytime down the road|keep my info in case things change}.
+
+          Good luck out there,
+          {{sender_name}}
+        delay_days: 5
+
+  # ============================================================
+  # INSURANCE AGENCIES
+  # ============================================================
+  - name: "Insurance Agency Outreach"
+    description: "Reach insurance agencies for lead generation and automation"
+    niche_keywords: ["insurance", "insurance agency", "insurance agent", "insurance broker"]
+    steps:
+      - subject: "Idea for {{company_name}}"
+        body: |
+          Hi {{first_name}},
+
+          I came across {{company_name}} and wanted to reach out. I've been working with independent insurance agencies on {automating their lead follow-up process|building a pipeline of new policy holders without cold calling}.
+
+          The biggest thing I hear from agents is that {they spend too much time chasing leads that go nowhere|the bought leads from the big vendors are garbage and overpriced}. We've built a system that {handles follow-up automatically and books appointments on your calendar|generates exclusive leads in your area and nurtures them until they're ready to talk}.
+
+          Would you be open to a quick call this week? I have some ideas that might help {{company_name}} write more policies without adding more hours to your day.
+
+          Best,
+          {{sender_name}}
+        delay_days: 0
+
+      - subject: "Re: Idea for {{company_name}}"
+        body: |
+          Hey {{first_name}},
+
+          Just circling back on my last email. I know insurance is {a grind|a hustle} and your inbox is probably packed.
+
+          Quick stat that might be relevant: we helped an agency similar to yours {increase their quote-to-bind ratio by 25%|add 30+ new policies per month} just by {automating their follow-up sequence|fixing how they handle inbound leads}. The whole thing took about a week to set up.
+
+          If that sounds interesting, I'd love to walk you through it. 10 minutes, tops.
+
+          {{sender_name}}
+        delay_days: 3
+
+      - subject: "Re: Idea for {{company_name}}"
+        body: |
+          {{first_name}},
+
+          Final note from me — I know this might not be the right time, and that's totally fine.
+
+          If down the road you're looking for a better way to {generate leads and automate follow-up|grow your book of business without buying junk leads}, feel free to reach out anytime.
+
+          {Wishing you and the team all the best.|Hope {{company_name}} has a great year ahead.}
+
+          {{sender_name}}
+        delay_days: 5
+
+  # ============================================================
+  # PRIVATE CLINICS
+  # ============================================================
+  - name: "Private Clinic Outreach"
+    description: "Reach private clinics for patient acquisition and marketing services"
+    niche_keywords: ["clinic", "private practice", "medical practice", "urgent care", "med spa"]
+    steps:
+      - subject: "Patient acquisition for {{company_name}}"
+        body: |
+          Hi {{first_name}},
+
+          I was researching private clinics in {{city}} and {{company_name}} caught my eye. {Your patient reviews speak volumes about the care you provide|Great to see a practice that clearly prioritizes patient experience}.
+
+          I work with private clinics on {filling their schedule with new patients|building a patient acquisition system that runs on autopilot}. The practices I work with were typically {spending a lot on ads with inconsistent results|relying mostly on referrals and word of mouth, which is great but hard to scale}.
+
+          Would you or your practice manager have 10 minutes for a quick call? I'd love to share a few strategies that have been working well for clinics in similar markets. No pressure, just a conversation.
+
+          Best,
+          {{sender_name}}
+        delay_days: 0
+
+      - subject: "Re: Patient acquisition for {{company_name}}"
+        body: |
+          Hey {{first_name}},
+
+          Just wanted to follow up on my note from earlier this week. I know running a practice leaves {very little time for anything else|zero free time}.
+
+          Here's the quick version: we helped a private clinic in a market like {{city}} go from {20 new patients a month to 45+|struggling to fill afternoon slots to being booked out 2 weeks}. The system handles {online presence, review management, and targeted outreach|everything from Google visibility to automated appointment reminders}.
+
+          If that sounds relevant, I'm happy to walk you through it. If not, no worries at all.
+
+          {{sender_name}}
+        delay_days: 3
+
+      - subject: "Re: Patient acquisition for {{company_name}}"
+        body: |
+          Hi {{first_name}},
+
+          Last email from me on this — I promise.
+
+          I put together a {short overview|quick guide} on how clinics in markets like {{city}} are {attracting more patients online|growing without relying solely on referrals}. Happy to share it if you're interested, no strings attached.
+
+          Either way, I hope {{company_name}} continues to thrive. {Feel free to reach out anytime if things change.|My door is always open if you want to chat down the road.}
+
+          {{sender_name}}
+        delay_days: 5
+
+  # ============================================================
+  # REAL ESTATE (Estate Lynx)
+  # ============================================================
+  - name: "Real Estate Outreach"
+    description: "Reach real estate professionals for lead gen and CRM services"
+    niche_keywords: ["real estate", "realtor", "realty", "real estate broker", "real estate agent"]
+    steps:
+      - subject: "Quick thought for {{company_name}}"
+        body: |
+          Hey {{first_name}},
+
+          I noticed {{company_name}} in {{city}} and wanted to reach out. I've been working with real estate teams on {building a lead pipeline that doesn't depend on Zillow or Realtor.com|setting up CRM automations that turn cold leads into closed deals}.
+
+          Most agents I talk to are {spending a fortune on portal leads and barely breaking even|drowning in leads but struggling to convert them because follow-up falls through the cracks}. We've put together a system that {generates seller and buyer leads exclusively for your market|automates your entire follow-up process so no lead gets forgotten}.
+
+          Would you have 10 minutes for a quick call? I think there's an opportunity for {{company_name}} and I'd love to run it by you.
+
+          Talk soon,
+          {{sender_name}}
+        delay_days: 0
+
+      - subject: "Re: Quick thought for {{company_name}}"
+        body: |
+          {{first_name}},
+
+          Following up on my email from a few days ago. I know {the market has been wild lately|you're probably busy showing homes and closing deals}, so I'll be brief.
+
+          A real estate team in a market similar to {{city}} used our system to {close 8 additional deals in their first quarter|cut their cost per lead by 60% while doubling their pipeline}. The whole thing integrates with {your existing CRM|whatever tools you're already using} so there's basically no learning curve.
+
+          Worth a quick chat to see if it could work for your team?
+
+          {{sender_name}}
+        delay_days: 3
+
+      - subject: "Re: Quick thought for {{company_name}}"
+        body: |
+          Hey {{first_name}},
+
+          Last note from me. I know real estate is all about timing, and maybe right now isn't the right moment.
+
+          If you ever want to explore {a better way to generate and convert leads|getting more listings without buying overpriced portal leads}, feel free to reach out. I'm always happy to chat, even if it's months from now.
+
+          {Wishing you a strong closing season.|Hope you have a great rest of the year.}
+
+          {{sender_name}}
+        delay_days: 5
+
+  # ============================================================
+  # BLUE COLLAR / TRADES (General)
+  # ============================================================
+  - name: "Blue Collar Outreach"
+    description: "Reach trades and blue collar businesses for lead gen and marketing"
+    niche_keywords: ["plumber", "plumbing", "electrician", "electrical", "contractor", "handyman", "landscap"]
+    steps:
+      - subject: "Getting more jobs for {{company_name}}"
+        body: |
+          Hey {{first_name}},
+
+          I found {{company_name}} while looking into service businesses in {{city}}. {Solid reviews — your customers clearly trust you|Looks like you've built something really solid}.
+
+          I work with trades businesses on {getting a steady flow of new customers without relying on word of mouth|building a marketing system that keeps the phone ringing even in the slow months}. Most of the guys I work with were in the same spot — {great at the work, but marketing felt like throwing money into a black hole|tired of paying for shared leads that go nowhere}.
+
+          Would you be up for a 10-minute call to see if there's a way to get {{company_name}} more jobs? No sales pitch, just want to see if we can help.
+
+          Best,
+          {{sender_name}}
+        delay_days: 0
+
+      - subject: "Re: Getting more jobs for {{company_name}}"
+        body: |
+          {{first_name}},
+
+          Just following up — I know you're probably {out on a job site|busy running your crew}, so I'll keep this quick.
+
+          We set up a simple system that sends {homeowners who actually need your services|real, exclusive leads — not the shared stuff from HomeAdvisor} directly to you. One contractor we work with in a market like {{city}} went from {feast or famine to fully booked|spending weekends doing estimates from bad leads to only running qualified appointments}.
+
+          If that sounds useful, let's talk for 10 minutes. If not, no hard feelings at all.
+
+          {{sender_name}}
+        delay_days: 3
+
+      - subject: "Re: Getting more jobs for {{company_name}}"
+        body: |
+          Hey {{first_name}},
+
+          Last email from me on this. I don't want to be a pest.
+
+          If growing {{company_name}} is something you're focused on right now, I'd love to help. If the timing's off, I totally get it — {my inbox is open whenever you're ready|feel free to reach out down the road}.
+
+          {Hope business is booming.|Wishing you a great rest of the season.}
+
+          {{sender_name}}
+        delay_days: 5

@@ -1,0 +1,86 @@
+# Batch Campaign Configurations
+# Pre-built niche/location combos for scaling outreach across verticals
+# Usage: Feed these into the campaign runner to auto-generate lead lists and sequences
+
+campaigns:
+  # --- Dental ---
+  - niche: "dentists"
+    location: "Houston TX"
+    limit: 200
+    template: "Dental Office Outreach"
+
+  - niche: "dentists"
+    location: "Phoenix AZ"
+    limit: 200
+    template: "Dental Office Outreach"
+
+  - niche: "orthodontists"
+    location: "Dallas TX"
+    limit: 150
+    template: "Dental Office Outreach"
+
+  # --- HVAC ---
+  - niche: "hvac companies"
+    location: "Atlanta GA"
+    limit: 200
+    template: "HVAC Company Outreach"
+
+  - niche: "hvac contractors"
+    location: "Chicago IL"
+    limit: 200
+    template: "HVAC Company Outreach"
+
+  # --- Roofing ---
+  - niche: "roofing contractors"
+    location: "Tampa FL"
+    limit: 200
+    template: "Roofing Contractor Outreach"
+
+  - niche: "roofing companies"
+    location: "Denver CO"
+    limit: 150
+    template: "Roofing Contractor Outreach"
+
+  # --- Insurance ---
+  - niche: "insurance agencies"
+    location: "Charlotte NC"
+    limit: 200
+    template: "Insurance Agency Outreach"
+
+  - niche: "insurance agents"
+    location: "Nashville TN"
+    limit: 150
+    template: "Insurance Agency Outreach"
+
+  # --- Blue Collar / Trades ---
+  - niche: "plumbing companies"
+    location: "San Antonio TX"
+    limit: 200
+    template: "Blue Collar Outreach"
+
+  - niche: "electricians"
+    location: "Columbus OH"
+    limit: 150
+    template: "Blue Collar Outreach"
+
+  # --- Private Clinics ---
+  - niche: "private medical clinics"
+    location: "Miami FL"
+    limit: 200
+    template: "Private Clinic Outreach"
+
+  - niche: "urgent care clinics"
+    location: "Los Angeles CA"
+    limit: 150
+    template: "Private Clinic Outreach"
+
+  # --- Estate Lynx / Real Estate ---
+  - niche: "real estate agencies"
+    location: "Austin TX"
+    limit: 200
+    template: "Real Estate Outreach"
+
+  - niche: "real estate brokers"
+    location: "Raleigh NC"
+    limit: 150
+    template: "Real Estate Outreach"
