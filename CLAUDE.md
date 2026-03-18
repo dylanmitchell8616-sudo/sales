@@ -45,11 +45,24 @@
 - After 8 with no reply → tag "Not Interested", highlight red
 - When they book → tag "Booked", highlight green
 
+## Reply Autopilot (Fully Automated)
+- `reply_autopilot.py` is a daemon that polls Instantly's API for new replies every 60 seconds
+- Classifies each reply with Claude (direct_intent, how_does_it_work, how_much, send_proof, not_interested, tried_before, already_have, timing, positive_other, negative_other)
+- Auto-tags leads in Instantly (Interested, Not Interested, Meeting Booked)
+- Generates and sends AI responses back through Instantly API for all positive/curious replies
+- Skips hostile/rude replies entirely
+- Tracks processed replies in output/processed_replies.json to avoid double-processing
+- Logs everything to output/reply_autopilot.log
+- Run with: `python reply_autopilot.py` or `./run_reply_autopilot.sh --foreground`
+- Supports `--dry-run` (classify + generate but don't send) and `--once` (single pass, no loop)
+- NO manual CSV exports needed — everything flows through the Instantly API
+
 ## Pipeline Architecture
 - Scripts generate personalized emails → CSVs → uploaded to Instantly.ai as draft campaigns
 - Campaign types: Prospect Outreach, Case Study Match, News Trigger, Competitor Displacement, Social Warm Outreach, Job Signal, Event Outreach, Follow-up Sequences, Objection Responses, Engaged Follow-ups
 - All campaigns created in DRAFT mode — manual activation required
 - Sending schedule: 7-9 AM + 1-3 PM Mon-Fri (America/Chicago), 30/day limit per account
+- Reply management is fully automated via reply_autopilot.py (no manual steps)
 
 ## ZoomInfo API
 - When user provides ZoomInfo API key, configure it but DO NOT use any credits for testing
@@ -62,4 +75,6 @@
 - `objection_handler.py` — AI-powered objection response generator
 - `engaged_followup_generator.py` — 8-touch warm follow-up sequence generator
 - `followup_generator.py` — 4-touch cold follow-up sequence generator
+- `reply_autopilot.py` — Fully automated reply manager daemon (polls Instantly API, classifies, responds, tags)
+- `run_reply_autopilot.sh` — Shell runner for reply autopilot daemon
 - `run_full_pipeline.py` — End-to-end pipeline orchestration
