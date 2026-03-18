@@ -344,15 +344,16 @@ def upload_to_instantly(cfg: dict, dry_run: bool = False) -> bool:
         return False
 
     output_dir = str(BASE_DIR / cfg.get("output_dir", "output"))
-    sending_account = cfg.get("sender_email", "")
 
     cmd = [
         sys.executable, script,
         "--api-key", api_key,
         "--output-dir", output_dir,
     ]
-    if sending_account:
-        cmd.extend(["--sending-account", sending_account])
+    # Pass campaign options from config if present
+    campaign_opts = cfg.get("campaign_options")
+    if campaign_opts:
+        cmd.extend(["--campaign-options", json.dumps(campaign_opts)])
     if dry_run:
         cmd.append("--dry-run")
 

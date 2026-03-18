@@ -31,6 +31,12 @@ DEFAULT_TIMEZONE = "America/Chicago"
 BATCH_SIZE = 50  # leads per API call
 RATE_LIMIT_DELAY = 1  # seconds between API calls
 
+# Optimal cold-email sending defaults
+DEFAULT_DAILY_LIMIT_PER_ACCOUNT = 30  # conservative to protect deliverability
+DEFAULT_REPLY_TO_PERCENTAGE = 100  # reply tracking
+DEFAULT_OPEN_TRACKING = True
+DEFAULT_LINK_TRACKING = False  # link tracking hurts deliverability
+
 # Map CSV filenames to campaign names
 CAMPAIGN_NAMES = {
     "prospect_emails.csv": "Realside AI — Prospect Outreach",
@@ -127,10 +133,41 @@ def list_accounts(api_key: str) -> list:
     return []
 
 
-def create_campaign(api_key: str, name: str, sending_account: str = None) -> str:
-    """Create a new campaign with a template that uses custom variables for full personalization."""
+def create_campaign(api_key: str, name: str, sending_accounts: list = None,
+                    campaign_options: dict = None) -> str:
+    """Create a new campaign with optimized settings for cold email deliverability.
+
+    Optimizations:
+    - Two send windows: morning (7-9 AM) + afternoon (1-3 PM) — peak open times
+    - Mon-Fri only, no weekends
+    - All sending accounts rotated for volume + deliverability
+    - Conservative daily limits per account (30/day default)
+    - Link tracking OFF (hurts deliverability), open tracking ON
+    - 90-day campaign duration
+    """
+    opts = campaign_options or {}
+    timezone = opts.get("timezone", DEFAULT_TIMEZONE)
+    daily_limit = opts.get("daily_limit_per_account", DEFAULT_DAILY_LIMIT_PER_ACCOUNT)
+    duration_days = opts.get("campaign_duration_days", 90)
+
+    # Send windows — split into two blocks for natural spacing
+    morning_start = opts.get("morning_start", "07:00")
+    morning_end = opts.get("morning_end", "09:00")
+    afternoon_start = opts.get("afternoon_start", "13:00")
+    afternoon_end = opts.get("afternoon_end", "15:00")
+
     start_date = datetime.now().strftime("%Y-%m-%d")
-    end_date = (datetime.now() + timedelta(days=90)).strftime("%Y-%m-%d")
+    end_date = (datetime.now() + timedelta(days=duration_days)).strftime("%Y-%m-%d")
+
+    weekdays = {
+        "0": False,  # Sunday
+        "1": True,   # Monday
+        "2": True,   # Tuesday
+        "3": True,   # Wednesday
+        "4": True,   # Thursday
+        "5": True,   # Friday
+        "6": False,  # Saturday
+    }
 
     payload = {
         "name": name,
@@ -139,19 +176,17 @@ def create_campaign(api_key: str, name: str, sending_account: str = None) -> str
             "end_date": end_date,
             "schedules": [
                 {
-                    "name": "Business Hours",
-                    "timing": {"from": "08:00", "to": "17:00"},
-                    "timezone": DEFAULT_TIMEZONE,
-                    "days": {
-                        "0": False,  # Sunday
-                        "1": True,   # Monday
-                        "2": True,   # Tuesday
-                        "3": True,   # Wednesday
-                        "4": True,   # Thursday
-                        "5": True,   # Friday
-                        "6": False,  # Saturday
-                    },
-                }
+                    "name": "Morning Window (7-9 AM)",
+                    "timing": {"from": morning_start, "to": morning_end},
+                    "timezone": timezone,
+                    "days": weekdays,
+                },
+                {
+                    "name": "Afternoon Window (1-3 PM)",
+                    "timing": {"from": afternoon_start, "to": afternoon_end},
+                    "timezone": timezone,
+                    "days": weekdays,
+                },
             ],
         },
         # Use custom variables so each lead gets a fully unique email
@@ -173,8 +208,21 @@ def create_campaign(api_key: str, name: str, sending_account: str = None) -> str
         ],
     }
 
-    if sending_account:
-        payload["sending_accounts"] = [sending_account]
+    # Attach ALL sending accounts for rotation (spreads volume, protects domains)
+    if sending_accounts:
+        payload["sending_accounts"] = sending_accounts
+        print(f"  Rotating across {len(sending_accounts)} sending accounts")
+
+    # Campaign-level settings (daily limit, tracking)
+    campaign_settings = {}
+    if daily_limit:
+        campaign_settings["daily_limit"] = daily_limit
+    if not opts.get("link_tracking", DEFAULT_LINK_TRACKING):
+        campaign_settings["link_tracking"] = False
+    if opts.get("open_tracking", DEFAULT_OPEN_TRACKING):
+        campaign_settings["open_tracking"] = True
+    if campaign_settings:
+        payload["campaign_settings"] = campaign_settings
 
     result = api_request("POST", "/campaigns", api_key, payload)
     if "error" in result:
@@ -184,6 +232,8 @@ def create_campaign(api_key: str, name: str, sending_account: str = None) -> str
     campaign_id = result.get("id", "")
     if campaign_id:
         print(f"  Created campaign: {name} (ID: {campaign_id})")
+        print(f"    Schedule: {morning_start}-{morning_end} + {afternoon_start}-{afternoon_end} Mon-Fri ({timezone})")
+        print(f"    Daily limit/account: {daily_limit} | Duration: {duration_days} days")
     return campaign_id
 
 
@@ -293,7 +343,8 @@ def upload_leads(api_key: str, campaign_id: str, leads: list[dict]) -> int:
     return total_uploaded
 
 
-def process_csv(api_key: str, csv_path: str, dry_run: bool = False, sending_account: str = None) -> dict:
+def process_csv(api_key: str, csv_path: str, dry_run: bool = False,
+                sending_accounts: list = None, campaign_options: dict = None) -> dict:
     """Process a single CSV: create campaign + upload leads."""
     filename = os.path.basename(csv_path)
     campaign_name = CAMPAIGN_NAMES.get(filename, f"Realside AI — {filename.replace('.csv', '').replace('_', ' ').title()}")
@@ -319,6 +370,16 @@ def process_csv(api_key: str, csv_path: str, dry_run: bool = False, sending_acco
 
     if dry_run:
         print("  [DRY-RUN] Would create campaign and upload leads")
+        opts = campaign_options or {}
+        tz = opts.get("timezone", DEFAULT_TIMEZONE)
+        dl = opts.get("daily_limit_per_account", DEFAULT_DAILY_LIMIT_PER_ACCOUNT)
+        ms = opts.get("morning_start", "07:00")
+        me = opts.get("morning_end", "09:00")
+        a_s = opts.get("afternoon_start", "13:00")
+        ae = opts.get("afternoon_end", "15:00")
+        num_accounts = len(sending_accounts) if sending_accounts else 0
+        print(f"    Schedule: {ms}-{me} + {a_s}-{ae} Mon-Fri ({tz})")
+        print(f"    Sending accounts: {num_accounts} | Daily limit/account: {dl}")
         for i, lead in enumerate(leads[:3]):
             print(f"    Lead {i+1}: {lead.get('first_name', '?')} {lead.get('last_name', '')} "
                   f"@ {lead.get('company_name', '?')} ({lead.get('email', 'no email')})")
@@ -327,8 +388,8 @@ def process_csv(api_key: str, csv_path: str, dry_run: bool = False, sending_acco
             print(f"    ... and {len(leads) - 3} more")
         return {"name": campaign_name, "status": "dry-run", "leads": len(leads)}
 
-    # Create campaign
-    campaign_id = create_campaign(api_key, campaign_name, sending_account)
+    # Create campaign with optimized settings
+    campaign_id = create_campaign(api_key, campaign_name, sending_accounts, campaign_options)
     if not campaign_id:
         return {"name": campaign_name, "status": "failed", "reason": "campaign creation failed"}
 
@@ -353,6 +414,8 @@ def main():
     parser.add_argument("--output-dir", default="output", help="Pipeline output directory")
     parser.add_argument("--sending-account", default=None, help="Email account to send from")
     parser.add_argument("--dry-run", action="store_true", help="Preview without creating campaigns")
+    parser.add_argument("--campaign-options", default=None,
+                        help="JSON string of campaign options (timezone, daily_limit_per_account, etc.)")
     parser.add_argument("--list-campaigns", action="store_true", help="List existing campaigns")
     parser.add_argument("--list-accounts", action="store_true", help="List connected email accounts")
     args = parser.parse_args()
@@ -403,12 +466,34 @@ def main():
         for a in accounts:
             print(f"    - {a.get('email', '?')}")
 
-    # Find sending account
-    sending_account = args.sending_account
-    if not sending_account and accounts:
-        # Use first connected account
-        sending_account = accounts[0].get("email", "")
-        print(f"  Using sending account: {sending_account}")
+    # Collect ALL sending accounts for rotation (maximizes volume + deliverability)
+    if args.sending_account:
+        sending_accounts = [args.sending_account]
+    elif accounts:
+        sending_accounts = [a.get("email", "") for a in accounts if a.get("email")]
+        print(f"  Rotating across ALL {len(sending_accounts)} connected accounts")
+    else:
+        sending_accounts = []
+
+    # Campaign options (can be overridden via --campaign-options JSON)
+    campaign_options = {
+        "timezone": DEFAULT_TIMEZONE,
+        "daily_limit_per_account": DEFAULT_DAILY_LIMIT_PER_ACCOUNT,
+        "campaign_duration_days": 90,
+        "morning_start": "07:00",
+        "morning_end": "09:00",
+        "afternoon_start": "13:00",
+        "afternoon_end": "15:00",
+        "open_tracking": DEFAULT_OPEN_TRACKING,
+        "link_tracking": DEFAULT_LINK_TRACKING,
+    }
+    if args.campaign_options:
+        try:
+            overrides = json.loads(args.campaign_options)
+            campaign_options.update(overrides)
+            print(f"  Campaign options overridden: {list(overrides.keys())}")
+        except json.JSONDecodeError:
+            print(f"  Warning: Could not parse --campaign-options JSON, using defaults")
 
     # Process each CSV
     results = []
@@ -416,7 +501,7 @@ def main():
         if not os.path.exists(csv_path):
             print(f"\n  Skipping {csv_path} (file not found)")
             continue
-        result = process_csv(args.api_key, csv_path, args.dry_run, sending_account)
+        result = process_csv(args.api_key, csv_path, args.dry_run, sending_accounts, campaign_options)
         results.append(result)
 
     # Summary
