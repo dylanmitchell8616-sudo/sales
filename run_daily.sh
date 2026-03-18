@@ -49,7 +49,7 @@ run_pipeline() {
 
     cd "$SCRIPT_DIR"
 
-    # Run the full pipeline
+    # Run the full pipeline (lead generation + email creation + upload)
     python run_full_pipeline.py --config "$CONFIG" 2>&1 | tee -a "$log_file"
     local exit_code=${PIPESTATUS[0]}
 
@@ -57,6 +57,15 @@ run_pipeline() {
         echo "[$(date)] Pipeline completed successfully."
     else
         echo "[$(date)] Pipeline failed with exit code $exit_code."
+    fi
+
+    # Process replies from Instantly (classify, respond, tag) — single pass
+    echo "[$(date)] Running reply autopilot (single pass)..."
+    python reply_autopilot.py --config "$CONFIG" --once 2>&1 | tee -a "$log_file"
+    if [ ${PIPESTATUS[0]} -eq 0 ]; then
+        echo "[$(date)] Reply autopilot completed."
+    else
+        echo "[$(date)] Reply autopilot encountered errors (non-fatal)."
     fi
 
     # Clean up logs older than 30 days
@@ -81,8 +90,18 @@ if [ "${1:-}" = "--loop" ]; then
         sleep_seconds=$((next_6am - now))
 
         if [ $sleep_seconds -gt 0 ]; then
-            echo "[$(date)] Sleeping ${sleep_seconds}s until next run at $(date -d @$next_6am '+%Y-%m-%d %H:%M')"
-            sleep $sleep_seconds
+            echo "[$(date)] Sleeping until next pipeline run. Reply autopilot runs every hour."
+            # Run reply autopilot every hour while waiting for the next full pipeline run
+            while [ $(date +%s) -lt $next_6am ]; do
+                remaining=$((next_6am - $(date +%s)))
+                if [ $remaining -le 0 ]; then break; fi
+                sleep_time=$((remaining < 3600 ? remaining : 3600))
+                sleep $sleep_time
+                if [ $(date +%s) -lt $next_6am ]; then
+                    echo "[$(date)] Running hourly reply autopilot pass..."
+                    python reply_autopilot.py --config "$CONFIG" --once 2>&1 | tee -a "${LOG_DIR}/reply_autopilot_$(date +%Y-%m-%d).log" || true
+                fi
+            done
         fi
 
         run_pipeline
