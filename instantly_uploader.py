@@ -47,6 +47,8 @@ CAMPAIGN_NAMES = {
     "job_signal_emails.csv": "Realside AI — Job Signal Outreach",
     "event_outreach_emails.csv": "Realside AI — Event Outreach",
     "followup_sequences.csv": "Realside AI — Follow-up Sequences",
+    "objection_responses.csv": "Realside AI — Objection Responses",
+    "engaged_followups.csv": "Realside AI — Engaged Follow-ups",
 }
 
 

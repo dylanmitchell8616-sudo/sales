@@ -6,6 +6,8 @@ Single command to run the entire sales pipeline end-to-end:
   0. Auto-discover leads matching ICP (Google search → local businesses)
   1. Run the sales pipeline (ICP scoring, outreach generation, follow-ups)
   2. Check email enrichment status
+  2b. Handle objections from replies (if output/replies.csv exists)
+  2c. Generate engaged followups (if output/engaged_prospects.csv exists)
   3. Upload campaigns to Instantly.ai
 
 Usage:
@@ -326,6 +328,106 @@ def enrich_contacts(cfg: dict, dry_run: bool = False) -> dict:
 
 
 # ---------------------------------------------------------------------------
+# Phase 2b: Objection handling (objection_handler.py)
+# ---------------------------------------------------------------------------
+
+def handle_objections(cfg: dict, dry_run: bool = False) -> bool:
+    """Run objection_handler.py if replies.csv exists."""
+    output_dir = str(BASE_DIR / cfg.get("output_dir", "output"))
+    input_csv = os.path.join(output_dir, "replies.csv")
+
+    if not os.path.exists(input_csv):
+        print_status("No replies.csv found — skipping objection handling", "skip")
+        return True
+
+    script = str(BASE_DIR / "objection_handler.py")
+    if not os.path.exists(script):
+        print_status("objection_handler.py not found — skipping", "skip")
+        return True
+
+    rows = count_csv_rows(input_csv)
+    print_status(f"Found {rows} replies to process for objection handling")
+
+    if dry_run:
+        print_status("Would run objection_handler.py", "dry-run")
+        return True
+
+    cmd = [sys.executable, script]
+    env = {**os.environ, "ANTHROPIC_API_KEY": cfg["anthropic_api_key"]}
+    print_status("Running objection handler...")
+    start = time.time()
+
+    returncode, stdout, stderr = run_subprocess(cmd, env=env, timeout=600)
+    elapsed = round(time.time() - start, 1)
+
+    if stdout:
+        for line in stdout.strip().split("\n")[-15:]:
+            print(f"    | {line}")
+
+    if returncode == 0:
+        out_csv = os.path.join(output_dir, "objection_responses.csv")
+        out_rows = count_csv_rows(out_csv) if os.path.exists(out_csv) else 0
+        print_status(f"Generated {out_rows} objection responses in {elapsed}s", "ok")
+        return True
+    else:
+        print_status(f"Objection handler failed after {elapsed}s", "warn")
+        if stderr:
+            for line in stderr.strip().split("\n")[-5:]:
+                print(f"    | [stderr] {line}")
+        return False
+
+
+# ---------------------------------------------------------------------------
+# Phase 2c: Engaged followup generation (engaged_followup_generator.py)
+# ---------------------------------------------------------------------------
+
+def generate_engaged_followups(cfg: dict, dry_run: bool = False) -> bool:
+    """Run engaged_followup_generator.py if engaged_prospects.csv exists."""
+    output_dir = str(BASE_DIR / cfg.get("output_dir", "output"))
+    input_csv = os.path.join(output_dir, "engaged_prospects.csv")
+
+    if not os.path.exists(input_csv):
+        print_status("No engaged_prospects.csv found — skipping engaged followups", "skip")
+        return True
+
+    script = str(BASE_DIR / "engaged_followup_generator.py")
+    if not os.path.exists(script):
+        print_status("engaged_followup_generator.py not found — skipping", "skip")
+        return True
+
+    rows = count_csv_rows(input_csv)
+    print_status(f"Found {rows} engaged prospects to generate followups for")
+
+    if dry_run:
+        print_status("Would run engaged_followup_generator.py", "dry-run")
+        return True
+
+    cmd = [sys.executable, script]
+    env = {**os.environ, "ANTHROPIC_API_KEY": cfg["anthropic_api_key"]}
+    print_status("Running engaged followup generator...")
+    start = time.time()
+
+    returncode, stdout, stderr = run_subprocess(cmd, env=env, timeout=600)
+    elapsed = round(time.time() - start, 1)
+
+    if stdout:
+        for line in stdout.strip().split("\n")[-15:]:
+            print(f"    | {line}")
+
+    if returncode == 0:
+        out_csv = os.path.join(output_dir, "engaged_followups.csv")
+        out_rows = count_csv_rows(out_csv) if os.path.exists(out_csv) else 0
+        print_status(f"Generated {out_rows} engaged followups in {elapsed}s", "ok")
+        return True
+    else:
+        print_status(f"Engaged followup generator failed after {elapsed}s", "warn")
+        if stderr:
+            for line in stderr.strip().split("\n")[-5:]:
+                print(f"    | [stderr] {line}")
+        return False
+
+
+# ---------------------------------------------------------------------------
 # Phase 3: Upload to Instantly
 # ---------------------------------------------------------------------------
 
@@ -420,6 +522,36 @@ def print_summary(results: dict):
             print_status(f"Enrichment: {total} leads, all have emails", "ok")
     else:
         print_status("Enrichment: No leads to enrich", "skip")
+
+    # Objection handling
+    objection_status = results.get("objections")
+    if objection_status is None:
+        print_status("Objections: SKIPPED", "skip")
+    elif objection_status:
+        output_dir_path = results.get("output_dir", "")
+        obj_csv = os.path.join(output_dir_path, "objection_responses.csv") if output_dir_path else ""
+        if obj_csv and os.path.exists(obj_csv):
+            obj_rows = count_csv_rows(obj_csv)
+            print_status(f"Objections: COMPLETED ({obj_rows} responses generated)", "ok")
+        else:
+            print_status("Objections: COMPLETED (no replies to process)", "ok")
+    else:
+        print_status("Objections: FAILED", "warn")
+
+    # Engaged followups
+    followup_status = results.get("engaged_followups")
+    if followup_status is None:
+        print_status("Followups:  SKIPPED", "skip")
+    elif followup_status:
+        output_dir_path = results.get("output_dir", "")
+        fu_csv = os.path.join(output_dir_path, "engaged_followups.csv") if output_dir_path else ""
+        if fu_csv and os.path.exists(fu_csv):
+            fu_rows = count_csv_rows(fu_csv)
+            print_status(f"Followups:  COMPLETED ({fu_rows} followups generated)", "ok")
+        else:
+            print_status("Followups:  COMPLETED (no engaged prospects to process)", "ok")
+    else:
+        print_status("Followups:  FAILED", "warn")
 
     # Upload
     upload_status = results.get("upload")
@@ -566,6 +698,18 @@ Examples:
     # ------------------------------------------------------------------
     enrichment = enrich_contacts(cfg, dry_run=args.dry_run)
     results["enrichment"] = enrichment
+
+    # ------------------------------------------------------------------
+    # PHASE 2b: Objection handling (optional — runs if replies.csv exists)
+    # ------------------------------------------------------------------
+    objection_ok = handle_objections(cfg, dry_run=args.dry_run)
+    results["objections"] = objection_ok
+
+    # ------------------------------------------------------------------
+    # PHASE 2c: Engaged followups (optional — runs if engaged_prospects.csv exists)
+    # ------------------------------------------------------------------
+    followup_ok = generate_engaged_followups(cfg, dry_run=args.dry_run)
+    results["engaged_followups"] = followup_ok
 
     # ------------------------------------------------------------------
     # PHASE 3: Upload to Instantly
