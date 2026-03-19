@@ -12,12 +12,12 @@ OUTPUT = "output/dental_dso_outreach.csv"
 # Role-based email templates
 def ceo_email(first, company):
     return {
-        "subject": f"The call every new patient makes before choosing a dentist",
+        "subject": "The call every new patient makes before choosing a dentist",
         "body": f"""Hi {first},
 
 With {company}'s scale, even a 10% improvement in call-to-booking conversion represents millions in recovered revenue across hundreds of locations.
 
-Realside AI puts an AI Inbound Receptionist on every phone line — answers 24/7, books instantly, handles FAQs. No staffing headaches. No dropped calls. No missed new patients.
+Realside AI puts an AI Inbound Receptionist on every phone line. It answers 24/7, books instantly, and handles FAQs. No staffing headaches. No dropped calls. No missed new patients.
 
 We're helping multi-location dental groups add 20-30% more bookings without adding headcount.
 
@@ -28,12 +28,12 @@ Dylan"""
 
 def vp_ops_email(first, company):
     return {
-        "subject": f"What's your per-location call abandonment rate?",
+        "subject": "What's your per-location call abandonment rate?",
         "body": f"""Hi {first},
 
 At {company}'s scale, front desk inconsistency is expensive. One location missing 20% of inbound calls loses roughly $10-15K/month in appointments.
 
-Realside AI deploys an AI Receptionist across every location — answers every call 24/7, books instantly, handles FAQs consistently. No training costs. No turnover.
+Realside AI deploys an AI Receptionist across every location. It answers every call 24/7, books instantly, and handles FAQs consistently. No training costs. No turnover.
 
 DSOs in our network recover 20-30% of previously lost calls within 60 days.
 
@@ -44,12 +44,12 @@ Dylan"""
 
 def regional_mgr_email(first, company):
     return {
-        "subject": f"Your front desk is turning new patients away",
+        "subject": "Your front desk is turning new patients away",
         "body": f"""Hi {first},
 
-Managing multiple practices means you know the problem: peak hours flood the front desk, calls go to voicemail, new patients hang up and call the office down the street.
+Managing multiple practices means you know the problem. Peak hours flood the front desk, calls go to voicemail, and new patients hang up and call the office down the street.
 
-Realside AI's AI Receptionist answers every call instantly — books appointments, answers FAQs, does live transfers. Across every location in your region, automatically.
+Realside AI's AI Receptionist answers every call instantly. It books appointments, answers FAQs, and does live transfers across every location in your region automatically.
 
 Practices we work with see 25%+ more bookings within 60 days.
 
@@ -60,12 +60,12 @@ Dylan"""
 
 def cx_email(first, company):
     return {
-        "subject": f"The first patient touchpoint is a phone call",
+        "subject": "The first patient touchpoint is a phone call",
         "body": f"""Hi {first},
 
-The patient experience starts before they walk through the door — it starts with the phone call. At {company}'s scale that's thousands of calls per day being fielded by varying front desk teams.
+The patient experience starts before they walk through the door. It starts with the phone call. At {company}'s scale that's thousands of calls per day being fielded by varying front desk teams.
 
-Realside AI standardizes that first touchpoint: every call answered instantly, professionally, and consistently — 24/7, across all locations.
+Realside AI standardizes that first touchpoint. Every call is answered instantly, professionally, and consistently, 24/7, across all locations.
 
 Patient satisfaction and booking rates both jump within 60 days.
 
@@ -76,10 +76,10 @@ Dylan"""
 
 def digital_email(first, company):
     return {
-        "subject": f"AI that pays for itself in 60 days",
+        "subject": "AI that pays for itself in 60 days",
         "body": f"""Hi {first},
 
-Realside AI builds AI Employees specifically for multi-location dental groups — AI Inbound Receptionist (answers every call 24/7, books appointments) and AI Outbound Agent (calls new leads in under 2 minutes, reactivates dormant patients).
+Realside AI builds AI Employees specifically for multi-location dental groups. The AI Inbound Receptionist answers every call 24/7 and books appointments. The AI Outbound Agent calls new leads in under 2 minutes and reactivates dormant patients.
 
 At {company}'s scale, recovering 5% of missed calls across hundreds of locations is transformational.
 
@@ -92,14 +92,14 @@ Dylan"""
 
 def growth_email(first, company):
     return {
-        "subject": f"Adding 25% more bookings without adding headcount",
+        "subject": "Adding 25% more bookings without adding headcount",
         "body": f"""Hi {first},
 
-If {company} is focused on growth, here's the lowest-hanging fruit: the calls your front desks can't answer.
+If {company} is focused on growth, here is the lowest-hanging fruit: the calls your front desks can't answer.
 
 Most dental offices miss 15-25% of inbound calls during peak hours. That's revenue walking to a competitor.
 
-Realside AI's AI Receptionist answers every call 24/7 — books appointments, handles FAQs, never misses a new patient. We're seeing 25%+ booking increases across multi-location groups within 60 days.
+Realside AI's AI Receptionist answers every call 24/7. It books appointments, handles FAQs, and never misses a new patient. We're seeing 25%+ booking increases across multi-location groups within 60 days.
 
 Open to a quick demo? {CALENDAR}
 

@@ -620,7 +620,7 @@ Rules:
 - Under 120 words
 - Friendly, confident, value-driven tone
 - Short, punchy sentences
-- Never use '--'
+- Never use '--' or em dashes or en dashes of any kind
 - Always include calendar link: {calendar_link}
 - Spark curiosity, don't fully answer questions over email
 - For pricing: deflect to call first, if they push anchor at $2K/mo tied to 40 pre-qualified appointments

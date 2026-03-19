@@ -94,6 +94,59 @@ def api_request(method: str, endpoint: str, api_key: str, data: dict = None) -> 
     return {"error": "Max retries exceeded"}
 
 
+PROCESSED_LEADS_PATH = "output/processed_leads.json"
+
+
+def load_processed_leads(path: str = None) -> dict:
+    """Load dedup tracker: {emails: set, domains: set}."""
+    p = path or os.path.join(os.path.dirname(os.path.abspath(__file__)), PROCESSED_LEADS_PATH)
+    if os.path.exists(p):
+        try:
+            with open(p, encoding="utf-8") as f:
+                data = json.load(f)
+            if isinstance(data, dict) and "emails" in data:
+                return {"emails": set(data["emails"]), "domains": set(data.get("domains", []))}
+            # Legacy format: just a list of emails
+            return {"emails": set(data), "domains": set()}
+        except Exception:
+            pass
+    return {"emails": set(), "domains": set()}
+
+
+def save_processed_leads(tracker: dict, path: str = None):
+    """Persist dedup tracker to disk."""
+    p = path or os.path.join(os.path.dirname(os.path.abspath(__file__)), PROCESSED_LEADS_PATH)
+    os.makedirs(os.path.dirname(p), exist_ok=True)
+    with open(p, "w", encoding="utf-8") as f:
+        json.dump({
+            "emails": sorted(tracker.get("emails", set())),
+            "domains": sorted(tracker.get("domains", set())),
+        }, f, indent=2)
+
+
+def _extract_domain(email_or_domain: str) -> str:
+    """Extract domain from an email address or return as-is if already a domain."""
+    if "@" in email_or_domain:
+        return email_or_domain.split("@")[-1].lower().strip()
+    return email_or_domain.lower().strip()
+
+
+def get_campaigns_by_name(api_key: str) -> dict:
+    """Return dict of {campaign_name: campaign_id} for all existing campaigns."""
+    result = api_request("GET", "/campaigns", api_key, {"limit": 100})
+    if "error" in result:
+        return {}
+    if isinstance(result, list):
+        items = result
+    elif isinstance(result, dict):
+        items = result.get("data", result.get("items", []))
+        if isinstance(items, dict):
+            items = items.get("items", [])
+    else:
+        items = []
+    return {c.get("name", ""): c.get("id", "") for c in items if c.get("name") and c.get("id")}
+
+
 def list_campaigns(api_key: str):
     """List existing campaigns."""
     result = api_request("GET", "/campaigns", api_key, {"limit": 50})
@@ -367,7 +420,8 @@ def upload_leads(api_key: str, campaign_id: str, leads: list[dict]) -> int:
 
 def process_csv(api_key: str, csv_path: str, dry_run: bool = False,
                 sending_accounts: list = None, campaign_options: dict = None,
-                auto_activate: bool = False) -> dict:
+                auto_activate: bool = False, update_existing: bool = False,
+                existing_campaigns: dict = None, processed_leads: set = None) -> dict:
     """Process a single CSV: create campaign + upload leads."""
     filename = os.path.basename(csv_path)
     campaign_name = CAMPAIGN_NAMES.get(filename, f"Realside AI — {filename.replace('.csv', '').replace('_', ' ').title()}")
@@ -387,38 +441,66 @@ def process_csv(api_key: str, csv_path: str, dry_run: bool = False,
     leads = csv_to_leads(rows)
     needs_email = sum(1 for l in leads if l.get("custom_variables", {}).get("needs_real_email") == "true")
 
-    print(f"  Leads: {len(leads)} total")
+    # Deduplicate: filter out leads already uploaded in previous runs (by email AND domain)
+    if processed_leads:
+        processed_emails = processed_leads.get("emails", set()) if isinstance(processed_leads, dict) else processed_leads
+        processed_domains = processed_leads.get("domains", set()) if isinstance(processed_leads, dict) else set()
+        before = len(leads)
+        def _is_new(lead):
+            email = lead.get("email", "").lower()
+            domain = _extract_domain(lead.get("website", "") or lead.get("email", ""))
+            if email and email in processed_emails:
+                return False
+            if domain and domain in processed_domains:
+                return False
+            return True
+        leads = [l for l in leads if _is_new(l)]
+        skipped = before - len(leads)
+        if skipped:
+            print(f"  Skipped {skipped} already-uploaded leads (dedup by email+domain)")
+
+    print(f"  Leads: {len(leads)} new to upload")
     if needs_email:
-        print(f"  ⚠ {needs_email} leads have placeholder emails (need enrichment)")
+        print(f"  Warning: {needs_email} leads have placeholder emails (need enrichment)")
+
+    if not leads:
+        return {"name": campaign_name, "status": "skipped", "reason": "all leads already uploaded",
+                "leads_uploaded": 0, "leads_total": 0, "new_emails": set(), "new_domains": set()}
 
     if dry_run:
-        print("  [DRY-RUN] Would create campaign and upload leads")
-        opts = campaign_options or {}
-        tz = opts.get("timezone", DEFAULT_TIMEZONE)
-        dl = opts.get("daily_limit_per_account", DEFAULT_DAILY_LIMIT_PER_ACCOUNT)
-        ms = opts.get("morning_start", "07:00")
-        me = opts.get("morning_end", "09:00")
-        a_s = opts.get("afternoon_start", "13:00")
-        ae = opts.get("afternoon_end", "15:00")
-        num_accounts = len(sending_accounts) if sending_accounts else 0
-        print(f"    Schedule: {ms}-{me} + {a_s}-{ae} Mon-Fri ({tz})")
-        print(f"    Sending accounts: {num_accounts} | Daily limit/account: {dl}")
+        print("  [DRY-RUN] Would upload leads to campaign")
         for i, lead in enumerate(leads[:3]):
             print(f"    Lead {i+1}: {lead.get('first_name', '?')} {lead.get('last_name', '')} "
                   f"@ {lead.get('company_name', '?')} ({lead.get('email', 'no email')})")
-            print(f"      Subject: {lead['custom_variables']['custom_subject'][:60]}...")
+            subj = lead.get('custom_variables', {}).get('custom_subject', '')
+            if subj:
+                print(f"      Subject: {subj[:70]}")
         if len(leads) > 3:
             print(f"    ... and {len(leads) - 3} more")
-        return {"name": campaign_name, "status": "dry-run", "leads": len(leads)}
+        return {"name": campaign_name, "status": "dry-run", "leads": len(leads), "new_emails": set(), "new_domains": set()}
 
-    # Create campaign with optimized settings
-    campaign_id = create_campaign(api_key, campaign_name, sending_accounts, campaign_options)
-    if not campaign_id:
-        return {"name": campaign_name, "status": "failed", "reason": "campaign creation failed"}
+    # Get or create campaign — ALWAYS check for existing campaign first to prevent duplicates
+    # Fetch existing campaigns if not already provided
+    if existing_campaigns is None:
+        existing_campaigns = get_campaigns_by_name(api_key)
+
+    campaign_id = existing_campaigns.get(campaign_name, "")
+    if campaign_id:
+        print(f"  Adding to existing campaign: {campaign_name} (ID: {campaign_id})")
+    else:
+        campaign_id = create_campaign(api_key, campaign_name, sending_accounts, campaign_options)
+        if not campaign_id:
+            return {"name": campaign_name, "status": "failed", "reason": "campaign creation failed",
+                    "new_emails": set(), "new_domains": set()}
 
     # Upload leads
     uploaded = upload_leads(api_key, campaign_id, leads)
     print(f"  Total uploaded: {uploaded}/{len(leads)}")
+
+    # Track newly uploaded emails + domains for dedup
+    new_emails = {l.get("email", "").lower() for l in leads if l.get("email")}
+    new_domains = {_extract_domain(l.get("website", "") or l.get("email", ""))
+                   for l in leads if l.get("website") or l.get("email")}
 
     # Auto-activate if requested
     activated = False
@@ -434,6 +516,8 @@ def process_csv(api_key: str, csv_path: str, dry_run: bool = False,
         "leads_total": len(leads),
         "needs_email_enrichment": needs_email,
         "activated": activated,
+        "new_emails": new_emails,
+        "new_domains": new_domains,
     }
 
 
@@ -446,6 +530,8 @@ def main():
     parser.add_argument("--dry-run", action="store_true", help="Preview without creating campaigns")
     parser.add_argument("--auto-activate", action="store_true",
                         help="Automatically activate campaigns after upload (skip DRAFT mode)")
+    parser.add_argument("--update-existing", action="store_true",
+                        help="Add leads to existing campaigns instead of creating new ones")
     parser.add_argument("--campaign-options", default=None,
                         help="JSON string of campaign options (timezone, daily_limit_per_account, etc.)")
     parser.add_argument("--list-campaigns", action="store_true", help="List existing campaigns")
@@ -527,15 +613,43 @@ def main():
         except json.JSONDecodeError:
             print(f"  Warning: Could not parse --campaign-options JSON, using defaults")
 
+    # Load dedup tracker and pre-fetch existing campaigns (prevents ALL duplicate campaign creation)
+    processed_leads = load_processed_leads() if not args.dry_run else {"emails": set(), "domains": set()}
+    print("  Fetching existing campaigns (to prevent duplicates)...")
+    existing_campaigns = get_campaigns_by_name(args.api_key) if not args.dry_run else {}
+    if existing_campaigns:
+        print(f"  Found {len(existing_campaigns)} existing campaigns — will update, not duplicate")
+
     # Process each CSV
     results = []
+    all_new_emails = set()
     for csv_path in csv_files:
         if not os.path.exists(csv_path):
             print(f"\n  Skipping {csv_path} (file not found)")
             continue
-        result = process_csv(args.api_key, csv_path, args.dry_run, sending_accounts,
-                             campaign_options, auto_activate=args.auto_activate)
+        result = process_csv(
+            args.api_key, csv_path, args.dry_run, sending_accounts,
+            campaign_options, auto_activate=args.auto_activate,
+            update_existing=args.update_existing,
+            existing_campaigns=existing_campaigns,
+            processed_leads=processed_leads,
+        )
         results.append(result)
+        # Accumulate newly uploaded emails for dedup persistence
+        all_new_emails.update(result.get("new_emails", set()))
+
+    # Persist dedup tracker (emails + domains)
+    all_new_domains = set()
+    for r in results:
+        all_new_emails.update(r.get("new_emails", set()))
+        all_new_domains.update(r.get("new_domains", set()))
+
+    if (all_new_emails or all_new_domains) and not args.dry_run:
+        tracker = processed_leads if isinstance(processed_leads, dict) else {"emails": processed_leads, "domains": set()}
+        tracker["emails"].update(all_new_emails)
+        tracker["domains"].update(all_new_domains)
+        save_processed_leads(tracker)
+        print(f"\n  Dedup tracker updated: {len(tracker['emails'])} emails, {len(tracker['domains'])} domains tracked")
 
     # Summary
     print(f"\n{'='*60}")
