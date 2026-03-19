@@ -131,6 +131,29 @@ def _extract_domain(email_or_domain: str) -> str:
     return email_or_domain.lower().strip()
 
 
+def _title_rank(title: str) -> int:
+    """Rank a job title for priority selection. Lower = higher priority.
+
+    Always picks the owner/CEO/founder first.
+    """
+    title = title.lower()
+    if any(t in title for t in ("owner", "ceo", "founder", "president", "principal")):
+        return 0
+    if any(t in title for t in ("coo", "cmo", "cfo", "cto", "chief")):
+        return 1
+    if "evp" in title or "executive vice president" in title:
+        return 2
+    if "svp" in title or "senior vice president" in title:
+        return 3
+    if "vp" in title or "vice president" in title:
+        return 4
+    if "director" in title:
+        return 5
+    if "manager" in title:
+        return 6
+    return 7
+
+
 def get_campaigns_by_name(api_key: str) -> dict:
     """Return dict of {campaign_name: campaign_id} for all existing campaigns."""
     result = api_request("GET", "/campaigns", api_key, {"limit": 100})
@@ -452,8 +475,7 @@ def process_csv(api_key: str, csv_path: str, dry_run: bool = False,
     leads = csv_to_leads(rows)
     needs_email = sum(1 for l in leads if l.get("custom_variables", {}).get("needs_real_email") == "true")
 
-    # Deduplicate: filter out leads already uploaded (by email AND domain)
-    # Also enforce 1 lead per company/domain within the same batch
+    # Deduplicate: 1 lead per company, always pick the highest-ranking contact (owner/CEO first)
     if processed_leads:
         processed_emails = processed_leads.get("emails", set()) if isinstance(processed_leads, dict) else processed_leads
         processed_domains = processed_leads.get("domains", set()) if isinstance(processed_leads, dict) else set()
@@ -462,25 +484,36 @@ def process_csv(api_key: str, csv_path: str, dry_run: bool = False,
         processed_domains = set()
 
     before = len(leads)
-    seen_domains_this_batch = set()
-    deduped_leads = []
+
+    # Group leads by domain, pick the best contact per domain
+    domain_best = {}  # domain -> best lead
+    no_domain_leads = []
     for lead in leads:
         email = lead.get("email", "").lower()
         domain = _extract_domain(lead.get("website", "") or lead.get("email", ""))
+
+        # Skip already-uploaded emails
         if email and email in processed_emails:
             continue
+        # Skip already-uploaded domains
         if domain and domain in processed_domains:
             continue
-        # 1 lead per domain within the same batch
-        if domain and domain in seen_domains_this_batch:
+
+        if not domain:
+            no_domain_leads.append(lead)
             continue
-        if domain:
-            seen_domains_this_batch.add(domain)
-        deduped_leads.append(lead)
-    leads = deduped_leads
+
+        # Rank by title: owner/CEO wins
+        title = (lead.get("custom_variables", {}).get("contact_title", "") or "").lower()
+        rank = _title_rank(title)
+
+        if domain not in domain_best or rank < domain_best[domain][0]:
+            domain_best[domain] = (rank, lead)
+
+    leads = [best[1] for best in domain_best.values()] + no_domain_leads
     skipped = before - len(leads)
     if skipped:
-        print(f"  Skipped {skipped} duplicate leads (1 per company, dedup by email+domain)")
+        print(f"  Skipped {skipped} duplicate leads (1 per company, owner/CEO priority)")
 
     print(f"  Leads: {len(leads)} new to upload")
     if needs_email:

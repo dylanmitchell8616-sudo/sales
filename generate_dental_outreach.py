@@ -335,80 +335,12 @@ TEMPLATE_FNS = {
 # ---------------------------------------------------------------------------
 
 CONTACTS = [
-    # Heartland Dental
-    ("Pat Bauer",         "pat.bauer@heartland.com",         "Heartland Dental", "heartland.com",         "President and CEO",               "ceo"),
-    ("Jamie Gallo",       "jamie.gallo@heartland.com",       "Heartland Dental", "heartland.com",         "SVP Marketing",                   "growth"),
-    ("Lydia Wagner",      "lydia.wagner@heartland.com",      "Heartland Dental", "heartland.com",         "Senior Director of Marketing",    "growth"),
-    ("Melissa Malloy",    "melissa.malloy@heartland.com",    "Heartland Dental", "heartland.com",         "VP of Operations",                "vp_ops"),
-    ("Robert Mongrain",   "robert.mongrain@heartland.com",   "Heartland Dental", "heartland.com",         "Director of Clinical Advocacy",   "digital"),
-    ("Kenneth Jones",     "kenneth.jones@heartland.com",     "Heartland Dental", "heartland.com",         "Director of Facilities",          "vp_ops"),
-    ("Luis Mata",         "luis.mata@heartland.com",         "Heartland Dental", "heartland.com",         "VP Operations, Education and Support", "vp_ops"),
-    ("Monique Bell",      "monique.bell@heartland.com",      "Heartland Dental", "heartland.com",         "Vice President Operations",       "vp_ops"),
-    ("Jeremy Stroud",     "jeremy.stroud@heartland.com",     "Heartland Dental", "heartland.com",         "VP, Customer Service",            "cx"),
-    ("Stacey Smith",      "stacey.smith@heartland.com",      "Heartland Dental", "heartland.com",         "Director, Doctor Recruiting",     "regional"),
-    ("Alicia Barker",     "alicia.barker@heartland.com",     "Heartland Dental", "heartland.com",         "Sr Director of Operations",       "vp_ops"),
-    ("Tim Larson",        "tim.larson@heartland.com",        "Heartland Dental", "heartland.com",         "Clinical Director of Laser Dentistry", "regional"),
-    ("Robert Jerome",     "robert.jerome@heartland.com",     "Heartland Dental", "heartland.com",         "SVP, Chief Digital Officer",      "digital"),
-    ("Stephanie Townsend","stephanie.townsend@heartland.com","Heartland Dental", "heartland.com",         "SVP of Operations",               "vp_ops"),
-    ("Trish Knott",       "trish.knott@heartland.com",       "Heartland Dental", "heartland.com",         "Manager of Operations",           "regional"),
-    ("Jeff Ungrund",      "jeff.ungrund@heartland.com",      "Heartland Dental", "heartland.com",         "VP of Affiliations",              "vp_ops"),
-    ("Jennifer Pronobis", "jennifer.pronobis@heartland.com", "Heartland Dental", "heartland.com",         "Regional Director of Operations", "regional"),
-
-    # Aspen Dental
-    ("Bob Fontana",       "bob.fontana@aspendental.com",     "Aspen Dental",     "aspendental.com",       "Chairman and CEO",                "ceo"),
-    ("Robert Lowe",       "robert.lowe@aspendental.com",     "Aspen Dental",     "aspendental.com",       "Managing Clinical Director",      "digital"),
-    ("Kimberly Jones",    "kimberly.jones@aspendental.com",  "Aspen Dental",     "aspendental.com",       "VP of Hygiene Operations",        "vp_ops"),
-    ("Shawn McGarvey",    "shawn.mcgarvey@aspendental.com",  "Aspen Dental",     "aspendental.com",       "Division VP of Operations",       "vp_ops"),
-    ("Tiffany Biddlecome","tiffany.biddlecome@aspendental.com","Aspen Dental",   "aspendental.com",       "Regional Manager",                "regional"),
-    ("Scott Kertenis",    "scott.kertenis@aspendental.com",  "Aspen Dental",     "aspendental.com",       "SVP Service Line Operations",     "vp_ops"),
-    ("Jessica Hennecke",  "jessica.hennecke@aspendental.com","Aspen Dental",     "aspendental.com",       "VP, Lab Implementation & Digital Dentistry", "digital"),
-    ("Nathan Taylor",     "nathan.taylor@aspendental.com",   "Aspen Dental",     "aspendental.com",       "Dentist Owner",                   "regional"),
-    ("Jason Elkhouri",    "jason.elkhouri@aspendental.com",  "Aspen Dental",     "aspendental.com",       "Senior Director of Operations",   "vp_ops"),
-    ("Meghan Neumeister", "meghan.neumeister@aspendental.com","Aspen Dental",    "aspendental.com",       "Operations Manager",              "regional"),
-    ("Dee Butkiewicz",    "dee.butkiewicz@aspendental.com",  "Aspen Dental",     "aspendental.com",       "Director of Operations",          "vp_ops"),
-    ("Tammy Christian",   "tammy.christian@aspendental.com", "Aspen Dental",     "aspendental.com",       "Territory Director",              "regional"),
-
-    # PDS Health
-    ("Nicole Warn",       "nicole.warn@pacificdentalservices.com",     "PDS Health", "pacificdentalservices.com", "Operations Manager",             "regional"),
-    ("Richard Ashton",    "richard.ashton@pacificdentalservices.com",  "PDS Health", "pacificdentalservices.com", "Multi-Practice Owner Dentist",   "ceo"),
-    ("Heather Kain",      "heather.kain@pacificdentalservices.com",    "PDS Health", "pacificdentalservices.com", "Regional Manager",               "regional"),
-    ("Sue Rudow",         "sue.rudow@pacificdentalservices.com",       "PDS Health", "pacificdentalservices.com", "Regional Manager",               "regional"),
-    ("Marta Brocka",      "marta.brocka@pacificdentalservices.com",    "PDS Health", "pacificdentalservices.com", "Regional Manager",               "regional"),
-    ("Athena Burkholder",  "athena.burkholder@pacificdentalservices.com","PDS Health","pacificdentalservices.com","Operations Manager",             "regional"),
-    ("Adam Godoy",        "adam.godoy@pacificdentalservices.com",      "PDS Health", "pacificdentalservices.com", "Regional Manager",               "regional"),
-    ("Erin Ortega",       "erin.ortega@pacificdentalservices.com",     "PDS Health", "pacificdentalservices.com", "Regional Partner",               "regional"),
-    ("Matthew Rich",      "matthew.rich@pacificdentalservices.com",    "PDS Health", "pacificdentalservices.com", "Regional Manager",               "regional"),
-    ("Alisha Taylor",     "alisha.taylor@pacificdentalservices.com",   "PDS Health", "pacificdentalservices.com", "Specialty Regional Manager",     "regional"),
-    ("Adam Morris",       "adam.morris@pacificdentalservices.com",     "PDS Health", "pacificdentalservices.com", "Regional Manager",               "regional"),
-    ("Katie Bezler",      "katie.bezler@pacificdentalservices.com",    "PDS Health", "pacificdentalservices.com", "Regional Manager",               "regional"),
-    ("Amber Outlaw",      "amber.outlaw@pacificdentalservices.com",    "PDS Health", "pacificdentalservices.com", "Operations Manager",             "regional"),
-    ("Jason Wisdom",      "jason.wisdom@pacificdentalservices.com",    "PDS Health", "pacificdentalservices.com", "Operations Manager II",          "regional"),
-    ("Baraka Harper",     "baraka.harper@pacificdentalservices.com",   "PDS Health", "pacificdentalservices.com", "Specialty Regional Manager",     "regional"),
-    ("Reggie Oronoz",     "reggie.oronoz@pacificdentalservices.com",   "PDS Health", "pacificdentalservices.com", "Operations Manager",             "regional"),
-    ("Debbie Day",        "debbie.day@pacificdentalservices.com",      "PDS Health", "pacificdentalservices.com", "Operations Manager",             "regional"),
-
-    # Dental Care Alliance
-    ("Laurence Benz",     "laurence.benz@dentalcarealliance.com",      "Dental Care Alliance", "dentalcarealliance.com", "CEO",                         "ceo"),
-    ("Clayton Russell",   "clayton.russell@dentalcarealliance.com",    "Dental Care Alliance", "dentalcarealliance.com", "VP of Operational Strategy",  "vp_ops"),
-    ("Hadiya Peele",      "hadiya.peele@dentalcarealliance.com",       "Dental Care Alliance", "dentalcarealliance.com", "Director of Operations",      "vp_ops"),
-    ("Trey Mueller",      "trey.mueller@dentalcarealliance.com",       "Dental Care Alliance", "dentalcarealliance.com", "Chief Clinical Officer",      "digital"),
-    ("Beth Wynacht",      "beth.wynacht@dentalcarealliance.com",       "Dental Care Alliance", "dentalcarealliance.com", "VP of Integrations",          "digital"),
-    ("Colleen McFarlin",  "colleen.mcfarlin@dentalcarealliance.com",   "Dental Care Alliance", "dentalcarealliance.com", "Director of Growth",          "growth"),
-    ("Jared Duley",       "jared.duley@dentalcarealliance.com",        "Dental Care Alliance", "dentalcarealliance.com", "VP, Customer Experience",     "cx"),
-    ("Alok Jain",         "alok.jain@dentalcarealliance.com",          "Dental Care Alliance", "dentalcarealliance.com", "Sr. Director - Patient Relationship Management", "cx"),
-    ("Julie Soczka",      "julie.soczka@dentalcarealliance.com",       "Dental Care Alliance", "dentalcarealliance.com", "Senior Director/VP Strategic Initiatives", "growth"),
-
-    # Affordable Care
-    ("Peter Bridgman",    "peter.bridgman@affordablecare.com",         "Affordable Care", "affordablecare.com", "CEO",                              "ceo"),
-    ("Nathan Kring",      "nathan.kring@affordablecare.com",           "Affordable Care", "affordablecare.com", "EVP & COO",                        "ceo"),
-    ("Shinto Chakuncal",  "shinto.chakuncal@affordablecare.com",       "Affordable Care", "affordablecare.com", "VP, Operations",                   "vp_ops"),
-    ("Deena Ali",         "deena.ali@affordablecare.com",              "Affordable Care", "affordablecare.com", "VP Field Operations Training & Development", "vp_ops"),
-    ("Steven Woods",      "steven.woods@affordablecare.com",           "Affordable Care", "affordablecare.com", "VP of Field Operations",           "vp_ops"),
-    ("David Fenty",       "david.fenty@affordablecare.com",            "Affordable Care", "affordablecare.com", "Director of Field Operations",     "vp_ops"),
-    ("Bibi Grotberg",     "bibi.grotberg@affordablecare.com",          "Affordable Care", "affordablecare.com", "Director of Field Operations",     "vp_ops"),
-    ("Baltazar Torres",   "baltazar.torres@affordablecare.com",        "Affordable Care", "affordablecare.com", "Director of Field Operations",     "regional"),
-    ("Lisa Shannon",      "lisa.shannon@affordablecare.com",           "Affordable Care", "affordablecare.com", "Director of Field Operations",     "regional"),
-    ("Alok Jain Jr",      "alok.jain@affordablecare.com",              "Affordable Care", "affordablecare.com", "Sr. Director Patient Relationship Management", "cx"),
+    # 1 contact per company — owner/CEO only
+    ("Pat Bauer",         "pat.bauer@heartland.com",         "Heartland Dental",     "heartland.com",           "President and CEO",             "ceo"),
+    ("Bob Fontana",       "bob.fontana@aspendental.com",     "Aspen Dental",         "aspendental.com",         "Chairman and CEO",              "ceo"),
+    ("Richard Ashton",    "richard.ashton@pacificdentalservices.com", "PDS Health",   "pacificdentalservices.com", "Multi-Practice Owner Dentist", "ceo"),
+    ("Laurence Benz",     "laurence.benz@dentalcarealliance.com", "Dental Care Alliance", "dentalcarealliance.com", "CEO",                        "ceo"),
+    ("Peter Bridgman",    "peter.bridgman@affordablecare.com", "Affordable Care",    "affordablecare.com",      "CEO",                           "ceo"),
 ]
 
 
