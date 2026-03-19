@@ -77,4 +77,6 @@
 - `followup_generator.py` — 4-touch cold follow-up sequence generator
 - `reply_autopilot.py` — Fully automated reply manager daemon (polls Instantly API, classifies, responds, tags)
 - `run_reply_autopilot.sh` — Shell runner for reply autopilot daemon
+- `meeting_prep.py` — Auto-generates meeting prep briefs for hot leads (scrapes website, emails brief to Dylan)
+- `pipeline_metrics.py` — Exports pipeline metrics (reply rates, booking rates, conversion by campaign) to CSV/JSON
 - `run_full_pipeline.py` — End-to-end pipeline orchestration

@@ -32,6 +32,13 @@ except ImportError:
         return {"slack": False, "sms": False, "logged": False}
 
 try:
+    from meeting_prep import generate_and_send_prep, PREP_CATEGORIES
+except ImportError:
+    PREP_CATEGORIES = {"direct_intent", "meeting_booked"}
+    def generate_and_send_prep(*args, **kwargs):
+        return {"brief_generated": False, "email_sent": False, "file_saved": False, "filepath": ""}
+
+try:
     import requests
 except ImportError:
     print("Error: requests package required. Install with: pip install requests")
@@ -798,6 +805,28 @@ def process_reply(
             reply_text=reply_text,
             dry_run=dry_run,
         )
+
+    # Step 3b2: Generate and send meeting prep brief for hot leads
+    if category in PREP_CATEGORIES:
+        domain = ""
+        if contact_email and "@" in contact_email:
+            domain = contact_email.split("@")[1]
+        try:
+            prep_result = generate_and_send_prep(
+                config=config,
+                contact_name=contact_name,
+                contact_email=contact_email,
+                company_name=company_name,
+                domain=domain,
+                category=category,
+                reply_text=reply_text,
+                dry_run=dry_run,
+            )
+            if prep_result.get("brief_generated"):
+                logging.info("Meeting prep brief generated for %s (email_sent=%s, file=%s)",
+                             contact_email, prep_result.get("email_sent"), prep_result.get("filepath"))
+        except Exception as e:
+            logging.warning("Meeting prep generation failed for %s: %s", contact_email, e)
 
     # Step 3c: Auto-add interested leads to engaged_prospects.csv tracker
     if category in INTERESTED_CATEGORIES:
