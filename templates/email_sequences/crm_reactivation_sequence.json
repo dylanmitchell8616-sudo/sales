@@ -1,0 +1,39 @@
+{
+  "sequence_name": "CRM Reactivation Agent - Cold Outreach",
+  "product_focus": "CRM Reactivation Agent",
+  "steps": [
+    {
+      "step": 1,
+      "delay_days": 0,
+      "subject": "{{first_name}}, quick question about {{company_name}}'s lead database",
+      "body": "Hi {{first_name}},\n\nRandom question — how many leads are sitting in {{company_name}}'s CRM that haven't been touched in 6+ months?\n\nFor most {{industry}} companies we talk to, it's thousands. And those leads already know who you are... they just fell through the cracks.\n\nWe built an AI agent that goes through your entire database, re-engages those cold leads with personalized outreach, and books the warm ones directly on your calendar.\n\nMost of our clients reactivate 15-30% of their dead database in the first month.\n\nWorth a quick 15-min call to see if this would work for {{company_name}}?\n\nBest,\n{{sender_name}}\nRealside AI",
+      "purpose": "Pattern interrupt + curiosity + specific ROI claim"
+    },
+    {
+      "step": 2,
+      "delay_days": 3,
+      "subject": "Re: {{first_name}}, quick question about {{company_name}}'s lead database",
+      "body": "Hi {{first_name}},\n\nDidn't want this to get buried — figured I'd follow up with some quick math:\n\nIf {{company_name}} has even 2,000 old leads in your CRM, and our AI reactivates just 15% of them, that's 300 warm conversations you're not having today.\n\nAt your average deal size, even converting a fraction of those = serious revenue from leads you've already paid for.\n\nThe AI works your database 24/7 — no extra hires, no extra ad spend.\n\n15 minutes to see if it makes sense?\n\n{{sender_name}}",
+      "purpose": "Math-based follow up — make the ROI undeniable"
+    },
+    {
+      "step": 3,
+      "delay_days": 5,
+      "subject": "quick {{company_name}} idea",
+      "body": "{{first_name}} — one more thought.\n\nI looked at a few {{industry}} companies similar to {{company_name}} last week. The pattern is always the same:\n\n→ Thousands of leads in the CRM\n→ Sales team only works the fresh ones\n→ 80% of the database sits untouched\n→ Meanwhile, paying $50-150 per new lead from ads\n\nOur AI agent fixes this by systematically working every lead in your database — old quotes, past customers, lost deals — and booking the interested ones as appointments.\n\nNo contracts, and we can have it running in under a week.\n\nWant me to send over a quick 2-min video showing how it works for {{industry}}?\n\n{{sender_name}}",
+      "purpose": "Social proof + remove friction with video offer"
+    },
+    {
+      "step": 4,
+      "delay_days": 7,
+      "subject": "closing the loop",
+      "body": "Hey {{first_name}},\n\nTotally understand if the timing isn't right. Just want to make sure I'm not leaving money on the table for {{company_name}}.\n\nTwo quick options:\n\n1. Grab 15 min this week — I'll show you exactly how many meetings our AI could pull from your existing database (no pitch, just the data)\n\n2. Not a fit right now — just reply \"not now\" and I'll check back in a few months\n\nEither way, no hard feelings.\n\n{{sender_name}}",
+      "purpose": "Breakup email — binary choice reduces friction"
+    }
+  ],
+  "personalization_variables": {
+    "required": ["first_name", "company_name", "industry", "sender_name"],
+    "optional": ["crm_platform", "team_size", "location"],
+    "ai_personalization_prompt": "Research the prospect's company and personalize the first line based on: recent news, job postings (signals growth), tech stack (if they use a CRM), or LinkedIn activity. Keep it to one sentence max."
+  }
+}

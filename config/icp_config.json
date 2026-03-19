@@ -1,0 +1,131 @@
+{
+  "company": {
+    "name": "Realside AI",
+    "website": "https://realsideai.com",
+    "tagline": "AI Agents That Revive Dead Leads & Answer Every Call",
+    "products": [
+      {
+        "name": "CRM Reactivation Agent",
+        "description": "AI agent that mines your existing CRM database, re-engages cold/dead leads through personalized outreach, and books them as warm appointments on your calendar.",
+        "pain_points_solved": [
+          "Thousands of dead leads sitting in CRM collecting dust",
+          "Sales reps only work fresh leads, ignoring 80% of the database",
+          "No systematic way to re-engage past prospects",
+          "Paying for new leads when old ones haven't been worked"
+        ],
+        "roi_hook": "Our clients typically recover 15-30% of their dead database as live opportunities"
+      },
+      {
+        "name": "Inbound Voice Agent",
+        "description": "AI-powered phone agent that answers every inbound call 24/7, qualifies leads, answers FAQs, and books appointments — no hold times, no missed calls.",
+        "pain_points_solved": [
+          "Missing calls after hours or during peak times",
+          "Paying $15-25/hr for receptionists who miss calls",
+          "Losing leads to competitors who answer first",
+          "Inconsistent phone handling and qualification"
+        ],
+        "roi_hook": "Never miss another call — our AI answers in under 2 seconds, 24/7, for a fraction of a receptionist's salary"
+      }
+    ]
+  },
+  "ideal_customer_profiles": [
+    {
+      "vertical": "Home Services",
+      "sub_verticals": ["HVAC", "Plumbing", "Roofing", "Solar", "Pest Control", "Landscaping", "Cleaning"],
+      "company_size": "5-100 employees",
+      "revenue_range": "$500K - $20M",
+      "titles": ["Owner", "General Manager", "Marketing Director", "Operations Manager"],
+      "pain_signals": [
+        "Running Google/Facebook ads but not converting leads",
+        "Has a CRM with 5,000+ contacts",
+        "Missing inbound calls during busy season",
+        "Paying for answering services",
+        "Complaining about lead quality on social media"
+      ],
+      "priority": "HIGH",
+      "estimated_deal_size": "$500-2000/mo"
+    },
+    {
+      "vertical": "Real Estate",
+      "sub_verticals": ["Brokerages", "Teams", "Property Management", "Mortgage"],
+      "company_size": "3-50 agents",
+      "revenue_range": "$500K - $10M",
+      "titles": ["Broker", "Team Lead", "Managing Partner", "Marketing Director"],
+      "pain_signals": [
+        "Large database of past clients not being followed up",
+        "Zillow/Realtor.com leads going unworked",
+        "Missing calls from listing inquiries",
+        "Agents too busy to follow up with old leads"
+      ],
+      "priority": "HIGH",
+      "estimated_deal_size": "$500-1500/mo"
+    },
+    {
+      "vertical": "Insurance",
+      "sub_verticals": ["P&C Agencies", "Life Insurance", "Medicare", "Auto"],
+      "company_size": "3-30 agents",
+      "revenue_range": "$500K - $15M",
+      "titles": ["Agency Owner", "Principal Agent", "Sales Manager"],
+      "pain_signals": [
+        "Thousands of expired quotes in their system",
+        "Missing calls during AEP/OEP season",
+        "Paying per-lead from aggregators",
+        "Low renewal follow-up rates"
+      ],
+      "priority": "HIGH",
+      "estimated_deal_size": "$500-2500/mo"
+    },
+    {
+      "vertical": "Dental & Medical",
+      "sub_verticals": ["Dental Practices", "Med Spas", "Chiropractic", "Veterinary"],
+      "company_size": "1-5 locations",
+      "revenue_range": "$500K - $10M",
+      "titles": ["Practice Owner", "Office Manager", "Marketing Coordinator"],
+      "pain_signals": [
+        "No-shows and cancellations eating revenue",
+        "Inactive patient lists not being reactivated",
+        "Front desk overwhelmed with calls",
+        "Losing new patients to voicemail"
+      ],
+      "priority": "MEDIUM",
+      "estimated_deal_size": "$500-1500/mo"
+    },
+    {
+      "vertical": "Auto Dealers",
+      "sub_verticals": ["Used Car Dealers", "Independent Dealers", "Service Departments"],
+      "company_size": "10-200 employees",
+      "revenue_range": "$2M - $50M",
+      "titles": ["GM", "Internet Sales Manager", "BDC Director", "Marketing Manager"],
+      "pain_signals": [
+        "Huge unsold lead databases",
+        "Service department not reactivating past customers",
+        "Missing internet leads and phone calls",
+        "High BDC turnover causing dropped leads"
+      ],
+      "priority": "MEDIUM",
+      "estimated_deal_size": "$1000-3000/mo"
+    }
+  ],
+  "apollo_search_filters": {
+    "employee_count_ranges": ["5-20", "21-50", "51-100"],
+    "technologies": ["Salesforce", "HubSpot", "ServiceTitan", "Jobber", "Housecall Pro", "GoHighLevel"],
+    "keywords": ["CRM", "leads", "appointments", "inbound calls", "customer database"],
+    "exclude_industries": ["Software", "SaaS", "Consulting"],
+    "location": "United States",
+    "funding_stage": "Bootstrapped/Self-funded"
+  },
+  "messaging_angles": {
+    "crm_reactivation": {
+      "hook": "You're sitting on a goldmine of dead leads",
+      "agitation": "Every month, those unworked leads in your CRM are going to your competitors",
+      "solution": "Our AI agent works your entire database 24/7, turning cold leads into booked appointments",
+      "proof": "We typically reactivate 15-30% of dead databases in the first 30 days"
+    },
+    "voice_agent": {
+      "hook": "How many calls did you miss last week?",
+      "agitation": "78% of customers buy from whoever answers first. Every missed call is money walking out the door",
+      "solution": "Our AI answers every call in under 2 seconds, qualifies the lead, and books the appointment",
+      "proof": "Our clients see 40% more booked appointments just from calls they were previously missing"
+    }
+  }
+}

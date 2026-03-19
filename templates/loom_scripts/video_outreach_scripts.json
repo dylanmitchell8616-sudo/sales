@@ -1,0 +1,65 @@
+{
+  "loom_video_outreach": {
+    "overview": "Personalized Loom videos get 3x higher reply rates than text-only emails. Cost: $15/mo for Loom Pro. Record 20-30 per day in 2-3 hours.",
+    "cost_per_meeting": "$1-3 (cheapest channel after organic)",
+    "scripts": [
+      {
+        "name": "CRM Reactivation - Website Walkthrough",
+        "duration": "45-60 seconds",
+        "script": [
+          "[SCREEN: Their website homepage]",
+          "Hey {{first_name}}, Dylan here from Realside AI.",
+          "[SCREEN: Show their Google reviews or website with phone number visible]",
+          "I was looking at {{company_name}} and noticed you guys are doing great work in {{industry}} in {{location}}.",
+          "[SCREEN: Switch to a simple slide showing 'Problem: 80% of CRM leads go unworked']",
+          "Quick question — how many leads are sitting in your CRM right now that nobody's followed up with in the last 6 months?",
+          "For most {{industry}} companies we work with, it's thousands. And you already paid to get those leads.",
+          "[SCREEN: Show a quick dashboard/result screenshot]",
+          "We built an AI agent that goes through your entire database, re-engages those cold leads, and books the warm ones as appointments on your calendar.",
+          "One of our {{industry}} clients reactivated 15% of their dead database in the first month — that was over 40 booked appointments from leads they'd given up on.",
+          "[SCREEN: Calendly link]",
+          "If that sounds interesting, I dropped a link below to grab 15 minutes. Would love to show you the numbers specific to {{company_name}}.",
+          "Either way, keep crushing it. Talk soon."
+        ],
+        "send_via": "Email (Step 1 alternative) or LinkedIn DM",
+        "subject_line": "Made a quick video for {{company_name}}"
+      },
+      {
+        "name": "Voice Agent - Call Their Business",
+        "duration": "45-60 seconds",
+        "script": [
+          "[SCREEN: Your phone/dialer showing their business number]",
+          "Hey {{first_name}}, Dylan here. I did something kind of bold — I called {{company_name}} at 7pm last night just to see what would happen.",
+          "[SCREEN: Show what happened - voicemail? Hold music? No answer?]",
+          "And it went straight to voicemail. Which means if I was a real customer looking for a {{industry}} company... I'm probably calling your competitor next.",
+          "[SCREEN: Simple stat slide - '78% of customers go with whoever answers first']",
+          "We built an AI phone agent that answers every call in under 2 seconds — 24/7. It sounds natural, qualifies the caller, and books appointments on your calendar.",
+          "[SCREEN: Show a quick demo clip or dashboard]",
+          "One of our clients picked up 47 calls in their first month that they would have missed. 19 of those became appointments.",
+          "[SCREEN: Calendly link]",
+          "Grabbed a link below if you want to see a quick demo — takes 15 minutes.",
+          "And no shade on the voicemail thing — everyone's dealing with it. We just have a fix for it now."
+        ],
+        "send_via": "Email or LinkedIn DM (highest impact script — creates urgency)",
+        "subject_line": "I called {{company_name}} last night..."
+      }
+    ],
+    "best_practices": [
+      "Record in batches of 10 — same vertical, switch first names and companies",
+      "Always have their website open on screen (shows you did research)",
+      "Keep under 60 seconds — drop-off skyrockets after that",
+      "Use Loom's CTA button feature to embed your Calendly link",
+      "Thumbnail: You pointing at their website with an expressive face",
+      "Send videos Tue-Thu 8-10am for highest open rates",
+      "Track views in Loom — follow up with anyone who watched >75%"
+    ],
+    "daily_workflow": {
+      "step_1": "Pull 20-30 contacts from today's target vertical",
+      "step_2": "Open each company's website in a tab",
+      "step_3": "Record videos in batches (5 at a time, same script, swap names)",
+      "step_4": "Send via email with subject: 'Made a quick video for {{company_name}}'",
+      "step_5": "Also send via LinkedIn DM if connected",
+      "step_6": "Next day: Check Loom analytics, follow up with viewers"
+    }
+  }
+}

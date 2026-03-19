@@ -1,0 +1,33 @@
+{
+  "sequence_name": "Combined Pitch - CRM Reactivation + Voice Agent",
+  "product_focus": "Both Products",
+  "use_case": "When prospect has clear need for both (large database + service-based business with phone inquiries)",
+  "steps": [
+    {
+      "step": 1,
+      "delay_days": 0,
+      "subject": "{{first_name}} — 2 revenue leaks at {{company_name}}",
+      "body": "Hi {{first_name}},\n\nI study {{industry}} businesses for a living, and there are two revenue leaks I see at almost every company like {{company_name}}:\n\n1. Dead leads: Thousands of past prospects sitting in your CRM that nobody's following up with. (You already paid to get them.)\n\n2. Missed calls: 30-40% of inbound calls going to voicemail after hours or during busy times. (78% of those callers will go to a competitor.)\n\nWe built AI agents that plug both leaks:\n→ Agent #1 works your entire CRM 24/7, re-engaging dead leads and booking appointments\n→ Agent #2 answers every inbound call instantly, qualifies the caller, and books them on your calendar\n\nBoth cost less than one part-time hire combined.\n\nWorth 15 min to see the numbers?\n\n{{sender_name}}\nRealside AI",
+      "purpose": "Double pain point opener — maximize perceived value"
+    },
+    {
+      "step": 2,
+      "delay_days": 3,
+      "subject": "Re: 2 revenue leaks at {{company_name}}",
+      "body": "{{first_name}} — just wanted to put some numbers to my last email.\n\nHere's what a typical {{industry}} company sees in the first 30 days with our AI agents:\n\nCRM Reactivation:\n• 2,000 old leads contacted → 300 re-engaged → 45-60 booked appointments\n\nVoice Agent:\n• 150 calls answered that would've been missed → 30-45 booked appointments\n\nThat's potentially 75-100 extra appointments/month from leads you already have and calls you're already getting.\n\nNo new ad spend. No new hires.\n\nHappy to walk you through the math specific to {{company_name}}. 15 min?\n\n{{sender_name}}",
+      "purpose": "Specific numbers + no risk framing"
+    },
+    {
+      "step": 3,
+      "delay_days": 5,
+      "subject": "thought about {{company_name}}",
+      "body": "{{first_name}} — last thought, then I'll get out of your inbox.\n\nMost {{industry}} owners I talk to say the same thing:\n\n\"We know we should follow up with old leads and we know we miss calls... we just don't have the bandwidth.\"\n\nThat's literally why we built this. The AI does the work that should be getting done but isn't.\n\nWe can have both agents live for {{company_name}} in under a week. No long-term contracts.\n\nIf you want to see a quick demo, just reply \"show me\" and I'll send a calendar link.\n\nIf the timing is off, reply \"later\" and I'll circle back in a few months.\n\n{{sender_name}}",
+      "purpose": "Empathy + ultra-low friction CTA"
+    }
+  ],
+  "personalization_variables": {
+    "required": ["first_name", "company_name", "industry", "sender_name"],
+    "optional": ["crm_platform", "phone_system", "team_size", "location"],
+    "ai_personalization_prompt": "Research the company's online presence: check Google reviews for mentions of response times, look for job postings (especially receptionists or sales reps), check their website for a phone number and business hours, and look at their Google Business profile for call volume hints."
+  }
+}

@@ -1,0 +1,150 @@
+{
+  "linkedin_organic_system": {
+    "overview": "Free LinkedIn organic system to build brand + generate inbound meetings. $0 cost, 30 min/day time investment.",
+    "daily_routine": {
+      "time_required": "30-45 min/day",
+      "schedule": {
+        "morning_8am": "Post content (pre-written, scheduled via LinkedIn native scheduler)",
+        "midday_12pm": "15 min engaging — comment on 10 ICP posts with valuable insights",
+        "afternoon_3pm": "Send 20-30 connection requests to ICPs with personalized notes",
+        "evening_5pm": "Reply to all comments on your post + DM warm connections"
+      }
+    },
+    "content_pillars": [
+      {
+        "pillar": "Dead Lead Revival Stories",
+        "frequency": "2x/week",
+        "examples": [
+          "A roofing company had 4,200 dead leads in ServiceTitan. We turned on our AI agent. 30 days later: 127 conversations, 34 booked appointments, 8 closed deals. Revenue from leads they already paid for.",
+          "Hot take: You don't need more leads. You need to work the ones you already have. Most businesses have THOUSANDS of untouched contacts sitting in their CRM. That's not a lead problem — it's a follow-up problem.",
+          "We analyzed 50 home service companies' CRMs last quarter. Average dead lead count: 3,400. Average leads contacted in the last 90 days: 12%. That's 88% of your marketing spend sitting idle."
+        ]
+      },
+      {
+        "pillar": "Missed Call Horror Stories",
+        "frequency": "2x/week",
+        "examples": [
+          "I called 100 home service companies last week pretending to be a customer. 37 went to voicemail. 12 had hold times over 2 minutes. That's 49% of businesses literally turning away customers.",
+          "Your competitor answers in 2 seconds. You send them to voicemail. Who gets the job? This isn't a hypothetical. 78% of customers go with whoever answers first.",
+          "A dental practice installed our AI phone agent on a Friday. By Monday, it had answered 23 weekend calls they would have missed. 9 became appointments. ROI in 3 days."
+        ]
+      },
+      {
+        "pillar": "Behind the Scenes / Building in Public",
+        "frequency": "1x/week",
+        "examples": [
+          "Building AI agents that actually work (not just demos). Here's what we shipped this week at Realside AI...",
+          "Lessons from calling 200 business owners this month about their biggest pain points. Thread 🧵",
+          "People keep asking how our AI voice agent sounds so natural. Here's the tech behind it (no jargon, I promise)..."
+        ]
+      }
+    ],
+    "connection_request_templates": [
+      {
+        "context": "ICP - No prior interaction",
+        "message": "Hi {{first_name}}, I work with {{industry}} businesses on AI-powered lead reactivation and noticed {{company_name}} — would love to connect and share some insights from the space."
+      },
+      {
+        "context": "ICP - Engaged with your content",
+        "message": "Hey {{first_name}}, thanks for engaging with my post about [topic]. I'd love to connect — I work specifically with {{industry}} companies on this stuff."
+      },
+      {
+        "context": "ICP - They posted about a pain point",
+        "message": "{{first_name}}, saw your post about [pain point] — we actually solve this exact problem for {{industry}} businesses with AI. Would love to connect and share how."
+      }
+    ],
+    "dm_sequence_after_connect": [
+      {
+        "timing": "Day 0 (after they accept)",
+        "message": "Hey {{first_name}}, appreciate the connect! Quick question — how does {{company_name}} currently handle follow-up with leads that go cold? Curious because we work with a lot of {{industry}} businesses on this."
+      },
+      {
+        "timing": "Day 3 (if they reply with a pain point)",
+        "message": "That's super common in {{industry}}. We built an AI agent specifically for this — it works your CRM database and re-engages cold leads automatically. A few of our {{industry}} clients are pulling 30-50 appointments/month from leads they'd written off. Would a 15-min demo be worth your time, or is that not a priority right now?"
+      },
+      {
+        "timing": "Day 3 (if no reply)",
+        "message": "No worries if you're slammed. Just wanted to share a quick resource — we put together some data on how {{industry}} companies are using AI to reactivate dead CRM leads. Want me to send it over?"
+      }
+    ]
+  },
+  "linkedin_ads_campaigns": {
+    "warning": "LinkedIn ads are 10-50x more expensive per meeting than cold email. Only use for retargeting and brand awareness. DO NOT use as primary meeting driver.",
+    "recommended_budget": "$500-1000/mo maximum to start",
+    "campaigns": [
+      {
+        "name": "Retargeting - Website Visitors",
+        "type": "Sponsored Content",
+        "objective": "Website Visits → Landing Page with Calendly",
+        "audience": "Website visitors (install LinkedIn Insight Tag first)",
+        "budget": "$10-15/day",
+        "creative": {
+          "format": "Single Image Ad",
+          "headline": "Still Thinking About Reactivating Your Dead Leads?",
+          "description": "Our AI agent turned 4,200 dead leads into 34 booked appointments for a roofing company. See how it works.",
+          "cta": "Learn More → Landing page with Calendly embed"
+        },
+        "expected_results": {
+          "impressions": "5,000-10,000/mo",
+          "clicks": "50-100/mo",
+          "meetings": "3-8/mo",
+          "cost_per_meeting": "$60-150"
+        }
+      },
+      {
+        "name": "Lead Gen Form - Free CRM Audit",
+        "type": "Lead Gen Form",
+        "objective": "Collect leads directly on LinkedIn (no landing page needed)",
+        "audience": {
+          "titles": ["Owner", "GM", "General Manager", "Marketing Director", "Operations Manager"],
+          "industries": ["Construction", "Real Estate", "Insurance", "Hospital & Health Care"],
+          "company_size": "11-200 employees",
+          "geography": "United States"
+        },
+        "budget": "$15-20/day",
+        "creative": {
+          "format": "Single Image Ad",
+          "headline": "Free AI CRM Audit: How Many Dead Leads Are You Sitting On?",
+          "description": "We'll analyze your CRM and tell you exactly how many appointments our AI agent can pull from your existing database. Free, no commitment.",
+          "cta": "Sign Up",
+          "form_fields": ["First Name", "Last Name", "Work Email", "Company Name", "Phone Number", "CRM Platform (dropdown)"]
+        },
+        "expected_results": {
+          "impressions": "8,000-15,000/mo",
+          "leads": "15-40/mo",
+          "meetings_from_leads": "5-12/mo",
+          "cost_per_lead": "$15-35",
+          "cost_per_meeting": "$50-120"
+        }
+      },
+      {
+        "name": "Message Ads - Direct to Calendar",
+        "type": "Message Ads (Sponsored InMail)",
+        "objective": "Direct message to ICP → Calendly link",
+        "audience": "Same as Lead Gen Form",
+        "budget": "$10-15/day",
+        "creative": {
+          "subject": "{{first_name}}, quick question about your CRM",
+          "message": "Hi {{first_name}},\n\nI noticed {{company_name}} is in the {{industry}} space — we work with a lot of companies like yours.\n\nQuick question: how many leads do you have in your CRM that haven't been contacted in 6+ months?\n\nWe built an AI agent that goes through your entire database and turns dead leads into booked appointments. Most clients see 15-30% of their dead database come back to life.\n\nWorth a 15-min call to see the numbers?\n\n[Book a time here] → Calendly link\n\nBest,\nDylan\nRealside AI",
+          "cta_button": "Book a Demo"
+        },
+        "expected_results": {
+          "sends": "3,000-5,000/mo",
+          "open_rate": "40-55%",
+          "click_rate": "3-5%",
+          "meetings": "5-10/mo",
+          "cost_per_meeting": "$50-100"
+        }
+      }
+    ],
+    "optimization_tips": [
+      "Start with retargeting only — cheapest and highest intent",
+      "Install LinkedIn Insight Tag on your website ASAP",
+      "Test Lead Gen Forms vs landing page — forms usually convert better on LinkedIn",
+      "Refresh creative every 2 weeks to avoid ad fatigue",
+      "Exclude current customers and existing pipeline from targeting",
+      "Run ads Tuesday-Thursday only (cheapest days on LinkedIn)",
+      "Kill any campaign with CPL over $40 after 1000 impressions"
+    ]
+  }
+}

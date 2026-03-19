@@ -1,0 +1,39 @@
+{
+  "sequence_name": "Inbound Voice Agent - Cold Outreach",
+  "product_focus": "Inbound Voice Agent",
+  "steps": [
+    {
+      "step": 1,
+      "delay_days": 0,
+      "subject": "{{first_name}}, how many calls did {{company_name}} miss last week?",
+      "body": "Hi {{first_name}},\n\nSerious question — do you know how many inbound calls {{company_name}} missed last week? (After hours, during lunch, when the phones were slammed?)\n\nFor most {{industry}} businesses, it's 30-40% of all calls. And 78% of customers go with whoever answers first.\n\nWe built an AI phone agent that answers every single call in under 2 seconds — 24/7. It qualifies the caller, answers their questions, and books appointments directly on your calendar.\n\nSounds futuristic, but it's live and working today. Costs less than a part-time receptionist.\n\nWorth a 15-min demo?\n\n{{sender_name}}\nRealside AI",
+      "purpose": "Pain-focused opener — missed calls = lost revenue"
+    },
+    {
+      "step": 2,
+      "delay_days": 3,
+      "subject": "Re: {{first_name}}, how many calls did {{company_name}} miss last week?",
+      "body": "{{first_name}} — quick follow up on my last note.\n\nHere's what one of our {{industry}} clients told us after 30 days:\n\n\"We had no idea we were missing that many calls. The AI picked up 47 calls we would have missed last month — 19 of them booked as appointments.\"\n\n19 extra appointments. From calls they were already getting but not answering.\n\nNo new ad spend. No new leads to buy. Just capturing what's already coming in.\n\nHappy to show you a quick demo — takes 15 min.\n\n{{sender_name}}",
+      "purpose": "Testimonial-style social proof with specific numbers"
+    },
+    {
+      "step": 3,
+      "delay_days": 5,
+      "subject": "real quick — {{company_name}}",
+      "body": "{{first_name}},\n\nI know you're busy so I'll keep this short.\n\n3 things our AI phone agent does that a receptionist can't:\n\n1. Answers every call in <2 seconds (no hold music, no voicemail)\n2. Works 24/7/365 — nights, weekends, holidays\n3. Never has a bad day, never calls in sick, never forgets to follow up\n\nAnd it costs about 80% less than a full-time hire.\n\nWe can have it live for {{company_name}} in under 48 hours.\n\nWant me to send a 2-min video demo?\n\n{{sender_name}}",
+      "purpose": "Feature comparison vs status quo — logical argument"
+    },
+    {
+      "step": 4,
+      "delay_days": 7,
+      "subject": "last one from me",
+      "body": "Hey {{first_name}},\n\nI'll keep it simple:\n\n→ If {{company_name}} never misses a call and your phones are handled perfectly, ignore me.\n\n→ If you're losing even a few calls a week, that's likely $5,000-$50,000/month walking out the door (depending on your average job/deal size).\n\nOur AI fixes this for less than $500/mo.\n\n15 min to see if it makes sense? If not, just reply \"pass\" and I'll leave you alone.\n\n{{sender_name}}",
+      "purpose": "Breakup with dollarized pain"
+    }
+  ],
+  "personalization_variables": {
+    "required": ["first_name", "company_name", "industry", "sender_name"],
+    "optional": ["phone_system", "team_size", "location", "business_hours"],
+    "ai_personalization_prompt": "Research if the prospect's business has: a phone number prominently on their website, reviews mentioning wait times or missed calls, job postings for receptionists, or uses an answering service. Use one finding as the personalized first line."
+  }
+}

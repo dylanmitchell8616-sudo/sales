@@ -1,0 +1,80 @@
+{
+  "booking_flow_optimization": {
+    "calendly_setup": {
+      "meeting_type": "Realside AI - 15 Min Discovery Call",
+      "duration": "15 minutes",
+      "availability": "Monday-Friday, 9am-5pm EST",
+      "buffer_time": "15 min before and after",
+      "max_per_day": 8,
+      "questions_on_booking": [
+        {"question": "What's your biggest challenge with leads right now?", "type": "text", "required": true},
+        {"question": "How many leads are in your CRM?", "type": "dropdown", "options": ["Under 1,000", "1,000-5,000", "5,000-10,000", "10,000+"], "required": true},
+        {"question": "What CRM/software do you use?", "type": "text", "required": false},
+        {"question": "What's your website URL?", "type": "text", "required": false}
+      ],
+      "confirmation_page_redirect": "https://realsideai.com/booked (custom thank you page with video)",
+      "reminders": [
+        {"timing": "24 hours before", "type": "email"},
+        {"timing": "1 hour before", "type": "email + SMS"}
+      ]
+    }
+  },
+  "pre_meeting_nurture_sequence": {
+    "purpose": "Reduce no-show rate from ~30% to ~10% by building excitement and credibility between booking and meeting",
+    "sequence": [
+      {
+        "trigger": "Immediately after booking",
+        "channel": "Email (auto from Calendly)",
+        "subject": "You're booked! Here's what to expect on our call",
+        "body": "Hey {{first_name}},\n\nExcited to chat on {{meeting_date}} at {{meeting_time}}!\n\nHere's what we'll cover in our 15 minutes:\n\n1. I'll ask a few questions about {{company_name}}'s current lead flow\n2. I'll show you exactly how our AI agent works (live demo, not slides)\n3. We'll crunch the numbers on how many meetings it could pull from your existing database\n\nNo pressure, no contracts — just seeing if it makes sense.\n\nTo make the most of our time, it'd be helpful if you could have a rough idea of:\n→ How many total leads/contacts are in your CRM\n→ When the last time those old leads were contacted\n\nThat's it. Talk soon!\n\nDylan\nRealside AI\n\nP.S. Here's a 2-min video showing what our AI did for a {{industry}} company last month: [LINK]"
+      },
+      {
+        "trigger": "24 hours before meeting",
+        "channel": "Email",
+        "subject": "Quick prep for tomorrow's call, {{first_name}}",
+        "body": "Hey {{first_name}},\n\nLooking forward to our call tomorrow at {{meeting_time}}.\n\nI did some research on {{company_name}} — I've got a few ideas I think you'll find interesting.\n\nHere's your Zoom link: {{zoom_link}}\n\nSee you tomorrow!\n\nDylan"
+      },
+      {
+        "trigger": "1 hour before meeting",
+        "channel": "SMS (if phone number collected)",
+        "message": "Hey {{first_name}}! Just a reminder we have our call in 1 hour at {{meeting_time}}. Here's the link: {{zoom_link}} — Dylan from Realside AI"
+      },
+      {
+        "trigger": "If no-show (5 min after scheduled time)",
+        "channel": "Email + SMS",
+        "email_subject": "Missed you on our call — want to reschedule?",
+        "email_body": "Hey {{first_name}},\n\nLooked like our schedules didn't align today — no worries at all!\n\nHere's my calendar link to rebook whenever works: {{calendly_link}}\n\nOr if you'd prefer, I can send over a 3-min recorded demo instead — just reply 'send it' and I'll shoot it over.\n\nBest,\nDylan",
+        "sms": "Hey {{first_name}}, missed our call today! Here's a link to rebook: {{calendly_link}} — no rush, whenever works. - Dylan, Realside AI"
+      }
+    ]
+  },
+  "post_meeting_follow_up": {
+    "sequence": [
+      {
+        "trigger": "Within 1 hour after meeting",
+        "subject": "Great chatting, {{first_name}} — here's what we discussed",
+        "body": "Hey {{first_name}},\n\nReally enjoyed our conversation about {{company_name}}!\n\nHere's a quick recap:\n\n→ [Key pain point discussed]\n→ [Specific solution/feature that addresses it]\n→ [ROI estimate we calculated together]\n\nNext steps:\n→ [Whatever was agreed on — proposal, trial setup, follow-up call, etc.]\n\nI'll get [next deliverable] over to you by [timeline].\n\nLet me know if any questions come up in the meantime.\n\nBest,\nDylan"
+      },
+      {
+        "trigger": "3 days after meeting (if no response to recap)",
+        "subject": "Following up — {{company_name}}",
+        "body": "Hey {{first_name}},\n\nJust wanted to check in on our conversation from {{meeting_date}}.\n\nDid you get a chance to think about [the proposal / starting a pilot / next steps]?\n\nHappy to answer any questions or hop on another quick call if helpful.\n\nBest,\nDylan"
+      },
+      {
+        "trigger": "7 days after meeting (if still no response)",
+        "subject": "One more thought on {{company_name}}",
+        "body": "{{first_name}} — totally understand if the timing isn't right.\n\nJust wanted to leave you with this: based on what you shared about {{company_name}}'s database, I estimate our AI could pull [X] appointments in the first 30 days.\n\nThat's [estimated revenue] from leads you've already paid for.\n\nWhen you're ready, the door's always open. Just reply to this email.\n\nBest,\nDylan"
+      }
+    ]
+  },
+  "no_show_reduction_tactics": [
+    "Send calendar invite from a personal email (not noreply@)",
+    "Include a personalized video in the confirmation email",
+    "Ask qualifying questions on booking form (increases investment)",
+    "Send SMS reminder 1 hour before (reduces no-shows by 50%)",
+    "Keep meeting to 15 min — lower commitment = fewer cancellations",
+    "Use language like 'quick chat' and 'no pressure' to reduce anxiety",
+    "Redirect to a thank-you page with a testimonial video after booking",
+    "If they booked from cold email, reply to the original thread confirming"
+  ]
+}
