@@ -189,6 +189,17 @@ def list_accounts(api_key: str) -> list:
     return []
 
 
+def delete_campaign(api_key: str, campaign_id: str) -> bool:
+    """Delete a campaign. Must use DELETE without Content-Type header."""
+    url = f"{BASE_URL}/campaigns/{campaign_id}"
+    headers = {"Authorization": f"Bearer {api_key}"}
+    try:
+        resp = requests.delete(url, headers=headers, timeout=30)
+        return resp.status_code in (200, 204)
+    except Exception:
+        return False
+
+
 def activate_campaign(api_key: str, campaign_id: str) -> bool:
     """Activate a campaign in Instantly (move from DRAFT to active)."""
     # Strategy 1: dedicated activate endpoint
