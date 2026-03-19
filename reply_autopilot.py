@@ -14,6 +14,7 @@ Usage:
 """
 
 import argparse
+import csv
 import json
 import logging
 import os
@@ -56,6 +57,7 @@ REPLY_CATEGORIES = [
     "timing",
     "positive_other",
     "negative_other",
+    "meeting_booked",
 ]
 
 # Categories that should receive an auto-reply
@@ -68,6 +70,20 @@ AUTO_REPLY_CATEGORIES = {
     "already_have",
     "timing",
     "positive_other",
+    "meeting_booked",
+}
+
+# Categories that indicate a prospect is interested (auto-add to engaged tracker)
+INTERESTED_CATEGORIES = {
+    "direct_intent",
+    "how_does_it_work",
+    "how_much",
+    "send_proof",
+    "tried_before",
+    "already_have",
+    "timing",
+    "positive_other",
+    "meeting_booked",
 }
 
 # Tag mapping
@@ -82,7 +98,10 @@ TAG_MAP = {
     "positive_other": "Interested",
     "not_interested": "Not Interested",
     "negative_other": "Not Interested",
+    "meeting_booked": "Meeting Booked",
 }
+
+ENGAGED_TRACKER_PATH = "output/engaged_prospects.csv"
 
 # ---------------------------------------------------------------------------
 # Graceful shutdown
@@ -244,6 +263,65 @@ def save_processed_reply(path: str, reply_id: str, data: dict):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         json.dump(processed, f, indent=2, default=str)
+
+
+def append_engaged_prospect(
+    script_dir: str,
+    contact_email: str,
+    contact_name: str,
+    company_name: str,
+    category: str,
+    dry_run: bool = False,
+):
+    """Auto-append an interested prospect to the engaged_prospects.csv tracker."""
+    if not contact_email:
+        return
+
+    tracker_path = os.path.join(script_dir, ENGAGED_TRACKER_PATH)
+    os.makedirs(os.path.dirname(tracker_path), exist_ok=True)
+
+    # Read existing entries to avoid duplicates
+    existing_emails = set()
+    fieldnames = ["contact_email", "contact_name", "company_name", "status", "added_at", "reply_category"]
+    if os.path.exists(tracker_path):
+        try:
+            with open(tracker_path, newline="", encoding="utf-8") as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    existing_emails.add(row.get("contact_email", "").lower())
+        except Exception:
+            pass
+
+    if contact_email.lower() in existing_emails:
+        logging.debug("Prospect %s already in engaged tracker.", contact_email)
+        return
+
+    status = "booked" if category == "meeting_booked" else "interested"
+    row = {
+        "contact_email": contact_email,
+        "contact_name": contact_name or "",
+        "company_name": company_name or "",
+        "status": status,
+        "added_at": datetime.now(timezone.utc).isoformat(),
+        "reply_category": category,
+    }
+
+    if dry_run:
+        logging.info("[DRY-RUN] Would add %s (%s) to engaged tracker as '%s'",
+                     contact_email, company_name, status)
+        return
+
+    file_exists = os.path.exists(tracker_path)
+    try:
+        with open(tracker_path, "a", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            if not file_exists:
+                writer.writeheader()
+            writer.writerow(row)
+        logging.info("Added %s to engaged tracker (status=%s, category=%s)",
+                     contact_email, status, category)
+    except Exception as e:
+        logging.warning("Failed to update engaged tracker: %s", e)
 
 
 # ---------------------------------------------------------------------------
@@ -701,6 +779,18 @@ def process_reply(
         tag_lead(config["instantly_api_key"], contact_email, campaign_id, tag)
     else:
         logging.info("[DRY-RUN] Would tag %s as '%s'", contact_email, tag)
+
+    # Step 3b: Auto-add interested leads to engaged_prospects.csv tracker
+    if category in INTERESTED_CATEGORIES:
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        append_engaged_prospect(
+            script_dir=script_dir,
+            contact_email=contact_email,
+            contact_name=contact_name,
+            company_name=company_name,
+            category=category,
+            dry_run=dry_run,
+        )
 
     # Step 4: Decide on action
     action = "no_action"

@@ -49,6 +49,7 @@ CAMPAIGN_NAMES = {
     "followup_sequences.csv": "Realside AI — Follow-up Sequences",
     "objection_responses.csv": "Realside AI — Objection Responses",
     "engaged_followups.csv": "Realside AI — Engaged Follow-ups",
+    "dental_dso_outreach.csv": "Realside AI — Dental DSO Outreach",
 }
 
 
@@ -133,6 +134,25 @@ def list_accounts(api_key: str) -> list:
     elif isinstance(accounts, dict) and "items" in accounts:
         return accounts["items"]
     return []
+
+
+def activate_campaign(api_key: str, campaign_id: str) -> bool:
+    """Activate a campaign in Instantly (move from DRAFT to active)."""
+    # Strategy 1: dedicated activate endpoint
+    result = api_request("POST", f"/campaigns/{campaign_id}/activate", api_key)
+    if "error" not in result:
+        print(f"  Campaign {campaign_id} activated.")
+        return True
+
+    # Strategy 2: campaigns/activate bulk endpoint
+    result = api_request("POST", "/campaigns/activate", api_key, {"id": campaign_id})
+    if "error" not in result:
+        print(f"  Campaign {campaign_id} activated.")
+        return True
+
+    print(f"  Warning: Could not auto-activate campaign {campaign_id}: {result.get('error', '')[:100]}")
+    print(f"  → Manually activate in Instantly.ai dashboard")
+    return False
 
 
 def create_campaign(api_key: str, name: str, sending_accounts: list = None,
@@ -346,7 +366,8 @@ def upload_leads(api_key: str, campaign_id: str, leads: list[dict]) -> int:
 
 
 def process_csv(api_key: str, csv_path: str, dry_run: bool = False,
-                sending_accounts: list = None, campaign_options: dict = None) -> dict:
+                sending_accounts: list = None, campaign_options: dict = None,
+                auto_activate: bool = False) -> dict:
     """Process a single CSV: create campaign + upload leads."""
     filename = os.path.basename(csv_path)
     campaign_name = CAMPAIGN_NAMES.get(filename, f"Realside AI — {filename.replace('.csv', '').replace('_', ' ').title()}")
@@ -399,6 +420,12 @@ def process_csv(api_key: str, csv_path: str, dry_run: bool = False,
     uploaded = upload_leads(api_key, campaign_id, leads)
     print(f"  Total uploaded: {uploaded}/{len(leads)}")
 
+    # Auto-activate if requested
+    activated = False
+    if auto_activate and uploaded > 0:
+        print(f"  Auto-activating campaign...")
+        activated = activate_campaign(api_key, campaign_id)
+
     return {
         "name": campaign_name,
         "campaign_id": campaign_id,
@@ -406,6 +433,7 @@ def process_csv(api_key: str, csv_path: str, dry_run: bool = False,
         "leads_uploaded": uploaded,
         "leads_total": len(leads),
         "needs_email_enrichment": needs_email,
+        "activated": activated,
     }
 
 
@@ -416,6 +444,8 @@ def main():
     parser.add_argument("--output-dir", default="output", help="Pipeline output directory")
     parser.add_argument("--sending-account", default=None, help="Email account to send from")
     parser.add_argument("--dry-run", action="store_true", help="Preview without creating campaigns")
+    parser.add_argument("--auto-activate", action="store_true",
+                        help="Automatically activate campaigns after upload (skip DRAFT mode)")
     parser.add_argument("--campaign-options", default=None,
                         help="JSON string of campaign options (timezone, daily_limit_per_account, etc.)")
     parser.add_argument("--list-campaigns", action="store_true", help="List existing campaigns")
@@ -503,7 +533,8 @@ def main():
         if not os.path.exists(csv_path):
             print(f"\n  Skipping {csv_path} (file not found)")
             continue
-        result = process_csv(args.api_key, csv_path, args.dry_run, sending_accounts, campaign_options)
+        result = process_csv(args.api_key, csv_path, args.dry_run, sending_accounts,
+                             campaign_options, auto_activate=args.auto_activate)
         results.append(result)
 
     # Summary
@@ -518,10 +549,14 @@ def main():
         if r.get("needs_email_enrichment", 0) > 0:
             print(f"      ⚠ {r['needs_email_enrichment']} leads need real email addresses")
         if r.get("campaign_id"):
-            print(f"      Campaign ID: {r['campaign_id']}")
+            activated_str = " [ACTIVATED]" if r.get("activated") else " [DRAFT]"
+            print(f"      Campaign ID: {r['campaign_id']}{activated_str}")
 
-    print(f"\n⚠ IMPORTANT: Campaigns are created in DRAFT mode.")
-    print(f"  → Log in to Instantly.ai to review and activate each campaign.")
+    if args.auto_activate:
+        print(f"\n✓ Auto-activate was ON — campaigns are live.")
+    else:
+        print(f"\n⚠ IMPORTANT: Campaigns are created in DRAFT mode.")
+        print(f"  → Log in to Instantly.ai to review and activate each campaign.")
     print(f"  → Leads with placeholder emails (contact@domain.com) need real addresses.")
     print()
 
