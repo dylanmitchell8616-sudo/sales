@@ -334,13 +334,12 @@ TEMPLATE_FNS = {
 # All 65 contacts
 # ---------------------------------------------------------------------------
 
+# NOTE: Large DSOs (Heartland, Aspen, PDS, DCA, Affordable Care) removed —
+# they are enterprise companies with 500+ locations, outside ICP (10-100 employees).
+# Populate with owner-operated dental practices using ZoomInfo enricher.
 CONTACTS = [
-    # 1 contact per company — owner/CEO only
-    ("Pat Bauer",         "pat.bauer@heartland.com",         "Heartland Dental",     "heartland.com",           "President and CEO",             "ceo"),
-    ("Bob Fontana",       "bob.fontana@aspendental.com",     "Aspen Dental",         "aspendental.com",         "Chairman and CEO",              "ceo"),
-    ("Richard Ashton",    "richard.ashton@pacificdentalservices.com", "PDS Health",   "pacificdentalservices.com", "Multi-Practice Owner Dentist", "ceo"),
-    ("Laurence Benz",     "laurence.benz@dentalcarealliance.com", "Dental Care Alliance", "dentalcarealliance.com", "CEO",                        "ceo"),
-    ("Peter Bridgman",    "peter.bridgman@affordablecare.com", "Affordable Care",    "affordablecare.com",      "CEO",                           "ceo"),
+    # Add owner-operated dental practices here (10-100 employees)
+    # Format: (name, email, company, domain, title, template_type)
 ]
 
 

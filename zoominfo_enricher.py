@@ -148,6 +148,29 @@ class ZoomInfoClient:
                 continue
         return None
 
+    def get_company_headcount(self, domain: str) -> int | None:
+        """Get the employee count for a company by domain."""
+        payload = {
+            "companyWebsite": domain,
+            "rpp": 1,
+        }
+        data = self._request(ZOOMINFO_COMPANY_URL, payload)
+        if not data:
+            return None
+
+        companies = data.get("data", [])
+        if not companies:
+            return None
+
+        company = companies[0] if isinstance(companies, list) else companies
+        count = company.get("numberOfEmployees") or company.get("employeeCount")
+        if count:
+            try:
+                return int(count)
+            except (ValueError, TypeError):
+                return None
+        return None
+
     def search_contacts_by_domain(self, domain: str, limit: int = 5) -> list[dict]:
         """
         Search for contacts at a company by domain.
@@ -257,9 +280,11 @@ def pick_best_contact(contacts: list[dict]) -> dict | None:
     return scored[0][1]
 
 
-def enrich_csv(client: ZoomInfoClient, csv_path: str, dry_run: bool = False) -> dict:
+def enrich_csv(client: ZoomInfoClient, csv_path: str, dry_run: bool = False,
+               employee_min: int = 0, employee_max: int = 0) -> dict:
     """
     Enrich a single CSV file with ZoomInfo contact data.
+    Filters by employee count range if specified.
     Returns stats dict.
     """
     if not os.path.exists(csv_path):
@@ -272,6 +297,7 @@ def enrich_csv(client: ZoomInfoClient, csv_path: str, dry_run: bool = False) -> 
         "enriched": 0,
         "already_had_email": 0,
         "no_match": 0,
+        "filtered_by_size": 0,
         "errors": 0,
     }
 
@@ -289,7 +315,7 @@ def enrich_csv(client: ZoomInfoClient, csv_path: str, dry_run: bool = False) -> 
 
     # Add enrichment columns if not present
     extra_fields = []
-    for field in ["contact_email", "contact_name", "contact_title", "contact_phone", "contact_linkedin"]:
+    for field in ["contact_email", "contact_name", "contact_title", "contact_phone", "contact_linkedin", "employee_count"]:
         if field not in fieldnames:
             extra_fields.append(field)
     all_fieldnames = fieldnames + extra_fields
@@ -324,6 +350,22 @@ def enrich_csv(client: ZoomInfoClient, csv_path: str, dry_run: bool = False) -> 
 
         # Search ZoomInfo for contacts at this domain
         print(f"    [{i+1}/{len(rows)}] {domain}", end="")
+
+        # Check company headcount first (skip companies outside range)
+        headcount = client.get_company_headcount(domain)
+        if headcount is not None:
+            row["employee_count"] = str(headcount)
+            if employee_min and headcount < employee_min:
+                print(f" -> SKIPPED ({headcount} employees, min {employee_min})")
+                stats["filtered_by_size"] += 1
+                time.sleep(RATE_LIMIT_DELAY)
+                continue
+            if employee_max and headcount > employee_max:
+                print(f" -> SKIPPED ({headcount} employees, max {employee_max})")
+                stats["filtered_by_size"] += 1
+                time.sleep(RATE_LIMIT_DELAY)
+                continue
+
         contacts = client.search_contacts_by_domain(domain, limit=5)
         best = pick_best_contact(contacts)
 
@@ -333,6 +375,8 @@ def enrich_csv(client: ZoomInfoClient, csv_path: str, dry_run: bool = False) -> 
             row["contact_title"] = best["title"]
             row["contact_phone"] = best.get("phone", "")
             row["contact_linkedin"] = best.get("linkedin", "")
+            if headcount is not None:
+                row["employee_count"] = str(headcount)
 
             # Also update email fields used by other CSVs
             if "email" in fieldnames:
@@ -341,10 +385,10 @@ def enrich_csv(client: ZoomInfoClient, csv_path: str, dry_run: bool = False) -> 
                 row["prospect_email"] = best["email"]
 
             stats["enriched"] += 1
-            print(f" -> {best['name']} ({best['title']}) <{best['email']}>")
+            print(f" -> {best['name']} ({best['title']}) <{best['email']}> [{headcount or '?'} emp]")
         else:
             stats["no_match"] += 1
-            print(f" -> no match")
+            print(f" -> no owner match")
 
         enriched_rows.append(row)
         time.sleep(RATE_LIMIT_DELAY)
@@ -449,6 +493,11 @@ def main():
     else:
         csv_files = ENRICHABLE_CSVS
 
+    # Employee count range from config
+    emp_min = config.get("employee_min", 10)
+    emp_max = config.get("employee_max", 100)
+    print(f"  Employee filter: {emp_min}-{emp_max}")
+
     # Enrich each CSV
     all_stats = []
     total_enriched = 0
@@ -459,7 +508,8 @@ def main():
         if not os.path.exists(csv_path):
             continue
 
-        stats = enrich_csv(client, csv_path, dry_run=args.dry_run)
+        stats = enrich_csv(client, csv_path, dry_run=args.dry_run,
+                          employee_min=emp_min, employee_max=emp_max)
         all_stats.append(stats)
         total_enriched += stats.get("enriched", 0)
         total_leads += stats.get("total", 0)

@@ -148,6 +148,14 @@ def _is_personal_email(email: str) -> bool:
     return local not in GENERIC_EMAIL_PREFIXES
 
 
+def _is_owner_title(title: str) -> bool:
+    """Check if a job title indicates an owner/CEO/founder."""
+    title = title.lower()
+    owner_keywords = ("owner", "ceo", "founder", "president", "principal",
+                      "managing partner", "co-founder", "co-owner")
+    return any(k in title for k in owner_keywords)
+
+
 def _title_rank(title: str) -> int:
     """Rank a job title for priority selection. Lower = higher priority.
 
@@ -227,6 +235,118 @@ def list_accounts(api_key: str) -> list:
     elif isinstance(accounts, dict) and "items" in accounts:
         return accounts["items"]
     return []
+
+
+def delete_lead(api_key: str, campaign_id: str, lead_email: str) -> bool:
+    """Remove a lead from a campaign."""
+    url = f"{BASE_URL}/leads"
+    headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
+    payload = {"campaign_id": campaign_id, "email": lead_email, "delete_all_from_company": False}
+    try:
+        resp = requests.delete(url, headers=headers, json=payload, timeout=30)
+        if resp.status_code in (200, 204):
+            return True
+        # Try alternate endpoint
+        url2 = f"{BASE_URL}/leads/{lead_email}"
+        resp2 = requests.delete(url2, headers=headers, json={"campaign_id": campaign_id}, timeout=30)
+        return resp2.status_code in (200, 204)
+    except Exception:
+        return False
+
+
+def cleanup_campaign(api_key: str, campaign_id: str, campaign_name: str,
+                     dry_run: bool = False) -> dict:
+    """Remove duplicate and non-owner leads from a campaign.
+
+    Keeps only 1 lead per domain, must be owner/CEO/founder.
+    """
+    print(f"\n  Cleaning up: {campaign_name} ({campaign_id})")
+
+    # Fetch all leads in the campaign
+    leads = []
+    skip = 0
+    while True:
+        result = api_request("GET", "/leads", api_key, {
+            "campaign_id": campaign_id, "limit": 100, "skip": skip
+        })
+        if "error" in result:
+            print(f"    Could not fetch leads: {result.get('error', '')[:100]}")
+            break
+        items = result.get("data", result.get("items", []))
+        if isinstance(result, list):
+            items = result
+        if not items:
+            break
+        leads.extend(items)
+        skip += len(items)
+        if len(items) < 100:
+            break
+
+    if not leads:
+        print("    No leads found in campaign.")
+        return {"campaign": campaign_name, "total": 0, "removed": 0, "kept": 0}
+
+    print(f"    Found {len(leads)} leads")
+
+    # Group by domain, keep best owner per domain
+    domain_leads = {}
+    for lead in leads:
+        email = lead.get("email", "").lower()
+        if not email:
+            continue
+        domain = email.split("@")[-1] if "@" in email else ""
+        if not domain:
+            continue
+
+        title = (lead.get("custom_variables", {}).get("contact_title", "")
+                 or lead.get("title", "") or "").lower()
+        is_owner = _is_owner_title(title)
+
+        if domain not in domain_leads:
+            domain_leads[domain] = []
+        domain_leads[domain].append({
+            "email": email,
+            "name": f"{lead.get('first_name', '')} {lead.get('last_name', '')}".strip(),
+            "title": title,
+            "is_owner": is_owner,
+            "rank": _title_rank(title),
+        })
+
+    # Decide who to keep vs remove
+    to_remove = []
+    to_keep = []
+    for domain, contacts in domain_leads.items():
+        # Sort by rank (lower = better)
+        contacts.sort(key=lambda c: c["rank"])
+        # Keep the best one (if they're an owner)
+        best = contacts[0]
+        if best["is_owner"]:
+            to_keep.append(best)
+            to_remove.extend(contacts[1:])
+        else:
+            # No owners — remove all
+            to_remove.extend(contacts)
+
+    print(f"    Keeping {len(to_keep)} owner leads, removing {len(to_remove)} non-owner/duplicates")
+
+    removed = 0
+    for lead in to_remove:
+        if dry_run:
+            print(f"    [DRY-RUN] Would remove: {lead['email']} ({lead['title'] or 'no title'})")
+        else:
+            if delete_lead(api_key, campaign_id, lead["email"]):
+                removed += 1
+                print(f"    Removed: {lead['email']} ({lead['title'] or 'no title'})")
+            else:
+                print(f"    Failed to remove: {lead['email']}")
+            time.sleep(0.3)
+
+    return {
+        "campaign": campaign_name,
+        "total": len(leads),
+        "kept": len(to_keep),
+        "removed": removed if not dry_run else len(to_remove),
+    }
 
 
 def delete_campaign(api_key: str, campaign_id: str) -> bool:
@@ -529,6 +649,38 @@ def process_csv(api_key: str, csv_path: str, dry_run: bool = False,
     if skipped:
         print(f"  Skipped {skipped} duplicate leads (1 per company, owner/CEO priority)")
 
+    # Filter: owner titles only
+    before_owner = len(leads)
+    leads = [l for l in leads if _is_owner_title(
+        l.get("custom_variables", {}).get("contact_title", "") or ""
+    ) or not l.get("custom_variables", {}).get("contact_title")]
+    owner_skipped = before_owner - len(leads)
+    if owner_skipped:
+        print(f"  Skipped {owner_skipped} non-owner leads (owners only)")
+
+    # Filter: employee count range (from config or campaign_options)
+    emp_min = (campaign_options or {}).get("employee_min", 0)
+    emp_max = (campaign_options or {}).get("employee_max", 0)
+    if emp_min or emp_max:
+        before_emp = len(leads)
+        filtered = []
+        for l in leads:
+            emp_count = l.get("custom_variables", {}).get("employee_count", "")
+            if emp_count:
+                try:
+                    count = int(str(emp_count).replace(",", "").strip())
+                    if emp_min and count < emp_min:
+                        continue
+                    if emp_max and count > emp_max:
+                        continue
+                except (ValueError, TypeError):
+                    pass  # Can't parse, let it through
+            filtered.append(l)
+        leads = filtered
+        emp_skipped = before_emp - len(leads)
+        if emp_skipped:
+            print(f"  Skipped {emp_skipped} leads outside employee range ({emp_min}-{emp_max})")
+
     print(f"  Leads: {len(leads)} new to upload")
     if needs_email:
         print(f"  Warning: {needs_email} leads have placeholder emails (need enrichment)")
@@ -606,7 +758,27 @@ def main():
                         help="JSON string of campaign options (timezone, daily_limit_per_account, etc.)")
     parser.add_argument("--list-campaigns", action="store_true", help="List existing campaigns")
     parser.add_argument("--list-accounts", action="store_true", help="List connected email accounts")
+    parser.add_argument("--cleanup", action="store_true",
+                        help="Remove non-owner and duplicate leads from all campaigns")
     args = parser.parse_args()
+
+    if args.cleanup:
+        print("Cleaning up campaigns: removing non-owner and duplicate leads")
+        print("=" * 60)
+        campaigns = get_campaigns_by_name(args.api_key)
+        if not campaigns:
+            print("No campaigns found.")
+            return
+        results = []
+        for name, cid in campaigns.items():
+            result = cleanup_campaign(args.api_key, cid, name, dry_run=args.dry_run)
+            results.append(result)
+        print(f"\n{'='*60}")
+        print("CLEANUP SUMMARY")
+        print(f"{'='*60}")
+        for r in results:
+            print(f"  {r['campaign']}: {r['kept']} kept, {r['removed']} removed (of {r['total']})")
+        return
 
     if args.list_campaigns:
         print("Existing campaigns:")

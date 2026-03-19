@@ -452,8 +452,12 @@ def upload_to_instantly(cfg: dict, dry_run: bool = False) -> bool:
         "--api-key", api_key,
         "--output-dir", output_dir,
     ]
-    # Pass campaign options from config if present
-    campaign_opts = cfg.get("campaign_options")
+    # Pass campaign options from config if present (include employee filters)
+    campaign_opts = dict(cfg.get("campaign_options", {}))
+    if cfg.get("employee_min"):
+        campaign_opts["employee_min"] = cfg["employee_min"]
+    if cfg.get("employee_max"):
+        campaign_opts["employee_max"] = cfg["employee_max"]
     if campaign_opts:
         cmd.extend(["--campaign-options", json.dumps(campaign_opts)])
     if dry_run:
