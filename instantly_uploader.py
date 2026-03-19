@@ -452,23 +452,35 @@ def process_csv(api_key: str, csv_path: str, dry_run: bool = False,
     leads = csv_to_leads(rows)
     needs_email = sum(1 for l in leads if l.get("custom_variables", {}).get("needs_real_email") == "true")
 
-    # Deduplicate: filter out leads already uploaded in previous runs (by email AND domain)
+    # Deduplicate: filter out leads already uploaded (by email AND domain)
+    # Also enforce 1 lead per company/domain within the same batch
     if processed_leads:
         processed_emails = processed_leads.get("emails", set()) if isinstance(processed_leads, dict) else processed_leads
         processed_domains = processed_leads.get("domains", set()) if isinstance(processed_leads, dict) else set()
-        before = len(leads)
-        def _is_new(lead):
-            email = lead.get("email", "").lower()
-            domain = _extract_domain(lead.get("website", "") or lead.get("email", ""))
-            if email and email in processed_emails:
-                return False
-            if domain and domain in processed_domains:
-                return False
-            return True
-        leads = [l for l in leads if _is_new(l)]
-        skipped = before - len(leads)
-        if skipped:
-            print(f"  Skipped {skipped} already-uploaded leads (dedup by email+domain)")
+    else:
+        processed_emails = set()
+        processed_domains = set()
+
+    before = len(leads)
+    seen_domains_this_batch = set()
+    deduped_leads = []
+    for lead in leads:
+        email = lead.get("email", "").lower()
+        domain = _extract_domain(lead.get("website", "") or lead.get("email", ""))
+        if email and email in processed_emails:
+            continue
+        if domain and domain in processed_domains:
+            continue
+        # 1 lead per domain within the same batch
+        if domain and domain in seen_domains_this_batch:
+            continue
+        if domain:
+            seen_domains_this_batch.add(domain)
+        deduped_leads.append(lead)
+    leads = deduped_leads
+    skipped = before - len(leads)
+    if skipped:
+        print(f"  Skipped {skipped} duplicate leads (1 per company, dedup by email+domain)")
 
     print(f"  Leads: {len(leads)} new to upload")
     if needs_email:
