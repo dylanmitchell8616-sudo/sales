@@ -41,13 +41,10 @@ ZOOMINFO_COMPANY_URL = "https://api.zoominfo.com/search/company"
 RATE_LIMIT_DELAY = 0.5  # seconds between API calls
 MAX_RETRIES = 3
 
-# Target titles for decision-makers at small service businesses
+# Target titles — owner/founder/CEO only (1 per company)
 TARGET_TITLES = [
-    "owner", "founder", "ceo", "president", "managing director",
-    "general manager", "practice manager", "office manager",
-    "director of operations", "operations manager",
-    "marketing director", "marketing manager",
-    "clinic manager", "spa manager", "medical director",
+    "owner", "founder", "ceo", "president", "principal",
+    "managing partner", "co-founder", "co-owner",
 ]
 
 # CSVs that contain leads needing enrichment
@@ -160,7 +157,7 @@ class ZoomInfoClient:
             "companyWebsite": domain,
             "rpp": limit,
             "jobTitleHierarchy": [
-                "C-Suite", "VP-Level", "Director", "Manager", "Owner"
+                "C-Suite", "Owner"
             ],
         }
 
@@ -214,11 +211,11 @@ class ZoomInfoClient:
 
 
 def pick_best_contact(contacts: list[dict]) -> dict | None:
-    """Pick the best contact from a list, preferring owners/founders with emails."""
+    """Pick the best contact from a list — owner/CEO/founder only."""
     if not contacts:
         return None
 
-    # Score each contact
+    # Score each contact — only consider owner-level titles
     scored = []
     for c in contacts:
         score = 0
@@ -226,9 +223,22 @@ def pick_best_contact(contacts: list[dict]) -> dict | None:
 
         # Must have an email
         if not c.get("email"):
-            score -= 100
+            continue
 
-        # Prefer owner-level titles
+        # Reject generic emails
+        email_local = c.get("email", "").split("@")[0].lower()
+        generic_prefixes = {"contact", "info", "admin", "hello", "support", "sales",
+                           "team", "office", "general", "mail", "reception", "frontdesk",
+                           "noreply", "no-reply", "billing", "hr"}
+        if email_local in generic_prefixes:
+            continue
+
+        # Only accept owner-level titles
+        is_owner = any(t in title_lower for t in TARGET_TITLES)
+        if not is_owner:
+            continue
+
+        # Rank by title priority
         for i, target in enumerate(TARGET_TITLES):
             if target in title_lower:
                 score += (len(TARGET_TITLES) - i) * 10
@@ -240,13 +250,11 @@ def pick_best_contact(contacts: list[dict]) -> dict | None:
 
         scored.append((score, c))
 
-    scored.sort(key=lambda x: -x[0])
-    best = scored[0]
+    if not scored:
+        return None
 
-    # Only return if they have an email
-    if best[0] > -100:
-        return best[1]
-    return None
+    scored.sort(key=lambda x: -x[0])
+    return scored[0][1]
 
 
 def enrich_csv(client: ZoomInfoClient, csv_path: str, dry_run: bool = False) -> dict:

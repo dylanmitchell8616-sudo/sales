@@ -131,6 +131,23 @@ def _extract_domain(email_or_domain: str) -> str:
     return email_or_domain.lower().strip()
 
 
+GENERIC_EMAIL_PREFIXES = {
+    "contact", "info", "admin", "hello", "support", "help", "sales",
+    "team", "office", "general", "mail", "enquiries", "enquiry",
+    "reception", "frontdesk", "billing", "accounts", "hr", "careers",
+    "marketing", "press", "media", "partnerships", "feedback",
+    "noreply", "no-reply", "donotreply", "do-not-reply",
+}
+
+
+def _is_personal_email(email: str) -> bool:
+    """Check if an email is a real personal address, not a generic company one."""
+    if not email or "@" not in email:
+        return False
+    local = email.split("@")[0].lower().strip()
+    return local not in GENERIC_EMAIL_PREFIXES
+
+
 def _title_rank(title: str) -> int:
     """Rank a job title for priority selection. Lower = higher priority.
 
@@ -405,15 +422,12 @@ def csv_to_leads(rows: list[dict]) -> list[dict]:
             },
         }
 
-        # Set email — real email, domain placeholder, or skip if neither exists
-        if email:
+        # Set email — must be a real personal email, never a generic/company address
+        if email and _is_personal_email(email):
             lead["email"] = email
-        elif domain:
-            # Placeholder — user should enrich with real emails before sending
-            lead["email"] = f"contact@{domain}"
-            lead["custom_variables"]["needs_real_email"] = "true"
         else:
-            # No email and no domain — skip this lead
+            # No real personal email — skip this lead entirely
+            # Generic addresses (contact@, info@, admin@, hello@) are not uploaded
             continue
 
         leads.append(lead)
