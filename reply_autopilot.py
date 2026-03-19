@@ -25,6 +25,13 @@ import time
 from datetime import datetime, timezone
 
 try:
+    from hot_lead_notifier import notify_hot_lead, HOT_CATEGORIES
+except ImportError:
+    HOT_CATEGORIES = {"direct_intent", "meeting_booked"}
+    def notify_hot_lead(*args, **kwargs):
+        return {"slack": False, "sms": False, "logged": False}
+
+try:
     import requests
 except ImportError:
     print("Error: requests package required. Install with: pip install requests")
@@ -780,7 +787,19 @@ def process_reply(
     else:
         logging.info("[DRY-RUN] Would tag %s as '%s'", contact_email, tag)
 
-    # Step 3b: Auto-add interested leads to engaged_prospects.csv tracker
+    # Step 3b: Fire instant hot lead notification (SMS + Slack) for high-intent replies
+    if category in HOT_CATEGORIES:
+        notify_hot_lead(
+            config=config,
+            contact_name=contact_name,
+            contact_email=contact_email,
+            company_name=company_name,
+            category=category,
+            reply_text=reply_text,
+            dry_run=dry_run,
+        )
+
+    # Step 3c: Auto-add interested leads to engaged_prospects.csv tracker
     if category in INTERESTED_CATEGORIES:
         script_dir = os.path.dirname(os.path.abspath(__file__))
         append_engaged_prospect(

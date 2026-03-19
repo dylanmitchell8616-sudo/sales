@@ -251,6 +251,8 @@ def main():
                         help="Reply autopilot poll interval in seconds (default: 60)")
     parser.add_argument("--news-interval", type=int, default=14400,
                         help="News trigger check interval in seconds (default: 14400 = 4h)")
+    parser.add_argument("--open-interval", type=int, default=14400,
+                        help="Open tracker check interval in seconds (default: 14400 = 4h)")
     args = parser.parse_args()
 
     setup_logging()
@@ -272,8 +274,8 @@ def main():
     cfg = load_config(args.config)
     logging.info("Config loaded. Sender: %s <%s>",
                  cfg.get("sender_name", ""), cfg.get("sender_email", ""))
-    logging.info("Pipeline interval: %ds | Reply interval: %ds | News interval: %ds",
-                 args.interval, args.reply_interval, args.news_interval)
+    logging.info("Pipeline interval: %ds | Reply interval: %ds | News interval: %ds | Open tracker: %ds",
+                 args.interval, args.reply_interval, args.news_interval, args.open_interval)
 
     if args.dry_run:
         logging.info("DRY-RUN MODE: pipeline will preview but not execute")
@@ -319,7 +321,19 @@ def main():
             str(BASE_DIR / "output/news_daemon.log"),
         )
 
-        logging.info("Sub-daemons started: reply_autopilot + news_trigger_daemon")
+        # Start open tracker daemon
+        open_cmd = [
+            sys.executable, str(BASE_DIR / "open_tracker_daemon.py"),
+            "--config", args.config,
+            "--interval", str(args.open_interval),
+        ]
+        ensure_subprocess_running(
+            "open_tracker_daemon",
+            open_cmd,
+            str(BASE_DIR / "output/open_tracker.log"),
+        )
+
+        logging.info("Sub-daemons started: reply_autopilot + news_trigger_daemon + open_tracker_daemon")
 
     # Initial pipeline run immediately on start
     logging.info("Running initial pipeline refresh...")
@@ -363,6 +377,13 @@ def main():
                             [sys.executable, str(BASE_DIR / "news_trigger_daemon.py"),
                              "--config", args.config, "--interval", str(args.news_interval)],
                             str(BASE_DIR / "output/news_daemon.log"),
+                        )
+                    elif name == "open_tracker_daemon":
+                        ensure_subprocess_running(
+                            name,
+                            [sys.executable, str(BASE_DIR / "open_tracker_daemon.py"),
+                             "--config", args.config, "--interval", str(args.open_interval)],
+                            str(BASE_DIR / "output/open_tracker.log"),
                         )
 
         # Check if pipeline refresh is due
