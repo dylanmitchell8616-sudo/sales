@@ -1,0 +1,134 @@
+[
+  {
+    "name": "Sean Loring",
+    "title": "President",
+    "company": "Trustaff",
+    "domain": "trustaff.com",
+    "location": "Cincinnati, Ohio",
+    "employee_count": "1,838",
+    "revenue": "$200-500M",
+    "company_description": "One of the nation's top travel healthcare staffing agencies since 2002. Connects healthcare professionals with facilities nationwide. Known for one-on-one service and personalized matching.",
+    "linkedin": "https://www.linkedin.com/in/sean-loring-3614a918/"
+  },
+  {
+    "name": "Kelly Duggan",
+    "title": "President",
+    "company": "Trustaff",
+    "domain": "trustaff.com",
+    "location": "Canton, Georgia",
+    "employee_count": "1,838",
+    "revenue": "$200-500M",
+    "company_description": "One of the nation's top travel healthcare staffing agencies since 2002. Connects healthcare professionals with facilities nationwide.",
+    "linkedin": "https://www.linkedin.com/in/kellyduggan/"
+  },
+  {
+    "name": "Kevin Clark",
+    "title": "Co-Founder, Chairman and CEO",
+    "company": "Cross Country Healthcare",
+    "domain": "crosscountry.com",
+    "location": "Boca Raton, Florida",
+    "employee_count": "9,219",
+    "revenue": "$1B-10B",
+    "company_description": "Market-leading, tech-enabled workforce solutions platform with 38 years in healthcare staffing. Public company (NASDAQ: CCRN). Joint Commission certified. Best of Staffing award winner.",
+    "linkedin": "https://www.linkedin.com/in/kevin-clark-80aa7616/"
+  },
+  {
+    "name": "Dan Walter",
+    "title": "Group Senior Vice President Enterprise Sales",
+    "company": "Cross Country Healthcare",
+    "domain": "crosscountry.com",
+    "location": "Danielsville, Georgia",
+    "employee_count": "9,219",
+    "revenue": "$1B-10B",
+    "company_description": "Market-leading, tech-enabled workforce solutions platform. Public company (NASDAQ: CCRN). Serves homecare, education, and clinical healthcare staffing.",
+    "linkedin": "https://www.linkedin.com/in/dan-walter-8167628/"
+  },
+  {
+    "name": "Margaret Malagisi",
+    "title": "Group Vice President of Sales",
+    "company": "Cross Country Healthcare",
+    "domain": "crosscountry.com",
+    "location": "Richmond, Virginia",
+    "employee_count": "9,219",
+    "revenue": "$1B-10B",
+    "company_description": "Market-leading healthcare workforce solutions platform. Public company focused on clinical and non-clinical staffing.",
+    "linkedin": "https://www.linkedin.com/in/margaret-malagisi/"
+  },
+  {
+    "name": "Kelly Mahannah",
+    "title": "President of Workforce Solutions",
+    "company": "Supplemental Health Care",
+    "domain": "shccares.com",
+    "location": "Dallas-Fort Worth, Texas",
+    "employee_count": "3,009",
+    "revenue": "$75-200M",
+    "company_description": "Leading healthcare staffing provider connecting professionals with hospitals, schools, home health, and correctional facilities. Best of Staffing award winner. HQ in Cottonwood Heights, UT.",
+    "linkedin": "https://www.linkedin.com/in/kelly-mahannah-0107b39/"
+  },
+  {
+    "name": "Jason Marconi",
+    "title": "President, Acute and Non-Acute Division",
+    "company": "Supplemental Health Care",
+    "domain": "shccares.com",
+    "location": "Raleigh-Durham, North Carolina",
+    "employee_count": "3,009",
+    "revenue": "$75-200M",
+    "company_description": "Leading healthcare staffing provider for hospitals, schools, home health. Best of Staffing award winner.",
+    "linkedin": "https://www.linkedin.com/in/jason-marconi-6b83409/"
+  },
+  {
+    "name": "Joe Kunes",
+    "title": "Chief Sales Officer",
+    "company": "Fusion Medical Staffing",
+    "domain": "fusionmedstaff.com",
+    "location": "Omaha, Nebraska",
+    "employee_count": "2,011",
+    "revenue": "$200-500M",
+    "company_description": "Fast-growing healthcare staffing agency since 2009. Staffs nursing, allied health, long term care, home health, lab, and radiology specialties. Known for transparency and traveler-first approach.",
+    "linkedin": "https://www.linkedin.com/in/joe-kunes-59946245/"
+  },
+  {
+    "name": "Scott Martin",
+    "title": "Senior Vice President, Strategic Accounts",
+    "company": "Trustaff",
+    "domain": "trustaff.com",
+    "location": "Cincinnati, Ohio",
+    "employee_count": "1,838",
+    "revenue": "$200-500M",
+    "company_description": "One of the nation's top travel healthcare staffing agencies since 2002.",
+    "linkedin": "https://www.linkedin.com/in/scottemartin/"
+  },
+  {
+    "name": "Ella Oerther",
+    "title": "Vice President, Business Development",
+    "company": "Supplemental Health Care",
+    "domain": "shccares.com",
+    "location": "Cincinnati, Ohio",
+    "employee_count": "3,009",
+    "revenue": "$75-200M",
+    "company_description": "Leading healthcare staffing provider for hospitals, schools, home health, and correctional facilities nationwide.",
+    "linkedin": "https://www.linkedin.com/in/ella-oerther-b55a8245/"
+  },
+  {
+    "name": "Ashley Donaldson",
+    "title": "Vice President of Sales and Business Development",
+    "company": "Supplemental Health Care",
+    "domain": "shccares.com",
+    "location": "Wake Forest, North Carolina",
+    "employee_count": "3,009",
+    "revenue": "$75-200M",
+    "company_description": "Leading healthcare staffing provider. Best of Staffing award winner. Connects clinicians with opportunities across the US.",
+    "linkedin": "https://www.linkedin.com/in/adonaldson325/"
+  },
+  {
+    "name": "Michelle Filipkowski",
+    "title": "Senior Vice President of Client Services",
+    "company": "Trustaff",
+    "domain": "trustaff.com",
+    "location": "Cincinnati, Ohio",
+    "employee_count": "1,838",
+    "revenue": "$200-500M",
+    "company_description": "One of the nation's top travel healthcare staffing agencies. Known for personalized one-on-one service.",
+    "linkedin": "https://www.linkedin.com/in/michelle-filipkowski-42736a18/"
+  }
+]
