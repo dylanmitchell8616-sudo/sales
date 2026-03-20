@@ -1,0 +1,403 @@
+{
+  "date": "2026-03-20",
+  "meeting_goal": 3,
+  "summary": {
+    "hot_leads_to_call": 0,
+    "engaged_followups": 0,
+    "linkedin_targets": 12,
+    "cold_calls": 4,
+    "gmail_emails_pending": 12,
+    "instantly_campaigns_active": "CHECK \u2014 activate draft campaigns!"
+  },
+  "morning_block": {
+    "time": "7:00 - 9:00 AM CT",
+    "tasks": [
+      "CHECK reply autopilot for overnight replies",
+      "CALL Trustaff (513) 792-8100 \u2014 ask for Sean Loring (President)",
+      "CALL Fusion Medical Staffing (402) 513-1186 \u2014 ask for Joe Kunes (Chief Sales Officer)",
+      "CALL Supplemental Health Care (800) 543-8099 \u2014 ask for Kelly Mahannah (President, Workforce Solutions)",
+      "CALL Cross Country Healthcare (561) 998-2232 \u2014 ask for Dan Walter (Group SVP Enterprise Sales)"
+    ]
+  },
+  "midday_block": {
+    "time": "11:00 AM - 1:00 PM CT",
+    "tasks": [
+      "Send 12 LinkedIn connection requests with personalized notes",
+      "  CONNECT: Sean Loring (President) at Trustaff",
+      "  CONNECT: Kelly Duggan (President) at Trustaff",
+      "  CONNECT: Kevin Clark (Co-Founder, Chairman and CEO) at Cross Country Healthcare",
+      "  CONNECT: Dan Walter (Group Senior Vice President Enterprise Sales) at Cross Country Healthcare",
+      "  CONNECT: Margaret Malagisi (Group Vice President of Sales) at Cross Country Healthcare",
+      "  + 7 more in output/daily_action_plan.json",
+      "Check LinkedIn inbox for any pending message replies",
+      "Send Loom videos to top 2 targets who haven't responded"
+    ]
+  },
+  "afternoon_block": {
+    "time": "1:00 - 3:00 PM CT",
+    "tasks": [
+      "CHECK reply autopilot for midday replies"
+    ]
+  },
+  "evening_block": {
+    "time": "5:00 - 6:00 PM CT",
+    "tasks": [
+      "Review today's conversations, update engaged prospect tracker",
+      "Prep meeting briefs for any calls booked tomorrow",
+      "Queue tomorrow's LinkedIn messages",
+      "Send 12 pending Gmail outreach emails"
+    ]
+  },
+  "all_hot_leads": [],
+  "all_engaged": [],
+  "all_linkedin": [
+    {
+      "name": "Sean Loring",
+      "company": "Trustaff",
+      "title": "President",
+      "linkedin": "https://www.linkedin.com/in/sean-loring-3614a918/",
+      "channel": "LinkedIn",
+      "action": "Connect + personalized message"
+    },
+    {
+      "name": "Kelly Duggan",
+      "company": "Trustaff",
+      "title": "President",
+      "linkedin": "https://www.linkedin.com/in/kellyduggan/",
+      "channel": "LinkedIn",
+      "action": "Connect + personalized message"
+    },
+    {
+      "name": "Kevin Clark",
+      "company": "Cross Country Healthcare",
+      "title": "Co-Founder, Chairman and CEO",
+      "linkedin": "https://www.linkedin.com/in/kevin-clark-80aa7616/",
+      "channel": "LinkedIn",
+      "action": "Connect + personalized message"
+    },
+    {
+      "name": "Dan Walter",
+      "company": "Cross Country Healthcare",
+      "title": "Group Senior Vice President Enterprise Sales",
+      "linkedin": "https://www.linkedin.com/in/dan-walter-8167628/",
+      "channel": "LinkedIn",
+      "action": "Connect + personalized message"
+    },
+    {
+      "name": "Margaret Malagisi",
+      "company": "Cross Country Healthcare",
+      "title": "Group Vice President of Sales",
+      "linkedin": "https://www.linkedin.com/in/margaret-malagisi/",
+      "channel": "LinkedIn",
+      "action": "Connect + personalized message"
+    },
+    {
+      "name": "Kelly Mahannah",
+      "company": "Supplemental Health Care",
+      "title": "President of Workforce Solutions",
+      "linkedin": "https://www.linkedin.com/in/kelly-mahannah-0107b39/",
+      "channel": "LinkedIn",
+      "action": "Connect + personalized message"
+    },
+    {
+      "name": "Jason Marconi",
+      "company": "Supplemental Health Care",
+      "title": "President, Acute and Non-Acute Division",
+      "linkedin": "https://www.linkedin.com/in/jason-marconi-6b83409/",
+      "channel": "LinkedIn",
+      "action": "Connect + personalized message"
+    },
+    {
+      "name": "Joe Kunes",
+      "company": "Fusion Medical Staffing",
+      "title": "Chief Sales Officer",
+      "linkedin": "https://www.linkedin.com/in/joe-kunes-59946245/",
+      "channel": "LinkedIn",
+      "action": "Connect + personalized message"
+    },
+    {
+      "name": "Scott Martin",
+      "company": "Trustaff",
+      "title": "Senior Vice President, Strategic Accounts",
+      "linkedin": "https://www.linkedin.com/in/scottemartin/",
+      "channel": "LinkedIn",
+      "action": "Connect + personalized message"
+    },
+    {
+      "name": "Ella Oerther",
+      "company": "Supplemental Health Care",
+      "title": "Vice President, Business Development",
+      "linkedin": "https://www.linkedin.com/in/ella-oerther-b55a8245/",
+      "channel": "LinkedIn",
+      "action": "Connect + personalized message"
+    },
+    {
+      "name": "Ashley Donaldson",
+      "company": "Supplemental Health Care",
+      "title": "Vice President of Sales and Business Development",
+      "linkedin": "https://www.linkedin.com/in/adonaldson325/",
+      "channel": "LinkedIn",
+      "action": "Connect + personalized message"
+    },
+    {
+      "name": "Michelle Filipkowski",
+      "company": "Trustaff",
+      "title": "Senior Vice President of Client Services",
+      "linkedin": "https://www.linkedin.com/in/michelle-filipkowski-42736a18/",
+      "channel": "LinkedIn",
+      "action": "Connect + personalized message"
+    }
+  ],
+  "all_calls": [
+    {
+      "name": "Sean Loring (President)",
+      "company": "Trustaff",
+      "phone": "(513) 792-8100",
+      "reason": "Cold outreach \u2014 healthcare staffing AI play",
+      "priority": "HIGH",
+      "script": "Hi, this is Dylan from Realside AI. We build AI employees for staffing agencies that handle candidate intake calls 24/7. Could I speak with [name]?"
+    },
+    {
+      "name": "Joe Kunes (Chief Sales Officer)",
+      "company": "Fusion Medical Staffing",
+      "phone": "(402) 513-1186",
+      "reason": "Cold outreach \u2014 healthcare staffing AI play",
+      "priority": "HIGH",
+      "script": "Hi, this is Dylan from Realside AI. We build AI employees for staffing agencies that handle candidate intake calls 24/7. Could I speak with [name]?"
+    },
+    {
+      "name": "Kelly Mahannah (President, Workforce Solutions)",
+      "company": "Supplemental Health Care",
+      "phone": "(800) 543-8099",
+      "reason": "Cold outreach \u2014 healthcare staffing AI play",
+      "priority": "MEDIUM",
+      "script": "Hi, this is Dylan from Realside AI. We build AI employees for staffing agencies that handle candidate intake calls 24/7. Could I speak with [name]?"
+    },
+    {
+      "name": "Dan Walter (Group SVP Enterprise Sales)",
+      "company": "Cross Country Healthcare",
+      "phone": "(561) 998-2232",
+      "reason": "Cold outreach \u2014 healthcare staffing AI play",
+      "priority": "MEDIUM",
+      "script": "Hi, this is Dylan from Realside AI. We build AI employees for staffing agencies that handle candidate intake calls 24/7. Could I speak with [name]?"
+    }
+  ],
+  "all_gmail_queue": [
+    {
+      "name": "Sean Loring",
+      "company": "Trustaff",
+      "title": "President",
+      "to_email": "sean.loring@trustaff.com",
+      "subject": "ai handling trustaff's candidate calls 24/7?",
+      "body": "Hi Sean,\n\nTrustaff's reputation for personalized matching in travel healthcare is impressive. With 1,800+ employees managing nationwide placements, I imagine candidate intake calls are constant.\n\nWe've built AI Employees specifically for staffing agencies that handle candidate screening calls 24/7 and automatically re-engage dormant candidates in your database. One agency recovered 35% of missed candidate calls and reactivated 12% of their dormant pipeline.\n\nWorth a quick conversation about how this could work for Trustaff's candidate flow?\n\nDylan Mitchell\nRealside AI",
+      "linkedin": "https://www.linkedin.com/in/sean-loring-3614a918/",
+      "all_email_guesses": [
+        "sean.loring@trustaff.com",
+        "seanloring@trustaff.com",
+        "sloring@trustaff.com",
+        "sean@trustaff.com",
+        "sean_loring@trustaff.com",
+        "s.loring@trustaff.com"
+      ],
+      "status": "draft"
+    },
+    {
+      "name": "Kelly Duggan",
+      "company": "Trustaff",
+      "title": "President",
+      "to_email": "kelly.duggan@trustaff.com",
+      "subject": "ai handling trustaff's candidate calls 24/7?",
+      "body": "Hi Kelly,\n\nImpressive work building Trustaff into one of the nation's top travel healthcare staffing agencies since 2002. With 1,800+ employees, I imagine you're fielding thousands of candidate calls daily.\n\nWe've built AI employees specifically for staffing agencies that handle candidate intake calls 24/7 and automatically re-engage dormant candidates in your database. Our clients typically see 20-40% more candidates captured and 2-3x faster response times.\n\nWorth a quick 10-minute call to explore how this could work for Trustaff's candidate pipeline?\n\nBest,\nDylan Mitchell\nRealside AI",
+      "linkedin": "https://www.linkedin.com/in/kellyduggan/",
+      "all_email_guesses": [
+        "kelly.duggan@trustaff.com",
+        "kellyduggan@trustaff.com",
+        "kduggan@trustaff.com",
+        "kelly@trustaff.com",
+        "kelly_duggan@trustaff.com",
+        "k.duggan@trustaff.com"
+      ],
+      "status": "draft"
+    },
+    {
+      "name": "Kevin Clark",
+      "company": "Cross Country Healthcare",
+      "title": "Co-Founder, Chairman and CEO",
+      "to_email": "kevin.clark@crosscountry.com",
+      "subject": "ai handling your candidate intake calls 24/7?",
+      "body": "Hi Kevin,\n\nCongrats on Cross Country's incredible 38-year run and Best of Staffing recognition. That's serious staying power in healthcare staffing.\n\nI'm curious if you've explored AI for candidate intake yet. We've built AI employees that handle inbound candidate calls 24/7 and automatically re-engage dormant candidates in your CRM.\n\nOne staffing client recovered 35% of missed candidate calls and reactivated 12% of their database within 90 days.\n\nWorth a quick call to see if this could work for Cross Country's scale?\n\nBest,\nDylan Mitchell\nRealside AI",
+      "linkedin": "https://www.linkedin.com/in/kevin-clark-80aa7616/",
+      "all_email_guesses": [
+        "kevin.clark@crosscountry.com",
+        "kevinclark@crosscountry.com",
+        "kclark@crosscountry.com",
+        "kevin@crosscountry.com",
+        "kevin_clark@crosscountry.com",
+        "k.clark@crosscountry.com"
+      ],
+      "status": "draft"
+    },
+    {
+      "name": "Dan Walter",
+      "company": "Cross Country Healthcare",
+      "title": "Group Senior Vice President Enterprise Sales",
+      "to_email": "dan.walter@crosscountry.com",
+      "subject": "ai handling candidate calls 24/7 at cross country?",
+      "body": "Hi Dan,\n\nCross Country's scale with 9,200+ employees across healthcare staffing is impressive. I imagine your teams field countless candidate intake calls daily.\n\nWe've built AI employees specifically for staffing companies that handle candidate calls 24/7 and re-engage dormant candidates automatically. One client recovered 35% of after-hours candidate calls they were missing.\n\nGiven your enterprise sales role, curious if this resonates for Cross Country's operations.\n\nWorth a quick 10-minute call to explore?\n\nDylan Mitchell\nRealside AI",
+      "linkedin": "https://www.linkedin.com/in/dan-walter-8167628/",
+      "all_email_guesses": [
+        "dan.walter@crosscountry.com",
+        "danwalter@crosscountry.com",
+        "dwalter@crosscountry.com",
+        "dan@crosscountry.com",
+        "dan_walter@crosscountry.com",
+        "d.walter@crosscountry.com"
+      ],
+      "status": "draft"
+    },
+    {
+      "name": "Margaret Malagisi",
+      "company": "Cross Country Healthcare",
+      "title": "Group Vice President of Sales",
+      "to_email": "margaret.malagisi@crosscountry.com",
+      "subject": "ai handling candidate calls at cross country?",
+      "body": "Hi Margaret,\n\nSaw Cross Country Healthcare's impressive growth in the clinical staffing space. With 9,000+ employees, I imagine your team fields thousands of candidate intake calls.\n\nWe built AI employees specifically for staffing companies that handle candidate calls 24/7 and re-engage dormant candidates automatically. Our clients typically see 20-40% more qualified candidates make it through intake.\n\nWorth a quick 10-minute call to show you how this works for other healthcare staffing platforms?\n\nDylan Mitchell\nRealside AI",
+      "linkedin": "https://www.linkedin.com/in/margaret-malagisi/",
+      "all_email_guesses": [
+        "margaret.malagisi@crosscountry.com",
+        "margaretmalagisi@crosscountry.com",
+        "mmalagisi@crosscountry.com",
+        "margaret@crosscountry.com",
+        "margaret_malagisi@crosscountry.com",
+        "m.malagisi@crosscountry.com"
+      ],
+      "status": "draft"
+    },
+    {
+      "name": "Kelly Mahannah",
+      "company": "Supplemental Health Care",
+      "title": "President of Workforce Solutions",
+      "to_email": "kelly.mahannah@shccares.com",
+      "subject": "ai handling candidate calls 24/7 at supplemental health care?",
+      "body": "Hi Kelly,\n\nSaw that Supplemental Health Care won Best of Staffing again - impressive work connecting healthcare professionals across hospitals and correctional facilities.\n\nI'm curious: with 3,000+ employees, how many candidate intake calls does your team field daily? And how many qualified candidates slip through when lines are busy?\n\nWe've built AI employees specifically for staffing companies that handle candidate screening calls 24/7 and automatically re-engage dormant candidates in your database. Some clients see 20-40% more qualified candidates captured.\n\nWorth a quick 10-minute call to see if this could work for Supplemental Health Care?\n\nBest,\nDylan Mitchell\nRealside AI",
+      "linkedin": "https://www.linkedin.com/in/kelly-mahannah-0107b39/",
+      "all_email_guesses": [
+        "kelly.mahannah@shccares.com",
+        "kellymahannah@shccares.com",
+        "kmahannah@shccares.com",
+        "kelly@shccares.com",
+        "kelly_mahannah@shccares.com",
+        "k.mahannah@shccares.com"
+      ],
+      "status": "draft"
+    },
+    {
+      "name": "Jason Marconi",
+      "company": "Supplemental Health Care",
+      "title": "President, Acute and Non-Acute Division",
+      "to_email": "jason.marconi@shccares.com",
+      "subject": "ai handling candidate calls 24/7 at supplemental health care?",
+      "body": "Hi Jason,\n\nCongrats on the Best of Staffing award! With 3,000+ employees at Supplemental Health Care, I imagine you get tons of candidate calls at all hours.\n\nWe built AI employees specifically for service businesses like yours. Our AI receptionist handles candidate intake calls 24/7, and our AI outbound agent re-engages dormant candidates in your database within 2 minutes.\n\nOne staffing client recovered 35% more candidates just from after-hours calls they were missing.\n\nWorth a quick 10-minute call to see if this makes sense for your acute and non-acute divisions?\n\nBest,\nDylan Mitchell\nRealside AI",
+      "linkedin": "https://www.linkedin.com/in/jason-marconi-6b83409/",
+      "all_email_guesses": [
+        "jason.marconi@shccares.com",
+        "jasonmarconi@shccares.com",
+        "jmarconi@shccares.com",
+        "jason@shccares.com",
+        "jason_marconi@shccares.com",
+        "j.marconi@shccares.com"
+      ],
+      "status": "draft"
+    },
+    {
+      "name": "Joe Kunes",
+      "company": "Fusion Medical Staffing",
+      "title": "Chief Sales Officer",
+      "to_email": "joe.kunes@fusionmedstaff.com",
+      "subject": "ai handling fusion's candidate calls 24/7?",
+      "body": "Hi Joe,\n\nImpressed by Fusion's traveler-first approach and growth since 2009. With 2,000+ employees, I imagine your team fields countless candidate intake calls.\n\nWhat if AI could handle those calls 24/7, screen candidates, and follow up on missed calls automatically? We're seeing staffing agencies recover 20-40% of missed candidate opportunities this way.\n\nOur AI can also re-engage dormant candidates in your database within minutes, significantly boosting placement speed.\n\nWorth a quick 10-minute call to explore how this might work for Fusion?\n\nDylan Mitchell\nRealside AI",
+      "linkedin": "https://www.linkedin.com/in/joe-kunes-59946245/",
+      "all_email_guesses": [
+        "joe.kunes@fusionmedstaff.com",
+        "joekunes@fusionmedstaff.com",
+        "jkunes@fusionmedstaff.com",
+        "joe@fusionmedstaff.com",
+        "joe_kunes@fusionmedstaff.com",
+        "j.kunes@fusionmedstaff.com"
+      ],
+      "status": "draft"
+    },
+    {
+      "name": "Scott Martin",
+      "company": "Trustaff",
+      "title": "Senior Vice President, Strategic Accounts",
+      "to_email": "scott.martin@trustaff.com",
+      "subject": "ai handling trustaff's candidate calls 24/7?",
+      "body": "Hi Scott,\n\nTrustaff's growth to 1,800+ employees since 2002 is impressive. Managing candidate intake across that scale must be intense.\n\nI'm curious if you've explored AI handling your candidate calls 24/7? We built AI employees specifically for service businesses like yours.\n\nOur AI receptionist answers every call, handles candidate screening, and recovers missed opportunities. Plus our outbound agent re-engages dormant candidates in your database within minutes.\n\nSeveral staffing agencies are seeing 20-40% more candidate captures this way.\n\nWorth a quick 10-minute call to see if this fits Trustaff's workflow?\n\nBest,\nDylan Mitchell",
+      "linkedin": "https://www.linkedin.com/in/scottemartin/",
+      "all_email_guesses": [
+        "scott.martin@trustaff.com",
+        "scottmartin@trustaff.com",
+        "smartin@trustaff.com",
+        "scott@trustaff.com",
+        "scott_martin@trustaff.com",
+        "s.martin@trustaff.com"
+      ],
+      "status": "draft"
+    },
+    {
+      "name": "Ella Oerther",
+      "company": "Supplemental Health Care",
+      "title": "Vice President, Business Development",
+      "to_email": "ella.oerther@shccares.com",
+      "subject": "ai handling candidate calls 24/7 for supplemental health care?",
+      "body": "Hi Ella,\n\nSaw that Supplemental Health Care places healthcare staff across hospitals, schools, and correctional facilities nationwide. With that scale, I imagine you're fielding tons of candidate inquiries around the clock.\n\nWe've built AI employees that handle candidate intake calls 24/7 and automatically re-engage dormant candidates in your database. Healthcare staffing companies are seeing 20-40% more qualified candidates make it through their pipeline.\n\nWorth a quick 10-minute call to see if this could work for your team?\n\nBest,\nDylan Mitchell\nRealside AI",
+      "linkedin": "https://www.linkedin.com/in/ella-oerther-b55a8245/",
+      "all_email_guesses": [
+        "ella.oerther@shccares.com",
+        "ellaoerther@shccares.com",
+        "eoerther@shccares.com",
+        "ella@shccares.com",
+        "ella_oerther@shccares.com",
+        "e.oerther@shccares.com"
+      ],
+      "status": "draft"
+    },
+    {
+      "name": "Ashley Donaldson",
+      "company": "Supplemental Health Care",
+      "title": "Vice President of Sales and Business Development",
+      "to_email": "ashley.donaldson@shccares.com",
+      "subject": "ai handling candidate calls 24/7 for supplemental health care?",
+      "body": "Hi Ashley,\n\nSaw that Supplemental Health Care won Best of Staffing again - impressive work connecting clinicians across the US.\n\nQuick question: with 3,000+ employees, how many qualified candidates slip through the cracks when they call outside business hours or don't get immediate follow-up?\n\nWe've built AI employees specifically for staffing companies that handle candidate intake calls 24/7 and automatically re-engage your database. One client recovered 30% more candidates just from after-hours calls.\n\nWorth a quick 10-minute call to see if this could work for your team?\n\nBest,\nDylan Mitchell\nRealside AI",
+      "linkedin": "https://www.linkedin.com/in/adonaldson325/",
+      "all_email_guesses": [
+        "ashley.donaldson@shccares.com",
+        "ashleydonaldson@shccares.com",
+        "adonaldson@shccares.com",
+        "ashley@shccares.com",
+        "ashley_donaldson@shccares.com",
+        "a.donaldson@shccares.com"
+      ],
+      "status": "draft"
+    },
+    {
+      "name": "Michelle Filipkowski",
+      "company": "Trustaff",
+      "title": "Senior Vice President of Client Services",
+      "to_email": "michelle.filipkowski@trustaff.com",
+      "subject": "ai handling trustaff's candidate calls 24/7?",
+      "body": "Hi Michelle,\n\nI noticed Trustaff's reputation for personalized one-on-one service in travel healthcare staffing. That level of care is rare in your industry.\n\nI'm curious if you ever lose potential candidates to missed calls or delayed follow-ups? We've built AI employees specifically for staffing agencies that handle candidate intake calls 24/7 and automatically re-engage dormant candidates in your database.\n\nOne agency recovered 30% more qualified candidates just from calls they were previously missing.\n\nWorth a quick 10-minute call to see if this could help Trustaff capture more talent?\n\nBest,\nDylan Mitchell\nRealside AI",
+      "linkedin": "https://www.linkedin.com/in/michelle-filipkowski-42736a18/",
+      "all_email_guesses": [
+        "michelle.filipkowski@trustaff.com",
+        "michellefilipkowski@trustaff.com",
+        "mfilipkowski@trustaff.com",
+        "michelle@trustaff.com",
+        "michelle_filipkowski@trustaff.com",
+        "m.filipkowski@trustaff.com"
+      ],
+      "status": "draft"
+    }
+  ]
+}

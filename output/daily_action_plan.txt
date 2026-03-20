@@ -1,0 +1,61 @@
+============================================================
+  DAILY MEETING BOOKING PLAN — 2026-03-20
+  Goal: 3 meetings today
+============================================================
+
+  Hot leads to call back:  0
+  Engaged follow-ups:      0
+  LinkedIn targets:        12
+  Cold calls queued:       4
+  Gmail emails pending:    12
+  Instantly campaigns:     CHECK — activate draft campaigns!
+
+————————————————————————————————————————————————————————————
+  7:00 - 9:00 AM CT
+————————————————————————————————————————————————————————————
+  [ ] CHECK reply autopilot for overnight replies
+  [ ] CALL Trustaff (513) 792-8100 — ask for Sean Loring (President)
+  [ ] CALL Fusion Medical Staffing (402) 513-1186 — ask for Joe Kunes (Chief Sales Officer)
+  [ ] CALL Supplemental Health Care (800) 543-8099 — ask for Kelly Mahannah (President, Workforce Solutions)
+  [ ] CALL Cross Country Healthcare (561) 998-2232 — ask for Dan Walter (Group SVP Enterprise Sales)
+
+————————————————————————————————————————————————————————————
+  11:00 AM - 1:00 PM CT
+————————————————————————————————————————————————————————————
+  [ ] Send 12 LinkedIn connection requests with personalized notes
+    CONNECT: Sean Loring (President) at Trustaff
+    CONNECT: Kelly Duggan (President) at Trustaff
+    CONNECT: Kevin Clark (Co-Founder, Chairman and CEO) at Cross Country Healthcare
+    CONNECT: Dan Walter (Group Senior Vice President Enterprise Sales) at Cross Country Healthcare
+    CONNECT: Margaret Malagisi (Group Vice President of Sales) at Cross Country Healthcare
+    + 7 more in output/daily_action_plan.json
+  [ ] Check LinkedIn inbox for any pending message replies
+  [ ] Send Loom videos to top 2 targets who haven't responded
+
+————————————————————————————————————————————————————————————
+  1:00 - 3:00 PM CT
+————————————————————————————————————————————————————————————
+  [ ] CHECK reply autopilot for midday replies
+
+————————————————————————————————————————————————————————————
+  5:00 - 6:00 PM CT
+————————————————————————————————————————————————————————————
+  [ ] Review today's conversations, update engaged prospect tracker
+  [ ] Prep meeting briefs for any calls booked tomorrow
+  [ ] Queue tomorrow's LinkedIn messages
+  [ ] Send 12 pending Gmail outreach emails
+
+============================================================
+  CONVERSION MATH
+============================================================
+  To book 3 meetings/day, you need ~10 quality conversations.
+  That means:
+    - 30 cold calls (5% connect rate = 1-2 convos)
+    - 30 Instantly emails sending (2% reply = 1 hot lead)
+    - 15 LinkedIn requests (15% accept = 2 convos)
+    - 5 hot lead callbacks (50% book rate = 2-3 meetings)
+    - 5 engaged follow-ups (20% book rate = 1 meeting)
+
+  KEY: Hot lead callbacks are your #1 source. Never let a
+  reply sit more than 5 minutes without a call.
+============================================================
