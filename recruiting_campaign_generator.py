@@ -45,21 +45,21 @@ CAMPAIGN_NAME = "AI Recruiting - Social Proof"
 
 # ─── Email Step 1: Lead with the problem + social proof ────────────────────────
 STEP1_SUBJECT_TEMPLATES = [
-    "{{company_name}} is probably losing candidates right now",
-    "The hiring bottleneck nobody talks about at {{company_name}}",
-    "What if {{company_name}} never lost another candidate to slow follow-up?",
-    "{{company_name}} — are applicants ghosting before the first call?",
+    "{{company_name}}, 43% of your interviews are no-shows",
+    "{{company_name}} is losing candidates in the first 2 hours",
+    "76% of recruiters got ghosted last year",
+    "{{first_name}}, what if screening took 2 minutes instead of 16 hours?",
 ]
 
 STEP1_BODY = """{{custom_first_line}}
 
-Most homecare and staffing agencies lose 30-50% of qualified applicants before a recruiter even picks up the phone. The candidate applies, waits 24-48 hours to hear back, and takes another offer.
+Here's a stat that probably feels familiar: 43% of interviews in staffing are no-shows, and 76% of recruiters say they've been ghosted by candidates. The problem isn't finding applicants. It's that by the time someone calls them back, they've already taken another offer.
 
-We built an AI recruiting assistant that handles the entire process from application to final interview — screening, qualifying, scheduling — in under 2 minutes. No recruiter time wasted on unqualified candidates, no applicants lost to slow follow-up.
+We built an AI that handles the entire recruiting process from application to final interview. The moment a candidate applies, our AI screens them, asks qualifying questions, checks availability, and books the interview on your team's calendar. Your recruiters only talk to pre-qualified, ready-to-start candidates.
 
-One of our clients told us: "{{testimonial_placeholder}}"
+{{testimonial_placeholder}}
 
-Would a 15-minute call make sense to see if this fits how {{company_name}} hires?
+Would a 15-minute call make sense to see how this fits {{company_name}}?
 
 {{calendar_link}}
 
@@ -68,22 +68,22 @@ Would a 15-minute call make sense to see if this fits how {{company_name}} hires
 
 # ─── Email Step 2: Case study / proof stack (Day 3) ───────────────────────────
 STEP2_SUBJECT_TEMPLATES = [
-    "How one agency cut time-to-hire by 70%",
+    "The $171K problem nobody at {{company_name}} is measuring",
     "Re: {{company_name}} hiring process",
     "Quick math on what slow screening costs {{company_name}}",
 ]
 
 STEP2_BODY = """Hey {{first_name}},
 
-Quick follow-up — wanted to share some numbers that might hit home.
+Quick follow-up with some numbers that might sting.
 
-The average homecare agency spends $3,200+ per hire and takes 25-45 days to fill a role. Meanwhile, 60% of candidates accept another offer within 10 days of applying.
+The average agency spends $2,600-$5,000 per hire and takes 25-45 days to fill a role. With 77% annual turnover, a 100-person team burns $171K+/year just replacing people. And every unfilled shift is $240 in lost revenue.
 
-Our AI handles the entire intake flow: screens every applicant the moment they apply, asks qualifying questions, checks availability, and books the final interview on your team's calendar. Your recruiters only talk to pre-qualified, ready-to-hire candidates.
+Meanwhile, conversion rates drop 8x when follow-up is delayed by just 5 minutes. Most agencies take 2+ days.
 
-The result: time-to-hire drops from weeks to days. Cost-per-hire drops because your team isn't burning hours on phone screens that go nowhere.
+Our AI contacts every applicant within seconds of applying, screens them, and books the final interview. No recruiter time wasted on the 90% of applicants who won't get hired. Your team only talks to candidates who are qualified and ready.
 
-Worth 15 minutes to see if it works for {{company_name}}?
+Worth 15 minutes to see if the math works for {{company_name}}?
 
 {{calendar_link}}
 
@@ -91,20 +91,20 @@ Worth 15 minutes to see if it works for {{company_name}}?
 
 # ─── Email Step 3: Pattern interrupt / last shot (Day 7) ──────────────────────
 STEP3_SUBJECT_TEMPLATES = [
-    "Not trying to be annoying",
-    "Last one from me, {{first_name}}",
-    "Quick question about {{company_name}}'s hiring",
+    "Not trying to be annoying, {{first_name}}",
+    "Last one from me",
+    "89% of agencies are turning people away",
 ]
 
 STEP3_BODY = """{{first_name}},
 
-I know you're busy — running a staffing operation means you're probably in back-to-back calls right now.
+89% of homecare providers have had to deny care because they can't staff fast enough. That's clients walking out the door because the hiring process can't keep up.
 
-I'll keep this short: if {{company_name}} is losing candidates between application and first contact, or your recruiters are spending more time screening than closing, our AI fixes that. Fully automated from application to final interview.
+If {{company_name}} is spending more time screening than closing, or losing good candidates to faster-moving agencies, that's exactly what our AI fixes. Application to final interview, fully automated.
 
-If the timing is off, no worries — just let me know and I'll stop reaching out.
+If the timing is off, no hard feelings. But if you're curious, 15 minutes and I'll show you how it works.
 
-But if you're curious, here's my calendar: {{calendar_link}}
+{{calendar_link}}
 
 {{sender_name}}"""
 
@@ -210,7 +210,7 @@ def generate_first_line_with_ai(lead: dict, config: dict) -> str:
     location = lead.get("location", "")
     domain = lead.get("domain", "")
 
-    prompt = f"""Generate a personalized cold email opening line (1 sentence, under 25 words) for a recruiting/staffing company.
+    prompt = f"""Generate a personalized cold email opening line (1 sentence, under 25 words) for selling AI recruiting automation to a staffing/homecare company.
 
 Lead info:
 - Name: {first_name}
@@ -221,18 +221,26 @@ Lead info:
 - Location: {location}
 - Website: {domain}
 
+Industry context you can weave in naturally:
+- Caregiver turnover is 77-79% annually (entire staff replaced every 14 months)
+- 43% interview no-show rate in staffing
+- Only 9.6% of homecare applicants get hired
+- It takes 16+ hours of screening per open position
+- 89% of providers have denied care due to staffing shortages
+- Conversion drops 8x when follow-up is delayed by 5 minutes
+
 Rules:
-- Reference something specific about their company, role, location, or industry
-- Sound like a real person, not a template
+- Reference something specific about their company, size, location, or pain point
+- Sound like a real person who understands their daily grind, not a marketer
 - No generic openers ("I hope this finds you well", "I came across your company")
 - No flattery ("I love what you're doing", "Impressive growth")
-- Make it feel like you actually know something about their business
+- Make it feel like you know their business and industry inside out
 - Do NOT include a greeting like "Hi [Name]" — just the opening line itself
 - End with a period, not a question mark
 - Examples of good first lines:
-  "Running a 50-person homecare team in Phoenix means your recruiters are probably screening candidates all day instead of closing."
-  "With the caregiver shortage hitting Texas hard, filling roles at {company} before candidates ghost must be a daily battle."
-  "Scaling a staffing operation past 100 caregivers usually means the screening process breaks before anything else."
+  "Running a 50-person homecare team in Phoenix means your recruiters are probably screening all day instead of placing."
+  "With 77% annual turnover, {company} is essentially rehiring its entire team every 14 months."
+  "At {company}'s size, the 43% interview no-show rate alone is costing you hundreds of hours a year."
 
 Return ONLY the first line, nothing else."""
 
@@ -274,35 +282,36 @@ def generate_first_line_fallback(lead: dict) -> str:
 
     if "homecare" in industry or "home care" in industry or "home health" in industry:
         templates.extend([
-            f"Finding reliable caregivers for {company} is probably harder today than it was a year ago.",
-            f"Every day {company} has an open caregiver role is a day you're turning down clients.",
-            f"The caregiver shortage isn't slowing down, and {company} can't afford to lose candidates to slow follow-up.",
+            f"With 77% annual caregiver turnover, {company} is essentially rehiring its entire team every 14 months.",
+            f"89% of homecare providers have had to turn away clients because they can't staff fast enough, and {company} probably isn't the exception.",
+            f"Every day {company} has an open caregiver role is $240 in lost revenue per unfilled shift.",
+            f"Only 9.6% of homecare applicants get hired, which means {company}'s recruiters are spending 16+ hours screening for every single placement.",
         ])
     elif "staffing" in industry or "recruiting" in industry or "employment" in industry:
         templates.extend([
-            f"When {company} has 20+ open reqs, every hour a candidate waits is an hour closer to them taking another offer.",
-            f"Staffing is a speed game, and {company} is probably losing candidates between application and first call.",
-            f"Your recruiters at {company} are likely spending more time screening than actually closing placements.",
+            f"When {company} has open reqs, conversion drops 8x if follow-up takes more than 5 minutes.",
+            f"With a 43% interview no-show rate across staffing, {company}'s recruiters are wasting almost half their scheduled screening time.",
+            f"Your recruiters at {company} are probably spending 16+ hours screening per role when only 1 in 10 applicants will get hired.",
         ])
 
     if employees:
         try:
             count = int(str(employees).replace(",", "").strip())
             if count > 100:
-                templates.append(f"Scaling past {count} employees means {company}'s hiring process is either automated or breaking.")
+                templates.append(f"At {count} employees with 77% turnover, {company} is burning through $171K+ a year just on replacement costs.")
             elif count > 20:
-                templates.append(f"At {company}'s size, every recruiter hour spent on unqualified screens is a placement lost.")
+                templates.append(f"At {company}'s size, the 43% interview no-show rate alone is costing your team hundreds of hours a year.")
         except (ValueError, TypeError):
             pass
 
     if location:
-        templates.append(f"The talent market in {location} is brutal right now, and {company} is feeling it on every open role.")
+        templates.append(f"The caregiver shortage in {location} means {company} is competing for the same shrinking talent pool as everyone else.")
 
     if not templates:
         templates = [
-            f"If {company} is hiring, you already know the biggest problem isn't finding applicants — it's screening them fast enough.",
-            f"Most companies like {company} lose their best candidates in the first 48 hours after they apply.",
-            f"The gap between when a candidate applies and when they hear back is where {company} is probably losing people.",
+            f"76% of recruiters say they got ghosted by candidates last year, and {company} is probably feeling that number firsthand.",
+            f"Most companies like {company} lose their best candidates in the first 2 hours after they apply.",
+            f"The gap between when a candidate applies and when {company} calls them back is where placements go to die.",
         ]
 
     return random.choice(templates)
