@@ -50,6 +50,7 @@ CAMPAIGN_NAMES = {
     "objection_responses.csv": "Realside AI — Objection Responses",
     "engaged_followups.csv": "Realside AI — Engaged Follow-ups",
     "dental_dso_outreach.csv": "Realside AI — Dental DSO Outreach",
+    "recruiting_social_proof.csv": "AI Recruiting - Social Proof",
 }
 
 
