@@ -18,6 +18,7 @@ import csv
 import json
 import logging
 import os
+import random
 import re
 import signal
 import sys
@@ -30,6 +31,14 @@ except ImportError:
     HOT_CATEGORIES = {"direct_intent", "meeting_booked"}
     def notify_hot_lead(*args, **kwargs):
         return {"slack": False, "sms": False, "logged": False}
+
+try:
+    from hot_lead_scorer import score_hot_lead, format_score_message
+except ImportError:
+    def score_hot_lead(*args, **kwargs):
+        return {"score": 0, "factors": [], "priority": "unknown"}
+    def format_score_message(*args, **kwargs):
+        return ""
 
 try:
     from meeting_prep import generate_and_send_prep, PREP_CATEGORIES
@@ -285,6 +294,8 @@ def append_engaged_prospect(
     contact_name: str,
     company_name: str,
     category: str,
+    campaign_id: str = "",
+    campaign_name: str = "",
     dry_run: bool = False,
 ):
     """Auto-append an interested prospect to the engaged_prospects.csv tracker."""
@@ -296,7 +307,10 @@ def append_engaged_prospect(
 
     # Read existing entries to avoid duplicates
     existing_emails = set()
-    fieldnames = ["contact_email", "contact_name", "company_name", "status", "added_at", "reply_category"]
+    fieldnames = [
+        "contact_email", "contact_name", "company_name", "status",
+        "added_at", "reply_category", "source_campaign_id", "source_campaign_name",
+    ]
     if os.path.exists(tracker_path):
         try:
             with open(tracker_path, newline="", encoding="utf-8") as f:
@@ -318,11 +332,13 @@ def append_engaged_prospect(
         "status": status,
         "added_at": datetime.now(timezone.utc).isoformat(),
         "reply_category": category,
+        "source_campaign_id": campaign_id,
+        "source_campaign_name": campaign_name,
     }
 
     if dry_run:
-        logging.info("[DRY-RUN] Would add %s (%s) to engaged tracker as '%s'",
-                     contact_email, company_name, status)
+        logging.info("[DRY-RUN] Would add %s (%s) to engaged tracker as '%s' (campaign: %s)",
+                     contact_email, company_name, status, campaign_name or campaign_id)
         return
 
     file_exists = os.path.exists(tracker_path)
@@ -332,8 +348,8 @@ def append_engaged_prospect(
             if not file_exists:
                 writer.writeheader()
             writer.writerow(row)
-        logging.info("Added %s to engaged tracker (status=%s, category=%s)",
-                     contact_email, status, category)
+        logging.info("Added %s to engaged tracker (status=%s, category=%s, campaign=%s)",
+                     contact_email, status, category, campaign_name or campaign_id)
     except Exception as e:
         logging.warning("Failed to update engaged tracker: %s", e)
 
@@ -600,6 +616,61 @@ Return ONLY a JSON object with these keys:
         return {"category": "positive_other", "sentiment": "neutral", "should_reply": False}
 
 
+# ---------------------------------------------------------------------------
+# A/B Testing Variants for response generation
+# ---------------------------------------------------------------------------
+
+RESPONSE_VARIANTS = {
+    "A": {
+        "name": "imperium_empathy",
+        "description": "Empathize first, reframe with logic/social proof, low-friction CTA",
+        "style_instructions": """Style: Empathize first, reframe with logic or social proof, end with low-friction CTA.
+- Friendly, confident, value-driven tone
+- Short, punchy sentences
+- Spark curiosity, don't fully answer questions over email""",
+    },
+    "B": {
+        "name": "direct_value",
+        "description": "Lead with a specific result/number, social proof first, curiosity-driven CTA",
+        "style_instructions": """Style: Lead with a specific, impressive result or number right away. Social proof first.
+- Open with a stat or case study result (e.g. "We just helped a 3-location med spa recover $14K/mo in missed calls")
+- Confident, direct tone. No fluff
+- End with a curiosity-driven question, not a calendar link push (e.g. "Curious what that would look like for {company}?")""",
+    },
+    "C": {
+        "name": "question_led",
+        "description": "Open with a provocative question, challenge assumptions, soft close",
+        "style_instructions": """Style: Open with a thought-provoking question that challenges their assumptions.
+- Start with "What if..." or "Have you ever wondered..." or a surprising question
+- Keep it conversational and curious, like a peer not a salesperson
+- End with a soft offer, not a hard CTA (e.g. "Happy to share how if you're curious")""",
+    },
+}
+
+# Variant weights: can be adjusted as winners emerge
+# Format: {"A": weight, "B": weight, "C": weight} — higher = more likely
+VARIANT_WEIGHTS_PATH = "output/variant_weights.json"
+
+
+def _load_variant_weights() -> dict:
+    """Load A/B test variant weights. Defaults to equal weights."""
+    try:
+        if os.path.exists(VARIANT_WEIGHTS_PATH):
+            with open(VARIANT_WEIGHTS_PATH, encoding="utf-8") as f:
+                return json.load(f)
+    except Exception:
+        pass
+    return {"A": 40, "B": 40, "C": 20}
+
+
+def _pick_variant() -> str:
+    """Pick a response variant based on weights."""
+    weights = _load_variant_weights()
+    variants = list(weights.keys())
+    weight_values = [weights.get(v, 1) for v in variants]
+    return random.choices(variants, weights=weight_values, k=1)[0]
+
+
 def generate_response(
     client: anthropic.Anthropic,
     category: str,
@@ -613,9 +684,15 @@ def generate_response(
 ) -> dict:
     """Use Claude to generate a response email based on the Imperium framework.
 
-    Returns dict with keys: subject, body
+    Picks a random A/B/C variant for testing different response styles.
+    Returns dict with keys: subject, body, variant
     """
     first_name = sender_name.split()[0] if sender_name else "Dylan"
+    variant = _pick_variant()
+    variant_config = RESPONSE_VARIANTS.get(variant, RESPONSE_VARIANTS["A"])
+
+    logging.info("Using response variant %s (%s) for %s",
+                 variant, variant_config["name"], contact_name or company_name)
 
     prompt = f"""Act as an expert SDR for Realside AI. Realside AI builds AI Employees for service businesses (med spas, dental, wellness). Products: AI Inbound Receptionist (answers calls 24/7, books appointments) and AI Outbound Agent (calls/texts leads within 2 mins, reactivates dormant CRM leads).
 
@@ -629,14 +706,12 @@ Their company: {company_name}
 CASE STUDIES FOR SOCIAL PROOF:
 {case_studies}
 
+{variant_config["style_instructions"]}
+
 Rules:
-- Empathize first, reframe with logic or social proof, end with low-friction CTA
 - Under 120 words
-- Friendly, confident, value-driven tone
-- Short, punchy sentences
 - Never use '--' or em dashes or en dashes of any kind
 - Always include calendar link: {calendar_link}
-- Spark curiosity, don't fully answer questions over email
 - For pricing: deflect to call first, if they push anchor at $2K/mo tied to 40 pre-qualified appointments
 - For "how does it work": redirect to demo call
 - For "send proof": offer to walk through case studies on a call
@@ -657,6 +732,7 @@ Return ONLY a JSON object with these keys:
         if "subject" not in result or "body" not in result:
             raise ValueError("Missing subject or body in response")
 
+        result["variant"] = variant
         return result
 
     except Exception as e:
@@ -671,6 +747,7 @@ Return ONLY a JSON object with these keys:
                 f"Here's my calendar if you have 15 minutes: {calendar_link}\n\n"
                 f"Best,\n{first_name}"
             ),
+            "variant": variant,
         }
 
 
@@ -748,6 +825,7 @@ def process_reply(
     claude_client: anthropic.Anthropic,
     case_studies: str,
     dry_run: bool = False,
+    campaign_name: str = "",
 ) -> dict:
     """Process a single reply: classify, generate response, send, tag.
 
@@ -794,7 +872,21 @@ def process_reply(
     else:
         logging.info("[DRY-RUN] Would tag %s as '%s'", contact_email, tag)
 
-    # Step 3b: Fire instant hot lead notification (SMS + Slack) for high-intent replies
+    # Step 3b: Score hot lead and fire notification (SMS + Slack) for high-intent replies
+    lead_score = {}
+    if category in HOT_CATEGORIES or category in ("how_much", "send_proof"):
+        lead_score = score_hot_lead(
+            contact_email=contact_email,
+            contact_name=contact_name,
+            company_name=company_name,
+            category=category,
+            reply_text=reply_text,
+            config=config,
+        )
+        score_msg = format_score_message(lead_score, contact_name, company_name)
+        if score_msg:
+            logging.info("Lead score: %s", score_msg)
+
     if category in HOT_CATEGORIES:
         notify_hot_lead(
             config=config,
@@ -837,6 +929,8 @@ def process_reply(
             contact_name=contact_name,
             company_name=company_name,
             category=category,
+            campaign_id=campaign_id,
+            campaign_name=campaign_name,
             dry_run=dry_run,
         )
 
@@ -914,6 +1008,11 @@ def process_reply(
         "tag_applied": tag,
         "reply_preview": reply_text[:200],
         "response_subject": response_data.get("subject", ""),
+        "response_variant": response_data.get("variant", "A"),
+        "source_campaign_id": campaign_id,
+        "source_campaign_name": campaign_name,
+        "lead_score": lead_score.get("score", 0),
+        "lead_priority": lead_score.get("priority", ""),
         "dry_run": dry_run,
     }
 
@@ -995,6 +1094,7 @@ def run_once(config: dict, dry_run: bool = False) -> dict:
                     claude_client=claude_client,
                     case_studies=case_studies,
                     dry_run=dry_run,
+                    campaign_name=campaign_name,
                 )
 
                 stats["replies_classified"] += 1

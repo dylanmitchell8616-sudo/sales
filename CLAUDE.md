@@ -71,12 +71,14 @@
 ## Important Files
 - `config.json` — Master config (API keys, sender info, ICP, campaign settings)
 - `sales_playbook.md` — Full objection handling scripts and reply management SOPs
-- `instantly_uploader.py` — Uploads CSVs to Instantly.ai campaigns
+- `instantly_uploader.py` — Uploads CSVs to Instantly.ai campaigns (owner-only filter, employee count gate, --cleanup mode)
 - `objection_handler.py` — AI-powered objection response generator
-- `engaged_followup_generator.py` — 8-touch warm follow-up sequence generator
+- `engaged_followup_generator.py` — Dynamic warm follow-up sequences (personalized by reply category: quick-close for direct_intent, value-build for how_much, proof-stack for send_proof, etc.)
 - `followup_generator.py` — 4-touch cold follow-up sequence generator
-- `reply_autopilot.py` — Fully automated reply manager daemon (polls Instantly API, classifies, responds, tags)
+- `reply_autopilot.py` — Fully automated reply manager with campaign attribution, A/B testing (3 response variants), and lead scoring
 - `run_reply_autopilot.sh` — Shell runner for reply autopilot daemon
 - `meeting_prep.py` — Auto-generates meeting prep briefs for hot leads (scrapes website, emails brief to Dylan)
-- `pipeline_metrics.py` — Exports pipeline metrics (reply rates, booking rates, conversion by campaign) to CSV/JSON
-- `run_full_pipeline.py` — End-to-end pipeline orchestration
+- `pipeline_metrics.py` — Exports pipeline metrics (reply rates, booking rates, conversion by campaign, A/B variant performance) to CSV/JSON
+- `hot_lead_scorer.py` — Scores hot leads 1-20 for callback prioritization (category, company fit, response speed, engagement depth)
+- `prospect_deduplicator.py` — Cross-campaign dedup with 30-day cooldown (master prospect list, prevents same person being hit twice)
+- `run_full_pipeline.py` — End-to-end pipeline orchestration (now includes dedup before upload, employee filters)

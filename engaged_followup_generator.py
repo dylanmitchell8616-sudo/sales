@@ -57,6 +57,115 @@ CHANNEL_MAP = {
     8: "email",
 }
 
+# Category-specific sequence strategies (tailored to WHY the prospect engaged)
+CATEGORY_SEQUENCES = {
+    "direct_intent": {
+        "num_touches": 4,  # They want to book — fewer, faster touches
+        "strategy": "quick-close",
+        "touches": [
+            "Confirm interest + share calendar link + mention a quick win stat",
+            "Share a 60-second case study video showing ROI for a similar business",
+            "Social proof: mention how many similar businesses signed up this month",
+            "Final direct ask: 'Still want to chat? Happy to work around your schedule'",
+        ],
+    },
+    "meeting_booked": {
+        "num_touches": 3,  # Already booked — just confirm and prep
+        "strategy": "meeting-confirm",
+        "touches": [
+            "Confirm booking, share what to expect on the call, offer to prep anything",
+            "Day-before reminder with a relevant case study for their industry",
+            "Day-of: 'Looking forward to our chat today. Here's one thing I'd love to show you'",
+        ],
+    },
+    "how_much": {
+        "num_touches": 6,  # Price-sensitive — build value first
+        "strategy": "value-build",
+        "touches": [
+            "Share a specific ROI example: '$X cost recovered $Y in revenue for [similar company]'",
+            "Case study: break down exact numbers (missed calls recovered, appointments booked)",
+            "Comparison: what they're losing monthly in missed calls vs. cost of AI receptionist",
+            "Offer a no-commitment demo to see the ROI calculator with their own numbers",
+            "Share a testimonial from a price-conscious client who saw fast payback",
+            "Direct offer: 'Want me to build a custom ROI projection for {company}? Takes 15 min on a call'",
+        ],
+    },
+    "send_proof": {
+        "num_touches": 5,  # Want evidence — proof-heavy sequence
+        "strategy": "proof-stack",
+        "touches": [
+            "Share most relevant case study with specific metrics for their industry",
+            "Video testimonial or Loom walkthrough of a live AI receptionist in action",
+            "Second case study: different vertical but impressive numbers",
+            "Offer a live demo: 'Want to hear the AI handle a call in real time? Takes 10 min'",
+            "Final: 'I've shared the data. Ready to see if it works for {company}? Here's my calendar'",
+        ],
+    },
+    "how_does_it_work": {
+        "num_touches": 5,  # Curious but need education
+        "strategy": "educate",
+        "touches": [
+            "Quick 2-sentence explainer + offer a 15-min demo to see it live",
+            "Share a 60-second Loom video showing the AI answering a real call",
+            "Case study: show the before/after at a similar business",
+            "FAQ style: answer the top 3 questions prospects ask, leave them wanting more",
+            "Direct: 'Best way to understand it is to see it. 15 minutes, no pressure: {calendar}'",
+        ],
+    },
+    "timing": {
+        "num_touches": 8,  # Not ready — stay top-of-mind, long nurture
+        "strategy": "long-nurture",
+        "touches": [
+            "Acknowledge timing, share a quick industry insight (no sales pitch)",
+            "Industry news or trend that's relevant to their business",
+            "Case study: 'When [company] was ready, here's what happened in 30 days'",
+            "Value content: blog post, guide, or checklist relevant to their pain point",
+            "Light touch: congratulate on something recent (new review, expansion, etc.)",
+            "Social proof: mention a competitor or peer who recently started",
+            "Check-in: 'Has anything changed on your end? Happy to pick this up when you're ready'",
+            "Breakup: 'No worries if the timing still isn't right. Door's always open'",
+        ],
+    },
+    "tried_before": {
+        "num_touches": 5,  # Skeptical — differentiation-heavy
+        "strategy": "differentiate",
+        "touches": [
+            "Acknowledge their experience, ask what specifically didn't work last time",
+            "Share how Realside is different from [common competitor/approach] with specific technical differences",
+            "Case study: client who also tried another AI solution first, then switched to Realside",
+            "Offer: 'Let me show you the difference in a 15-min side-by-side demo'",
+            "Final: 'Totally understand the skepticism. Would a free trial week change your mind?'",
+        ],
+    },
+    "already_have": {
+        "num_touches": 5,  # Has a solution — competitive displacement
+        "strategy": "displace",
+        "touches": [
+            "Acknowledge their current solution, ask how it's working for them",
+            "Share a specific capability they likely don't have (speed-to-lead, CRM reactivation)",
+            "Case study: client who switched from [competitor] and saw X% improvement",
+            "Offer: 'No pressure to switch. Would a quick comparison call be useful?'",
+            "Breakup: 'Sounds like you're in good hands. If anything changes, I'm here'",
+        ],
+    },
+}
+
+# Default sequence for categories not listed above
+DEFAULT_SEQUENCE = {
+    "num_touches": 8,
+    "strategy": "standard",
+    "touches": [
+        "Quick value add: reference their reply, share a quick stat or insight",
+        "Case study: share a relevant success story",
+        "Video/Loom approach: 'recorded a quick video for you'",
+        "Social proof: mention similar companies benefiting",
+        "Pain point amplifier: cost of inaction (missed calls, lost revenue)",
+        "Direct ask: 'are you still interested in exploring this?'",
+        "Alternative offer: free resource (audit, guide) even if timing isn't right",
+        "Breakup: 'no hard feelings, door is always open'",
+    ],
+}
+
 
 def load_config(config_path: str) -> dict:
     """Load configuration from JSON file."""
@@ -82,7 +191,7 @@ def load_case_studies(case_studies_path: str) -> str:
 
 
 def read_input_csv(filepath: str) -> list[dict]:
-    """Read engaged prospects from CSV."""
+    """Read engaged prospects from CSV. Accepts optional reply_category column."""
     required_columns = {
         "company_name", "domain", "contact_name", "contact_email",
         "contact_title", "original_message", "prospect_reply", "engagement_date",
@@ -148,10 +257,28 @@ def generate_engaged_followup_sequence(
     calendar_link: str,
     product_description: str,
     case_studies_text: str,
+    reply_category: str = "",
 ) -> list[dict]:
-    """Use Claude to generate an 8-touch warm follow-up sequence for an engaged prospect."""
+    """Use Claude to generate a personalized warm follow-up sequence.
 
-    prompt = f"""You are a world-class B2B sales copywriter specializing in warm follow-up sequences. Generate an 8-email follow-up sequence for a prospect who REPLIED POSITIVELY to our outreach but hasn't booked a meeting yet. These are warm leads who showed interest.
+    Tailors the sequence strategy based on reply_category (how_much gets value-build,
+    direct_intent gets quick-close, timing gets long-nurture, etc.).
+    """
+    # Pick the right sequence strategy based on reply category
+    seq_config = CATEGORY_SEQUENCES.get(reply_category, DEFAULT_SEQUENCE)
+    num_touches = seq_config["num_touches"]
+    strategy = seq_config["strategy"]
+    touches = seq_config["touches"]
+
+    touches_str = "\n".join(f"{i+1}. {t}" for i, t in enumerate(touches))
+
+    strategy_label = f"STRATEGY: {strategy.upper()} ({reply_category or 'general'})"
+
+    prompt = f"""You are a world-class B2B sales copywriter specializing in warm follow-up sequences. Generate a {num_touches}-email follow-up sequence for a prospect who REPLIED POSITIVELY to our outreach but hasn't booked a meeting yet.
+
+{strategy_label}
+The prospect's reply was classified as: {reply_category or 'positive interest'}
+Tailor every email to address the specific reason they replied.
 
 PROSPECT INFO:
 - Company: {company_name}
@@ -163,7 +290,7 @@ PROSPECT INFO:
 ORIGINAL OUTREACH MESSAGE:
 {original_message}
 
-PROSPECT'S POSITIVE REPLY:
+PROSPECT'S REPLY:
 {prospect_reply}
 
 SENDER INFO:
@@ -177,19 +304,12 @@ PRODUCT DESCRIPTION:
 CASE STUDIES FOR SOCIAL PROOF:
 {case_studies_text}
 
-FOLLOW-UP SEQUENCE (8 touches, each with a different angle):
+FOLLOW-UP SEQUENCE ({num_touches} touches):
 
-1. Quick value add — reference their reply, share a quick stat or insight relevant to their business
-2. Case study — share a relevant success story from the case studies above
-3. Video/Loom approach — "recorded a quick video for you" showing how it would work for their business
-4. Social proof — mention similar companies in their industry that are benefiting
-5. Pain point amplifier — highlight the cost of inaction (missed calls, lost revenue, slow follow-up)
-6. Direct ask — straightforward "are you still interested in exploring this?"
-7. Alternative offer — "even if timing isn't right, here's a free resource" (audit, guide, etc.)
-8. Breakup email — "no hard feelings, door is always open"
+{touches_str}
 
 RULES:
-1. Generate exactly 8 follow-up emails
+1. Generate exactly {num_touches} follow-up emails
 2. Each email MUST be under 120 words
 3. Tone: friendly, confident, conversational. Not pushy or salesy
 4. NEVER use '--' (double dashes) anywhere in the messaging
@@ -202,7 +322,7 @@ RULES:
 11. Each email needs a unique, compelling subject line (not "Re:" prefixed)
 
 Return your response as a JSON array of objects, each with these exact keys:
-- "followup_number": integer (1 through 8)
+- "followup_number": integer (1 through {num_touches})
 - "subject": the email subject line
 - "body": the full email body (plain text, use \\n for newlines)
 """
@@ -237,7 +357,7 @@ Return your response as a JSON array of objects, each with these exact keys:
                 "subject": f"Quick thought for {company_name}",
                 "body": f"Hi {contact_name},\n\nThanks for your reply! I wanted to share something relevant to {company_name}.\n\nWould love to show you how this works. Grab a time here: {calendar_link}\n\nBest,\n{sender_name}",
             }
-            for i in range(1, 9)
+            for i in range(1, num_touches + 1)
         ]
 
     return result
@@ -251,8 +371,8 @@ def write_output_csv(filepath: str, results: list[dict]):
 
     fieldnames = [
         "company_name", "domain", "contact_name", "contact_email", "contact_title",
-        "followup_number", "subject", "body", "scheduled_send_date",
-        "sender_email", "sender_name", "channel",
+        "reply_category", "sequence_strategy", "followup_number", "subject", "body",
+        "scheduled_send_date", "sender_email", "sender_name", "channel",
     ]
     with open(filepath, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
@@ -315,9 +435,15 @@ def main():
         prospect_reply = prospect["prospect_reply"].strip()
         engagement_date = parse_engagement_date(prospect["engagement_date"])
 
-        print(f"\n[{i}/{len(prospects)}] Generating warm follow-up sequence for {contact_name} at {company_name}...")
+        reply_category = prospect.get("reply_category", "").strip()
+        seq_config = CATEGORY_SEQUENCES.get(reply_category, DEFAULT_SEQUENCE)
+        strategy = seq_config["strategy"]
 
-        # Generate follow-up sequence
+        print(f"\n[{i}/{len(prospects)}] {contact_name} at {company_name} "
+              f"(category={reply_category or 'general'}, strategy={strategy}, "
+              f"touches={seq_config['num_touches']})")
+
+        # Generate follow-up sequence (personalized by reply category)
         followups = generate_engaged_followup_sequence(
             client=client,
             company_name=company_name,
@@ -332,6 +458,7 @@ def main():
             calendar_link=calendar_link,
             product_description=product_description,
             case_studies_text=case_studies_text,
+            reply_category=reply_category,
         )
 
         # Compute send dates (one per business day)
@@ -348,6 +475,8 @@ def main():
                 "contact_name": contact_name,
                 "contact_email": contact_email,
                 "contact_title": contact_title,
+                "reply_category": reply_category,
+                "sequence_strategy": strategy,
                 "followup_number": followup_num,
                 "subject": followup.get("subject", ""),
                 "body": followup.get("body", ""),

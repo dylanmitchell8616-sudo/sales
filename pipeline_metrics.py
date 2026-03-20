@@ -187,8 +187,14 @@ def compute_reply_metrics(processed_replies: dict) -> dict:
     categories = Counter()
     actions = Counter()
     sentiments = Counter()
+    campaigns = Counter()
+    variants_sent = Counter()
+    variants_replied = Counter()  # track secondary replies per variant
     responses_sent = 0
     responses_failed = 0
+
+    # Track emails that sent a response, grouped by variant
+    responded_emails = {}  # {email: variant}
 
     for reply_id, data in processed_replies.items():
         if not isinstance(data, dict):
@@ -196,6 +202,23 @@ def compute_reply_metrics(processed_replies: dict) -> dict:
         categories[data.get("category", "unknown")] += 1
         actions[data.get("action", "unknown")] += 1
         sentiments[data.get("sentiment", "unknown")] += 1
+
+        # Campaign attribution
+        src = data.get("source_campaign_name") or data.get("source_campaign_id", "unknown")
+        if src:
+            campaigns[src] += 1
+
+        # A/B variant tracking
+        variant = data.get("response_variant", "")
+        email = data.get("contact_email", "").lower()
+        if data.get("response_sent") and variant:
+            variants_sent[variant] += 1
+            responded_emails[email] = variant
+        elif email in responded_emails:
+            # This is a secondary reply (they replied AFTER we sent a variant response)
+            prev_variant = responded_emails[email]
+            variants_replied[prev_variant] += 1
+
         if data.get("response_sent"):
             responses_sent += 1
         if data.get("action") == "auto_reply_failed":
@@ -208,11 +231,22 @@ def compute_reply_metrics(processed_replies: dict) -> dict:
         if k not in ("not_interested", "negative_other", "unknown", "error")
     )
 
+    # Compute variant performance (secondary reply rate per variant)
+    variant_performance = {}
+    for v, sent_count in variants_sent.items():
+        reply_count = variants_replied.get(v, 0)
+        variant_performance[v] = {
+            "responses_sent": sent_count,
+            "secondary_replies": reply_count,
+            "secondary_reply_rate": round(reply_count / sent_count * 100, 1) if sent_count > 0 else 0,
+        }
+
     return {
         "total_replies": total,
         "by_category": dict(categories.most_common()),
         "by_action": dict(actions.most_common()),
         "by_sentiment": dict(sentiments.most_common()),
+        "by_campaign": dict(campaigns.most_common()),
         "responses_sent": responses_sent,
         "responses_failed": responses_failed,
         "booking_signals": booked,
@@ -220,6 +254,7 @@ def compute_reply_metrics(processed_replies: dict) -> dict:
         "interested_total": interested,
         "interest_rate": round(interested / total * 100, 1) if total > 0 else 0,
         "not_interested": categories.get("not_interested", 0) + categories.get("negative_other", 0),
+        "variant_performance": variant_performance,
     }
 
 

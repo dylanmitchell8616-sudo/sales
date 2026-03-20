@@ -718,6 +718,28 @@ Examples:
     # ------------------------------------------------------------------
     # PHASE 3: Upload to Instantly
     # ------------------------------------------------------------------
+    # ------------------------------------------------------------------
+    # Phase 2d: Cross-campaign deduplication
+    # ------------------------------------------------------------------
+    dedup_script = str(BASE_DIR / "prospect_deduplicator.py")
+    output_dir = str(BASE_DIR / cfg.get("output_dir", "output"))
+    if os.path.exists(dedup_script):
+        print_status("Running cross-campaign deduplication...")
+        import glob as globmod
+        csv_files = globmod.glob(os.path.join(output_dir, "*.csv"))
+        if csv_files:
+            dedup_cmd = [sys.executable, dedup_script, "--csvs"] + csv_files
+            if args.dry_run:
+                dedup_cmd.append("--dry-run")
+            rc, out, err = run_subprocess(dedup_cmd, timeout=120)
+            if out:
+                for line in out.strip().split("\n"):
+                    print(f"    | {line}")
+            if rc == 0:
+                print_status("Deduplication complete", "ok")
+            else:
+                print_status("Deduplication had issues (non-fatal)", "warn")
+
     if args.skip_upload:
         print_phase(3, "Upload to Instantly.ai (SKIPPED)")
         print_status("Skipped via --skip-upload flag", "skip")
