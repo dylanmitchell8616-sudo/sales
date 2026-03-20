@@ -342,7 +342,7 @@ def generate_first_line_fallback(lead: dict) -> str:
 
 
 def process_leads(input_csv: str, config: dict, enrich: bool = False,
-                  dry_run: bool = False) -> list:
+                  dry_run: bool = False, limit: int = 0) -> list:
     """Read leads CSV, generate personalized emails for each."""
     with open(input_csv, newline="", encoding="utf-8-sig") as f:
         reader = csv.DictReader(f)
@@ -357,7 +357,9 @@ def process_leads(input_csv: str, config: dict, enrich: bool = False,
 
         rows = list(reader)
 
-    logging.info(f"Loaded {len(rows)} leads from {input_csv}")
+    if limit:
+        rows = rows[:limit]
+    logging.info(f"Processing {len(rows)} leads from {input_csv}")
 
     calendar_link = config.get("calendar_link", "https://calendly.com/realsideai")
     sender_name = config.get("sender_name", "Dylan Mitchell")
@@ -520,11 +522,8 @@ def main():
     print(f"Mode:   {'DRY-RUN' if args.dry_run else 'LIVE'}")
     print(f"{'='*60}\n")
 
-    rows = process_leads(args.input, config, enrich=args.enrich, dry_run=args.dry_run)
-
-    if args.limit:
-        # Each lead generates 3 rows (3 steps), so limit * 3
-        rows = rows[:args.limit * 3]
+    rows = process_leads(args.input, config, enrich=args.enrich, dry_run=args.dry_run,
+                         limit=args.limit)
 
     if args.dry_run:
         print(f"\n[DRY-RUN] Would write {len(rows)} rows to {output_path}")
