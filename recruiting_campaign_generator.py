@@ -146,8 +146,14 @@ def detect_columns(headers: list) -> dict:
             mapping["last_name"] = header_lower[candidate]
             break
 
+    # Full name (Apollo uses this)
+    for candidate in ["full name", "full_name", "name", "contact_name"]:
+        if candidate in header_lower:
+            mapping["full_name"] = header_lower[candidate]
+            break
+
     # Company
-    for candidate in ["company", "company_name", "company name", "organization",
+    for candidate in ["company name", "company", "company_name", "organization",
                        "organization name", "account_name"]:
         if candidate in header_lower:
             mapping["company"] = header_lower[candidate]
@@ -166,8 +172,8 @@ def detect_columns(headers: list) -> dict:
             mapping["domain"] = header_lower[candidate]
             break
 
-    # Employee count
-    for candidate in ["employees", "employee_count", "# employees", "number of employees",
+    # Employee count (Apollo uses "# employees")
+    for candidate in ["# employees", "employees", "employee_count", "number of employees",
                        "company size", "employee count"]:
         if candidate in header_lower:
             mapping["employees"] = header_lower[candidate]
@@ -179,18 +185,36 @@ def detect_columns(headers: list) -> dict:
             mapping["industry"] = header_lower[candidate]
             break
 
-    # City / Location
+    # City / Location (person city first, then company city)
     for candidate in ["city", "person city", "company city", "location",
-                       "headquarters", "state", "person state"]:
+                       "headquarters"]:
         if candidate in header_lower:
             mapping["location"] = header_lower[candidate]
             break
 
+    # State (for combined location)
+    for candidate in ["state", "person state", "company state"]:
+        if candidate in header_lower:
+            mapping["state"] = header_lower[candidate]
+            break
+
     # LinkedIn
-    for candidate in ["linkedin", "linkedin url", "person linkedin url",
+    for candidate in ["person linkedin url", "linkedin", "linkedin url",
                        "linkedin_url", "contact_linkedin"]:
         if candidate in header_lower:
             mapping["linkedin"] = header_lower[candidate]
+            break
+
+    # Seniority (Apollo field)
+    for candidate in ["seniority", "person seniority"]:
+        if candidate in header_lower:
+            mapping["seniority"] = header_lower[candidate]
+            break
+
+    # Email quality/status (Apollo fields for filtering)
+    for candidate in ["email status", "email_status"]:
+        if candidate in header_lower:
+            mapping["email_status"] = header_lower[candidate]
             break
 
     return mapping
@@ -344,19 +368,43 @@ def process_leads(input_csv: str, config: dict, enrich: bool = False,
     output_rows = []
     first_line_count = 0
 
+    skipped_email = 0
+    skipped_status = 0
+
     for i, row in enumerate(rows):
         email = row.get(col_map.get("email", ""), "").strip()
         if not email or "@" not in email:
+            skipped_email += 1
+            continue
+
+        # Skip invalid/risky emails (Apollo email_status filter)
+        email_status = row.get(col_map.get("email_status", ""), "").strip().lower()
+        if email_status and email_status not in ("verified", "valid", ""):
+            skipped_status += 1
             continue
 
         first_name = row.get(col_map.get("first_name", ""), "").strip()
         last_name = row.get(col_map.get("last_name", ""), "").strip()
+
+        # Fallback: parse full name if first/last are empty
+        if not first_name and "full_name" in col_map:
+            full = row.get(col_map["full_name"], "").strip()
+            if full:
+                parts = full.split(" ", 1)
+                first_name = parts[0]
+                last_name = parts[1] if len(parts) > 1 else ""
+
         company = row.get(col_map.get("company", ""), "").strip()
         title = row.get(col_map.get("title", ""), "").strip()
         domain = row.get(col_map.get("domain", ""), "").strip()
         employees = row.get(col_map.get("employees", ""), "").strip()
         industry = row.get(col_map.get("industry", ""), "").strip()
         location = row.get(col_map.get("location", ""), "").strip()
+        state = row.get(col_map.get("state", ""), "").strip()
+        if state and location:
+            location = f"{location}, {state}"
+        elif state:
+            location = state
         linkedin = row.get(col_map.get("linkedin", ""), "").strip()
 
         lead = {
@@ -421,6 +469,10 @@ def process_leads(input_csv: str, config: dict, enrich: bool = False,
         if (i + 1) % 500 == 0:
             logging.info(f"  Processed {i + 1}/{len(rows)} leads...")
 
+    if skipped_email:
+        logging.info(f"Skipped {skipped_email} leads with no/invalid email")
+    if skipped_status:
+        logging.info(f"Skipped {skipped_status} leads with unverified email status")
     logging.info(f"Generated {first_line_count} first lines, {len(output_rows)} total email rows")
     return output_rows
 
