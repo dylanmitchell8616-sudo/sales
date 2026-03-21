@@ -49,6 +49,7 @@ TARGET_TITLES = [
 
 # CSVs that contain leads needing enrichment
 ENRICHABLE_CSVS = [
+    "ns_leads_master.csv",
     "icp_prospects.csv",
     "prospect_emails.csv",
     "case_study_emails.csv",
