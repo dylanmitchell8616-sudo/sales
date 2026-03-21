@@ -193,7 +193,7 @@ NICHES = {
 }
 
 # Apify actor ID for Google Maps Scraper (Compass)
-APIFY_ACTOR_ID = "compass/crawler-google-places"
+APIFY_ACTOR_ID = "compass~crawler-google-places"
 APIFY_BASE_URL = "https://api.apify.com/v2"
 
 
