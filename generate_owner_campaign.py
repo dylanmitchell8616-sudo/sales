@@ -144,7 +144,7 @@ def generate_initial_email(owner):
 
     body = f"""Hi {first},
 
-I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for {company}.
+I'm Dylan, a student at Dalhousie University here in Halifax. I build custom AI voice agents for local businesses — and I already built one for {company}.
 
 {hooks['pain']}. The agent I made for you {hooks['value']}.
 
