@@ -17,9 +17,11 @@ import csv
 import json
 import logging
 import os
+import re
 import sys
 import time
 from datetime import datetime
+from urllib.parse import urljoin
 
 try:
     import requests
@@ -225,13 +227,14 @@ def run_apify_scrape(api_key: str, search_queries: list, max_results: int = 100)
     """Run the Apify Google Maps scraper and return results."""
     headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
 
-    # Build the actor input
+    # Build the actor input — scrapeEmails pulls emails from listings + websites
     actor_input = {
         "searchStringsArray": search_queries,
         "maxCrawledPlacesPerSearch": max_results,
         "language": "en",
         "deeperCityScrape": False,
         "onePerDomain": False,
+        "scrapeEmails": True,
     }
 
     # Start the actor run
@@ -277,9 +280,92 @@ def run_apify_scrape(api_key: str, search_queries: list, max_results: int = 100)
     return items
 
 
+# Common junk emails to filter out
+JUNK_EMAIL_PATTERNS = [
+    "noreply", "no-reply", "donotreply", "do-not-reply",
+    "mailer-daemon", "postmaster", "webmaster",
+    "sentry", "example.com", "test@", "wix.com",
+    "squarespace.com", "wordpress.com", "godaddy.com",
+]
+
+# Email regex for scraping websites
+EMAIL_REGEX = re.compile(
+    r"[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}",
+    re.IGNORECASE,
+)
+
+
+def is_valid_email(email: str) -> bool:
+    """Filter out junk/generic emails."""
+    email_lower = email.lower().strip()
+    if not email_lower or len(email_lower) > 254:
+        return False
+    for pattern in JUNK_EMAIL_PATTERNS:
+        if pattern in email_lower:
+            return False
+    # Must have a real TLD
+    if not re.match(r".+@.+\..{2,}", email_lower):
+        return False
+    return True
+
+
+def scrape_email_from_website(website: str, timeout: int = 10) -> str:
+    """Try to scrape an email from a business website's contact/about pages."""
+    if not website:
+        return ""
+
+    # Normalize URL
+    if not website.startswith("http"):
+        website = "https://" + website
+
+    # Pages most likely to have contact emails
+    paths_to_try = ["", "/contact", "/contact-us", "/about", "/about-us"]
+
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
+    }
+
+    found_emails = []
+
+    for path in paths_to_try:
+        try:
+            url = urljoin(website, path)
+            resp = requests.get(url, headers=headers, timeout=timeout, allow_redirects=True)
+            if resp.status_code != 200:
+                continue
+
+            # Find all emails on the page
+            raw_emails = EMAIL_REGEX.findall(resp.text)
+            for email in raw_emails:
+                if is_valid_email(email):
+                    found_emails.append(email.lower().strip())
+
+            # If we found something on homepage or contact page, that's enough
+            if found_emails:
+                break
+
+        except (requests.RequestException, Exception):
+            continue
+
+    if not found_emails:
+        return ""
+
+    # Prefer emails that match the business domain
+    domain = website.replace("https://", "").replace("http://", "").split("/")[0].lower()
+    domain_emails = [e for e in found_emails if domain in e]
+    if domain_emails:
+        # Prefer info@, contact@, hello@ over random addresses
+        for prefix in ["info@", "contact@", "hello@", "office@", "admin@"]:
+            for e in domain_emails:
+                if e.startswith(prefix):
+                    return e
+        return domain_emails[0]
+
+    return found_emails[0]
+
+
 def parse_apify_result(item: dict, niche: str, niche_label: str, services: list = None) -> dict:
     """Parse a single Apify Google Maps result into a lead record."""
-    # Extract owner/contact name from the place
     title = item.get("title", "")
     phone = item.get("phone", "")
     website = item.get("website", "")
@@ -289,6 +375,15 @@ def parse_apify_result(item: dict, niche: str, niche_label: str, services: list 
     reviews = item.get("reviewsCount", 0)
     category = item.get("categoryName", "")
     place_url = item.get("url", "")
+
+    # Get email from Apify's scrapeEmails feature
+    email = ""
+    apify_emails = item.get("emails", [])
+    if apify_emails:
+        # Filter and pick the best one
+        valid = [e for e in apify_emails if is_valid_email(e)]
+        if valid:
+            email = valid[0]
 
     # Clean phone
     if phone:
@@ -301,6 +396,7 @@ def parse_apify_result(item: dict, niche: str, niche_label: str, services: list 
 
     return {
         "company_name": title,
+        "email": email,
         "phone": phone,
         "website": website,
         "domain": domain,
@@ -350,7 +446,7 @@ def save_leads_csv(leads: list, output_path: str):
         return
 
     fieldnames = [
-        "company_name", "phone", "website", "domain", "address", "city",
+        "company_name", "email", "phone", "website", "domain", "address", "city",
         "province", "rating", "reviews", "category", "niche", "niche_label",
         "services", "google_maps_url",
     ]
@@ -465,6 +561,24 @@ def main():
     unique_leads = deduplicate_leads(all_leads)
     logging.info(f"\nTotal raw: {len(all_leads)} → Deduplicated: {len(unique_leads)}")
 
+    # Scrape emails from websites for leads that Apify didn't find emails for
+    missing_email = [l for l in unique_leads if not l.get("email")]
+    if missing_email:
+        logging.info(f"\nScraping emails from {len(missing_email)} websites (no Apify email)...")
+        scraped_count = 0
+        for i, lead in enumerate(missing_email):
+            if lead.get("website"):
+                email = scrape_email_from_website(lead["website"])
+                if email:
+                    lead["email"] = email
+                    scraped_count += 1
+                if (i + 1) % 50 == 0:
+                    logging.info(f"  Processed {i + 1}/{len(missing_email)} websites, found {scraped_count} emails")
+        logging.info(f"  Website scraping found {scraped_count} additional emails")
+
+    total_with_email = len([l for l in unique_leads if l.get("email")])
+    logging.info(f"  Total leads with email: {total_with_email}/{len(unique_leads)}")
+
     # Save master CSV
     master_path = os.path.join(OUTPUT_DIR, "ns_leads_all.csv")
     save_leads_csv(unique_leads, master_path)
@@ -481,9 +595,11 @@ def main():
     logging.info("SCRAPE COMPLETE")
     logging.info("=" * 60)
     for niche_key, niche_data in niches_to_run.items():
-        count = len([l for l in unique_leads if l["niche"] == niche_key])
-        logging.info(f"  {niche_data['label']:25s} {count:>5} leads")
-    logging.info(f"  {'TOTAL':25s} {len(unique_leads):>5} leads")
+        niche_leads = [l for l in unique_leads if l["niche"] == niche_key]
+        with_email = len([l for l in niche_leads if l.get("email")])
+        logging.info(f"  {niche_data['label']:25s} {len(niche_leads):>5} leads  ({with_email} with email)")
+    total_emails = len([l for l in unique_leads if l.get("email")])
+    logging.info(f"  {'TOTAL':25s} {len(unique_leads):>5} leads  ({total_emails} with email)")
     logging.info("=" * 60)
 
 
