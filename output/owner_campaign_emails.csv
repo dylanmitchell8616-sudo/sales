@@ -1,24 +1,24 @@
 email,first_name,last_name,company_name,title,industry,sequence_step,delay_days,subject,body
 joe@foxgrovebenefits.com,Joe,Macdonald,Foxgrove Benefit Consulting,Owner and President,Insurance,1,0,"Quick idea for Foxgrove Benefit Consulting, Joe","Hi Joe,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Foxgrove Benefit Consulting.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for Foxgrove Benefit Consulting.
 
-I know insurance brokers juggle a ton of inbound calls from both prospects and existing clients. I built something that handles your inbound calls, qualifies new prospects, and routes claims to the right person automatically.
+I know insurance brokers have thousands of clients in the CRM that haven't been contacted in months. The agent I made for you calls through your CRM list, re-engages past clients, identifies upsell opportunities, and books policy reviews directly into your calendar.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
 joe@foxgrovebenefits.com,Joe,Macdonald,Foxgrove Benefit Consulting,Owner and President,Insurance,2,3,,"Hi Joe,
 
-Following up — I was thinking about how Foxgrove Benefit Consulting handles after-hours calls from clients with claims. Wanted to bump this up in case it got buried.
+Following up — I was thinking about how many lapsed clients are sitting in Foxgrove Benefit Consulting's CRM right now with no outreach. Wanted to bump this up in case it got buried.
 
-I built an AI that handles your inbound calls, qualifies new prospects, and routes claims to the right person automatically. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for Foxgrove Benefit Consulting that calls through your CRM list, re-engages past clients, identifies upsell opportunities, and books policy reviews directly into your calendar. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 joe@foxgrovebenefits.com,Joe,Macdonald,Foxgrove Benefit Consulting,Owner and President,Insurance,3,5,,"Hi Joe,
 
-Quick thought — an insurance broker here in NS told me 30% of his new business came from calls he almost missed.
+Quick thought — an insurance broker told me he reactivated 22 policies in the first month just by having AI call his old book of business.
 
 Would a quick call be worth 10 minutes of your time? calendly.com/realsideai
 
@@ -31,13 +31,13 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Foxgrove Benefit Consulting,
 Dylan"
-info@ableelectric.ca,Michael,Castellani,Able Electric,Owner and President,Construction,1,0,Michael — Dal student with something for Able Electric,"Hi Michael,
+info@ableelectric.ca,Michael,Castellani,Able Electric,Owner and President,Construction,1,0,For Michael at Able Electric,"Hi Michael,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Able Electric.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for Able Electric.
 
-I know contractors miss calls from potential clients when they're on-site all day. I built something that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
+I know contractors miss calls from potential clients when they're on-site all day. The agent I made for you answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -45,7 +45,7 @@ info@ableelectric.ca,Michael,Castellani,Able Electric,Owner and President,Constr
 
 I was thinking about how many estimate requests Able Electric might miss when the crew is on-site. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for Able Electric that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 info@ableelectric.ca,Michael,Castellani,Able Electric,Owner and President,Construction,3,5,,"Hi Michael,
@@ -65,11 +65,11 @@ All the best with Able Electric,
 Dylan"
 chris@tartaninteriors.ca,Chris,Chisholm,Tartan Interiors,Owner,Construction,1,0,"Chris, quick question about Tartan Interiors","Hi Chris,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Tartan Interiors.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for Tartan Interiors.
 
-I know contractors miss calls from potential clients when they're on-site all day. I built something that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
+I know contractors miss calls from potential clients when they're on-site all day. The agent I made for you answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -77,7 +77,7 @@ chris@tartaninteriors.ca,Chris,Chisholm,Tartan Interiors,Owner,Construction,2,3,
 
 I was thinking about how many estimate requests Tartan Interiors might miss when the crew is on-site. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for Tartan Interiors that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 chris@tartaninteriors.ca,Chris,Chisholm,Tartan Interiors,Owner,Construction,3,5,,"Hi Chris,
@@ -95,13 +95,13 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Tartan Interiors,
 Dylan"
-mike.crowe@totaldemo.ca,Michael,Crowe,Total Demolition,Owner,Construction,1,0,"Michael, quick question about Total Demolition","Hi Michael,
+mike.crowe@totaldemo.ca,Michael,Crowe,Total Demolition,Owner,Construction,1,0,"Quick idea for Total Demolition, Michael","Hi Michael,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Total Demolition.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for Total Demolition.
 
-I know contractors miss calls from potential clients when they're on-site all day. I built something that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
+I know contractors miss calls from potential clients when they're on-site all day. The agent I made for you answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -109,7 +109,7 @@ mike.crowe@totaldemo.ca,Michael,Crowe,Total Demolition,Owner,Construction,2,3,,"
 
 I was thinking about how many estimate requests Total Demolition might miss when the crew is on-site. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for Total Demolition that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 mike.crowe@totaldemo.ca,Michael,Crowe,Total Demolition,Owner,Construction,3,5,,"Hi Michael,
@@ -127,13 +127,13 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Total Demolition,
 Dylan"
-sean@allinprecisionpainting.com,Sean,Cameron,All-In Precision Painting,Owner,Construction,1,0,"Sean, quick question about All-In Precision Painting","Hi Sean,
+sean@allinprecisionpainting.com,Sean,Cameron,All-In Precision Painting,Owner,Construction,1,0,Sean — Dal student with something for All-In Precision Painting,"Hi Sean,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across All-In Precision Painting.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for All-In Precision Painting.
 
-I know contractors miss calls from potential clients when they're on-site all day. I built something that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
+I know contractors miss calls from potential clients when they're on-site all day. The agent I made for you answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -141,7 +141,7 @@ sean@allinprecisionpainting.com,Sean,Cameron,All-In Precision Painting,Owner,Con
 
 I was thinking about how many estimate requests All-In Precision Painting might miss when the crew is on-site. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for All-In Precision Painting that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 sean@allinprecisionpainting.com,Sean,Cameron,All-In Precision Painting,Owner,Construction,3,5,,"Hi Sean,
@@ -159,13 +159,13 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with All-In Precision Painting,
 Dylan"
-ccoffice@eastlink.ca,Kevin,Caines,CC Office Installation,Co-Owner,Construction,1,0,Kevin — Dal student with something for CC Office Installation,"Hi Kevin,
+ccoffice@eastlink.ca,Kevin,Caines,CC Office Installation,Co-Owner,Construction,1,0,"Quick idea for CC Office Installation, Kevin","Hi Kevin,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across CC Office Installation.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for CC Office Installation.
 
-I know contractors miss calls from potential clients when they're on-site all day. I built something that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
+I know contractors miss calls from potential clients when they're on-site all day. The agent I made for you answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -173,7 +173,7 @@ ccoffice@eastlink.ca,Kevin,Caines,CC Office Installation,Co-Owner,Construction,2
 
 I was thinking about how many estimate requests CC Office Installation might miss when the crew is on-site. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for CC Office Installation that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 ccoffice@eastlink.ca,Kevin,Caines,CC Office Installation,Co-Owner,Construction,3,5,,"Hi Kevin,
@@ -191,13 +191,13 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with CC Office Installation,
 Dylan"
-mark@concretepenneys.com,Mark,Penney,Concrete Penney's Contracting,Owner and Operator,Construction,1,0,For Mark at Concrete Penney's Contracting,"Hi Mark,
+mark@concretepenneys.com,Mark,Penney,Concrete Penney's Contracting,Owner and Operator,Construction,1,0,"Mark, quick question about Concrete Penney's Contracting","Hi Mark,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Concrete Penney's Contracting.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for Concrete Penney's Contracting.
 
-I know contractors miss calls from potential clients when they're on-site all day. I built something that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
+I know contractors miss calls from potential clients when they're on-site all day. The agent I made for you answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -205,7 +205,7 @@ mark@concretepenneys.com,Mark,Penney,Concrete Penney's Contracting,Owner and Ope
 
 I was thinking about how many estimate requests Concrete Penney's Contracting might miss when the crew is on-site. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for Concrete Penney's Contracting that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 mark@concretepenneys.com,Mark,Penney,Concrete Penney's Contracting,Owner and Operator,Construction,3,5,,"Hi Mark,
@@ -225,11 +225,11 @@ All the best with Concrete Penney's Contracting,
 Dylan"
 finwick@theforeverroof.com,Finwick,King,The Forever Roof,Owner and President,Construction,1,0,For Finwick at The Forever Roof,"Hi Finwick,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across The Forever Roof.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for The Forever Roof.
 
-I know contractors miss calls from potential clients when they're on-site all day. I built something that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
+I know contractors miss calls from potential clients when they're on-site all day. The agent I made for you answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -237,7 +237,7 @@ finwick@theforeverroof.com,Finwick,King,The Forever Roof,Owner and President,Con
 
 I was thinking about how many estimate requests The Forever Roof might miss when the crew is on-site. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for The Forever Roof that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 finwick@theforeverroof.com,Finwick,King,The Forever Roof,Owner and President,Construction,3,5,,"Hi Finwick,
@@ -255,13 +255,13 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with The Forever Roof,
 Dylan"
-info@evergreenelectric.ca,Scott,Coulter,Evergreen Electric,Business Owner,Construction,1,0,"Scott, quick question about Evergreen Electric","Hi Scott,
+info@evergreenelectric.ca,Scott,Coulter,Evergreen Electric,Business Owner,Construction,1,0,For Scott at Evergreen Electric,"Hi Scott,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Evergreen Electric.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for Evergreen Electric.
 
-I know contractors miss calls from potential clients when they're on-site all day. I built something that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
+I know contractors miss calls from potential clients when they're on-site all day. The agent I made for you answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -269,7 +269,7 @@ info@evergreenelectric.ca,Scott,Coulter,Evergreen Electric,Business Owner,Constr
 
 I was thinking about how many estimate requests Evergreen Electric might miss when the crew is on-site. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for Evergreen Electric that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 info@evergreenelectric.ca,Scott,Coulter,Evergreen Electric,Business Owner,Construction,3,5,,"Hi Scott,
@@ -287,13 +287,13 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Evergreen Electric,
 Dylan"
-info@evergreenelectric.ca,Justin,Gillard,Evergreen Electric,Company Owner,Construction,1,0,Justin — Dal student with something for Evergreen Electric,"Hi Justin,
+info@evergreenelectric.ca,Justin,Gillard,Evergreen Electric,Company Owner,Construction,1,0,For Justin at Evergreen Electric,"Hi Justin,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Evergreen Electric.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for Evergreen Electric.
 
-I know contractors miss calls from potential clients when they're on-site all day. I built something that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
+I know contractors miss calls from potential clients when they're on-site all day. The agent I made for you answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -301,7 +301,7 @@ info@evergreenelectric.ca,Justin,Gillard,Evergreen Electric,Company Owner,Constr
 
 I was thinking about how many estimate requests Evergreen Electric might miss when the crew is on-site. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for Evergreen Electric that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 info@evergreenelectric.ca,Justin,Gillard,Evergreen Electric,Company Owner,Construction,3,5,,"Hi Justin,
@@ -319,13 +319,13 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Evergreen Electric,
 Dylan"
-john@alleast.ca,John D.,Langille,All East Mechanical,Independent Business Owner,Construction,1,0,For John D. at All East Mechanical,"Hi John D.,
+john@alleast.ca,John D.,Langille,All East Mechanical,Independent Business Owner,Construction,1,0,John D. — Dal student with something for All East Mechanical,"Hi John D.,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across All East Mechanical.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for All East Mechanical.
 
-I know contractors miss calls from potential clients when they're on-site all day. I built something that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
+I know contractors miss calls from potential clients when they're on-site all day. The agent I made for you answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -333,7 +333,7 @@ john@alleast.ca,John D.,Langille,All East Mechanical,Independent Business Owner,
 
 I was thinking about how many estimate requests All East Mechanical might miss when the crew is on-site. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for All East Mechanical that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 john@alleast.ca,John D.,Langille,All East Mechanical,Independent Business Owner,Construction,3,5,,"Hi John D.,
@@ -351,13 +351,13 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with All East Mechanical,
 Dylan"
-james@halifaxplumbingandheating.ca,James,Pentz,Halifax Plumbing and Heating,Owner and Operator,Construction,1,0,"Quick idea for Halifax Plumbing and Heating, James","Hi James,
+james@halifaxplumbingandheating.ca,James,Pentz,Halifax Plumbing and Heating,Owner and Operator,Construction,1,0,James — Dal student with something for Halifax Plumbing and Heating,"Hi James,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Halifax Plumbing and Heating.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for Halifax Plumbing and Heating.
 
-I know contractors miss calls from potential clients when they're on-site all day. I built something that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
+I know contractors miss calls from potential clients when they're on-site all day. The agent I made for you answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -365,7 +365,7 @@ james@halifaxplumbingandheating.ca,James,Pentz,Halifax Plumbing and Heating,Owne
 
 I was thinking about how many estimate requests Halifax Plumbing and Heating might miss when the crew is on-site. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for Halifax Plumbing and Heating that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 james@halifaxplumbingandheating.ca,James,Pentz,Halifax Plumbing and Heating,Owner and Operator,Construction,3,5,,"Hi James,
@@ -383,26 +383,26 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Halifax Plumbing and Heating,
 Dylan"
-joe@foxgrovebenefits.com,Aaron J.,MacDonald,Foxgrove Benefit Consulting,Owner,Insurance,1,0,Aaron J. — Dal student with something for Foxgrove Benefit Consulting,"Hi Aaron J.,
+joe@foxgrovebenefits.com,Aaron J.,MacDonald,Foxgrove Benefit Consulting,Owner,Insurance,1,0,For Aaron J. at Foxgrove Benefit Consulting,"Hi Aaron J.,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Foxgrove Benefit Consulting.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for Foxgrove Benefit Consulting.
 
-I know insurance brokers juggle a ton of inbound calls from both prospects and existing clients. I built something that handles your inbound calls, qualifies new prospects, and routes claims to the right person automatically.
+I know insurance brokers have thousands of clients in the CRM that haven't been contacted in months. The agent I made for you calls through your CRM list, re-engages past clients, identifies upsell opportunities, and books policy reviews directly into your calendar.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
 joe@foxgrovebenefits.com,Aaron J.,MacDonald,Foxgrove Benefit Consulting,Owner,Insurance,2,3,,"Hi Aaron J.,
 
-Following up — I was thinking about how Foxgrove Benefit Consulting handles after-hours calls from clients with claims. Wanted to bump this up in case it got buried.
+Following up — I was thinking about how many lapsed clients are sitting in Foxgrove Benefit Consulting's CRM right now with no outreach. Wanted to bump this up in case it got buried.
 
-I built an AI that handles your inbound calls, qualifies new prospects, and routes claims to the right person automatically. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for Foxgrove Benefit Consulting that calls through your CRM list, re-engages past clients, identifies upsell opportunities, and books policy reviews directly into your calendar. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 joe@foxgrovebenefits.com,Aaron J.,MacDonald,Foxgrove Benefit Consulting,Owner,Insurance,3,5,,"Hi Aaron J.,
 
-Quick thought — an insurance broker here in NS told me 30% of his new business came from calls he almost missed.
+Quick thought — an insurance broker told me he reactivated 22 policies in the first month just by having AI call his old book of business.
 
 Would a quick call be worth 10 minutes of your time? calendly.com/realsideai
 
@@ -415,13 +415,13 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Foxgrove Benefit Consulting,
 Dylan"
-brianc@grkelly.com,Brian,Cameron,G&R Kelly Enterprises,Co-Owner and Chief Estimator,Construction,1,0,For Brian at G&R Kelly Enterprises,"Hi Brian,
+brianc@grkelly.com,Brian,Cameron,G&R Kelly Enterprises,Co-Owner and Chief Estimator,Construction,1,0,"Quick idea for G&R Kelly Enterprises, Brian","Hi Brian,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across G&R Kelly Enterprises.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for G&R Kelly Enterprises.
 
-I know contractors miss calls from potential clients when they're on-site all day. I built something that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
+I know contractors miss calls from potential clients when they're on-site all day. The agent I made for you answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -429,7 +429,7 @@ brianc@grkelly.com,Brian,Cameron,G&R Kelly Enterprises,Co-Owner and Chief Estima
 
 I was thinking about how many estimate requests G&R Kelly Enterprises might miss when the crew is on-site. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for G&R Kelly Enterprises that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 brianc@grkelly.com,Brian,Cameron,G&R Kelly Enterprises,Co-Owner and Chief Estimator,Construction,3,5,,"Hi Brian,
@@ -447,13 +447,13 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with G&R Kelly Enterprises,
 Dylan"
-deewebster@avam.ns.ca,Donald,Webster,Annapolis Valley Air Management,President & Owner,Construction,1,0,For Donald at Annapolis Valley Air Management,"Hi Donald,
+deewebster@avam.ns.ca,Donald,Webster,Annapolis Valley Air Management,President & Owner,Construction,1,0,"Donald, quick question about Annapolis Valley Air Management","Hi Donald,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Annapolis Valley Air Management.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for Annapolis Valley Air Management.
 
-I know contractors miss calls from potential clients when they're on-site all day. I built something that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
+I know contractors miss calls from potential clients when they're on-site all day. The agent I made for you answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -461,7 +461,7 @@ deewebster@avam.ns.ca,Donald,Webster,Annapolis Valley Air Management,President &
 
 I was thinking about how many estimate requests Annapolis Valley Air Management might miss when the crew is on-site. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for Annapolis Valley Air Management that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 deewebster@avam.ns.ca,Donald,Webster,Annapolis Valley Air Management,President & Owner,Construction,3,5,,"Hi Donald,
@@ -479,26 +479,26 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Annapolis Valley Air Management,
 Dylan"
-smkinfo@smkinsurance.com,Steve,Kimball,SMK Insurance,Owner,Insurance,1,0,Steve — Dal student with something for SMK Insurance,"Hi Steve,
+smkinfo@smkinsurance.com,Steve,Kimball,SMK Insurance,Owner,Insurance,1,0,For Steve at SMK Insurance,"Hi Steve,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across SMK Insurance.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for SMK Insurance.
 
-I know insurance brokers juggle a ton of inbound calls from both prospects and existing clients. I built something that handles your inbound calls, qualifies new prospects, and routes claims to the right person automatically.
+I know insurance brokers have thousands of clients in the CRM that haven't been contacted in months. The agent I made for you calls through your CRM list, re-engages past clients, identifies upsell opportunities, and books policy reviews directly into your calendar.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
 smkinfo@smkinsurance.com,Steve,Kimball,SMK Insurance,Owner,Insurance,2,3,,"Hi Steve,
 
-Following up — I was thinking about how SMK Insurance handles after-hours calls from clients with claims. Wanted to bump this up in case it got buried.
+Following up — I was thinking about how many lapsed clients are sitting in SMK Insurance's CRM right now with no outreach. Wanted to bump this up in case it got buried.
 
-I built an AI that handles your inbound calls, qualifies new prospects, and routes claims to the right person automatically. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for SMK Insurance that calls through your CRM list, re-engages past clients, identifies upsell opportunities, and books policy reviews directly into your calendar. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 smkinfo@smkinsurance.com,Steve,Kimball,SMK Insurance,Owner,Insurance,3,5,,"Hi Steve,
 
-Quick thought — an insurance broker here in NS told me 30% of his new business came from calls he almost missed.
+Quick thought — an insurance broker told me he reactivated 22 policies in the first month just by having AI call his old book of business.
 
 Would a quick call be worth 10 minutes of your time? calendly.com/realsideai
 
@@ -511,26 +511,26 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with SMK Insurance,
 Dylan"
-Admin@atlanticshield.ca,Brian,Allt,Atlantic Shield Insurance & Financial,Co Owner,Insurance,1,0,For Brian at Atlantic Shield Insurance & Financial,"Hi Brian,
+Admin@atlanticshield.ca,Brian,Allt,Atlantic Shield Insurance & Financial,Co Owner,Insurance,1,0,Brian — Dal student with something for Atlantic Shield Insurance & Financial,"Hi Brian,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Atlantic Shield Insurance & Financial.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for Atlantic Shield Insurance & Financial.
 
-I know insurance brokers juggle a ton of inbound calls from both prospects and existing clients. I built something that handles your inbound calls, qualifies new prospects, and routes claims to the right person automatically.
+I know insurance brokers have thousands of clients in the CRM that haven't been contacted in months. The agent I made for you calls through your CRM list, re-engages past clients, identifies upsell opportunities, and books policy reviews directly into your calendar.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
 Admin@atlanticshield.ca,Brian,Allt,Atlantic Shield Insurance & Financial,Co Owner,Insurance,2,3,,"Hi Brian,
 
-Following up — I was thinking about how Atlantic Shield Insurance & Financial handles after-hours calls from clients with claims. Wanted to bump this up in case it got buried.
+Following up — I was thinking about how many lapsed clients are sitting in Atlantic Shield Insurance & Financial's CRM right now with no outreach. Wanted to bump this up in case it got buried.
 
-I built an AI that handles your inbound calls, qualifies new prospects, and routes claims to the right person automatically. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for Atlantic Shield Insurance & Financial that calls through your CRM list, re-engages past clients, identifies upsell opportunities, and books policy reviews directly into your calendar. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 Admin@atlanticshield.ca,Brian,Allt,Atlantic Shield Insurance & Financial,Co Owner,Insurance,3,5,,"Hi Brian,
 
-Quick thought — an insurance broker here in NS told me 30% of his new business came from calls he almost missed.
+Quick thought — an insurance broker told me he reactivated 22 policies in the first month just by having AI call his old book of business.
 
 Would a quick call be worth 10 minutes of your time? calendly.com/realsideai
 
@@ -543,13 +543,13 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Atlantic Shield Insurance & Financial,
 Dylan"
-Kevin.Downs@ephvac.ca,Kevin,Downs,EP HVAC,Owner,Construction,1,0,"Quick idea for EP HVAC, Kevin","Hi Kevin,
+Kevin.Downs@ephvac.ca,Kevin,Downs,EP HVAC,Owner,Construction,1,0,For Kevin at EP HVAC,"Hi Kevin,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across EP HVAC.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for EP HVAC.
 
-I know contractors miss calls from potential clients when they're on-site all day. I built something that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
+I know contractors miss calls from potential clients when they're on-site all day. The agent I made for you answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -557,7 +557,7 @@ Kevin.Downs@ephvac.ca,Kevin,Downs,EP HVAC,Owner,Construction,2,3,,"Hi Kevin,
 
 I was thinking about how many estimate requests EP HVAC might miss when the crew is on-site. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for EP HVAC that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 Kevin.Downs@ephvac.ca,Kevin,Downs,EP HVAC,Owner,Construction,3,5,,"Hi Kevin,
@@ -575,13 +575,13 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with EP HVAC,
 Dylan"
-foshea@aoms.ca,Liam,O'Shea,Atlantic Offshore Medical Services,CEO & Owner,Healthcare,1,0,Liam — Dal student with something for Atlantic Offshore Medical Services,"Hi Liam,
+foshea@aoms.ca,Liam,O'Shea,Atlantic Offshore Medical Services,CEO & Owner,Healthcare,1,0,"Liam, quick question about Atlantic Offshore Medical Services","Hi Liam,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Atlantic Offshore Medical Services.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for Atlantic Offshore Medical Services.
 
-I know healthcare practices lose patient calls when the front desk is busy or after hours. I built something that answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while.
+I know healthcare practices lose patient calls when the front desk is busy or after hours. The agent I made for you answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -589,7 +589,7 @@ foshea@aoms.ca,Liam,O'Shea,Atlantic Offshore Medical Services,CEO & Owner,Health
 
 Following up — I was thinking about how many new patient calls Atlantic Offshore Medical Services might miss during appointments. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for Atlantic Offshore Medical Services that answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 foshea@aoms.ca,Liam,O'Shea,Atlantic Offshore Medical Services,CEO & Owner,Healthcare,3,5,,"Hi Liam,
@@ -609,11 +609,11 @@ All the best with Atlantic Offshore Medical Services,
 Dylan"
 info@jetcoinc.ca,David,MacVicar,JETCO Contracting,Co-Owner,Construction,1,0,"David, quick question about JETCO Contracting","Hi David,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across JETCO Contracting.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for JETCO Contracting.
 
-I know contractors miss calls from potential clients when they're on-site all day. I built something that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
+I know contractors miss calls from potential clients when they're on-site all day. The agent I made for you answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -621,7 +621,7 @@ info@jetcoinc.ca,David,MacVicar,JETCO Contracting,Co-Owner,Construction,2,3,,"Hi
 
 I was thinking about how many estimate requests JETCO Contracting might miss when the crew is on-site. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for JETCO Contracting that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 info@jetcoinc.ca,David,MacVicar,JETCO Contracting,Co-Owner,Construction,3,5,,"Hi David,
@@ -639,13 +639,13 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with JETCO Contracting,
 Dylan"
-info@carrevive.ca,Chris,LeBlanc,CarRevive Auto Clinic,Owner,Automotive,1,0,Chris — Dal student with something for CarRevive Auto Clinic,"Hi Chris,
+info@carrevive.ca,Chris,LeBlanc,CarRevive Auto Clinic,Owner,Automotive,1,0,For Chris at CarRevive Auto Clinic,"Hi Chris,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across CarRevive Auto Clinic.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for CarRevive Auto Clinic.
 
-I know auto shops miss calls when every mechanic is under a car. I built something that answers every call, books service appointments, and follows up on quotes that didn't convert.
+I know auto shops miss calls when every mechanic is under a car. The agent I made for you answers every call, books service appointments, and follows up on quotes that didn't convert.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -653,7 +653,7 @@ info@carrevive.ca,Chris,LeBlanc,CarRevive Auto Clinic,Owner,Automotive,2,3,,"Hi 
 
 Following up — I was thinking about how many service calls CarRevive Auto Clinic might miss during busy hours. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every call, books service appointments, and follows up on quotes that didn't convert. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for CarRevive Auto Clinic that answers every call, books service appointments, and follows up on quotes that didn't convert. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 info@carrevive.ca,Chris,LeBlanc,CarRevive Auto Clinic,Owner,Automotive,3,5,,"Hi Chris,
@@ -671,13 +671,13 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with CarRevive Auto Clinic,
 Dylan"
-service@nsdiesel.ca,Steven,Hart,NS Diesel & Automotive,Owner and Operator,Automotive,1,0,For Steven at NS Diesel & Automotive,"Hi Steven,
+service@nsdiesel.ca,Steven,Hart,NS Diesel & Automotive,Owner and Operator,Automotive,1,0,"Steven, quick question about NS Diesel & Automotive","Hi Steven,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across NS Diesel & Automotive.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for NS Diesel & Automotive.
 
-I know auto shops miss calls when every mechanic is under a car. I built something that answers every call, books service appointments, and follows up on quotes that didn't convert.
+I know auto shops miss calls when every mechanic is under a car. The agent I made for you answers every call, books service appointments, and follows up on quotes that didn't convert.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -685,7 +685,7 @@ service@nsdiesel.ca,Steven,Hart,NS Diesel & Automotive,Owner and Operator,Automo
 
 Following up — I was thinking about how many service calls NS Diesel & Automotive might miss during busy hours. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every call, books service appointments, and follows up on quotes that didn't convert. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for NS Diesel & Automotive that answers every call, books service appointments, and follows up on quotes that didn't convert. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 service@nsdiesel.ca,Steven,Hart,NS Diesel & Automotive,Owner and Operator,Automotive,3,5,,"Hi Steven,
@@ -703,13 +703,13 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with NS Diesel & Automotive,
 Dylan"
-dana@danalandry.ca,Dana Marie,Landry,Dana Landry CCT RHN PD Hom,Owner,Healthcare,1,0,"Dana Marie, quick question about Dana Landry CCT RHN PD Hom","Hi Dana Marie,
+dana@danalandry.ca,Dana Marie,Landry,Dana Landry CCT RHN PD Hom,Owner,Healthcare,1,0,For Dana Marie at Dana Landry CCT RHN PD Hom,"Hi Dana Marie,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Dana Landry CCT RHN PD Hom.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for Dana Landry CCT RHN PD Hom.
 
-I know healthcare practices lose patient calls when the front desk is busy or after hours. I built something that answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while.
+I know healthcare practices lose patient calls when the front desk is busy or after hours. The agent I made for you answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -717,7 +717,7 @@ dana@danalandry.ca,Dana Marie,Landry,Dana Landry CCT RHN PD Hom,Owner,Healthcare
 
 Following up — I was thinking about how many new patient calls Dana Landry CCT RHN PD Hom might miss during appointments. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for Dana Landry CCT RHN PD Hom that answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 dana@danalandry.ca,Dana Marie,Landry,Dana Landry CCT RHN PD Hom,Owner,Healthcare,3,5,,"Hi Dana Marie,
@@ -735,13 +735,13 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Dana Landry CCT RHN PD Hom,
 Dylan"
-info@spectrumtherapeuticsolutions.ca,Felicia,Burchell,Spectrum Therapeutic Solutions,Owner and Manager,Healthcare,1,0,For Felicia at Spectrum Therapeutic Solutions,"Hi Felicia,
+info@spectrumtherapeuticsolutions.ca,Felicia,Burchell,Spectrum Therapeutic Solutions,Owner and Manager,Healthcare,1,0,"Felicia, quick question about Spectrum Therapeutic Solutions","Hi Felicia,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Spectrum Therapeutic Solutions.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for Spectrum Therapeutic Solutions.
 
-I know healthcare practices lose patient calls when the front desk is busy or after hours. I built something that answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while.
+I know healthcare practices lose patient calls when the front desk is busy or after hours. The agent I made for you answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -749,7 +749,7 @@ info@spectrumtherapeuticsolutions.ca,Felicia,Burchell,Spectrum Therapeutic Solut
 
 Following up — I was thinking about how many new patient calls Spectrum Therapeutic Solutions might miss during appointments. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for Spectrum Therapeutic Solutions that answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 info@spectrumtherapeuticsolutions.ca,Felicia,Burchell,Spectrum Therapeutic Solutions,Owner and Manager,Healthcare,3,5,,"Hi Felicia,
@@ -767,13 +767,13 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Spectrum Therapeutic Solutions,
 Dylan"
-wanda@highlevelhealing.com,Wanda,Amos,High Level Healing,Owner and Operator,Healthcare,1,0,For Wanda at High Level Healing,"Hi Wanda,
+wanda@highlevelhealing.com,Wanda,Amos,High Level Healing,Owner and Operator,Healthcare,1,0,Wanda — Dal student with something for High Level Healing,"Hi Wanda,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across High Level Healing.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for High Level Healing.
 
-I know healthcare practices lose patient calls when the front desk is busy or after hours. I built something that answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while.
+I know healthcare practices lose patient calls when the front desk is busy or after hours. The agent I made for you answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -781,7 +781,7 @@ wanda@highlevelhealing.com,Wanda,Amos,High Level Healing,Owner and Operator,Heal
 
 Following up — I was thinking about how many new patient calls High Level Healing might miss during appointments. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for High Level Healing that answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 wanda@highlevelhealing.com,Wanda,Amos,High Level Healing,Owner and Operator,Healthcare,3,5,,"Hi Wanda,
@@ -799,13 +799,13 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with High Level Healing,
 Dylan"
-info@cascades-spa.com,Heather,Quigley,Cascades Day Spa,Spa Director and Owner,Beauty,1,0,For Heather at Cascades Day Spa,"Hi Heather,
+info@cascades-spa.com,Heather,Quigley,Cascades Day Spa,Spa Director and Owner,Beauty,1,0,Heather — Dal student with something for Cascades Day Spa,"Hi Heather,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Cascades Day Spa.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for Cascades Day Spa.
 
-I know salons and spas miss booking calls when every stylist is with a client. I built something that answers every booking call, schedules appointments, and texts clients reminders so you get fewer no-shows.
+I know salons and spas miss booking calls when every stylist is with a client. The agent I made for you answers every booking call, schedules appointments, and texts clients reminders so you get fewer no-shows.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -813,7 +813,7 @@ info@cascades-spa.com,Heather,Quigley,Cascades Day Spa,Spa Director and Owner,Be
 
 Following up — I was wondering how Cascades Day Spa handles booking calls during your busiest hours. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every booking call, schedules appointments, and texts clients reminders so you get fewer no-shows. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for Cascades Day Spa that answers every booking call, schedules appointments, and texts clients reminders so you get fewer no-shows. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 info@cascades-spa.com,Heather,Quigley,Cascades Day Spa,Spa Director and Owner,Beauty,3,5,,"Hi Heather,
@@ -831,13 +831,13 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Cascades Day Spa,
 Dylan"
-millerdentalcentre@outlook.com,Thomas,Miller,Miller Dental Health Centre,Owner and Dentist,Dental,1,0,For Thomas at Miller Dental Health Centre,"Hi Thomas,
+millerdentalcentre@outlook.com,Thomas,Miller,Miller Dental Health Centre,Owner and Dentist,Dental,1,0,Thomas — Dal student with something for Miller Dental Health Centre,"Hi Thomas,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Miller Dental Health Centre.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for Miller Dental Health Centre.
 
-I know dental offices miss new patient calls during procedures and cleanings. I built something that answers every patient call 24/7, books appointments, and follows up on missed calls automatically.
+I know dental offices miss new patient calls during procedures and cleanings. The agent I made for you answers every patient call 24/7, books appointments, and follows up on missed calls automatically.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -845,7 +845,7 @@ millerdentalcentre@outlook.com,Thomas,Miller,Miller Dental Health Centre,Owner a
 
 Following up — I was thinking about how many new patient calls Miller Dental Health Centre might lose during procedures. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every patient call 24/7, books appointments, and follows up on missed calls automatically. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for Miller Dental Health Centre that answers every patient call 24/7, books appointments, and follows up on missed calls automatically. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 millerdentalcentre@outlook.com,Thomas,Miller,Miller Dental Health Centre,Owner and Dentist,Dental,3,5,,"Hi Thomas,
@@ -865,11 +865,11 @@ All the best with Miller Dental Health Centre,
 Dylan"
 bedford@enlightenlaser.ca,Aimee,Avery,Enlighten Laser,Business Owner,Beauty,1,0,For Aimee at Enlighten Laser,"Hi Aimee,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Enlighten Laser.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for Enlighten Laser.
 
-I know salons and spas miss booking calls when every stylist is with a client. I built something that answers every booking call, schedules appointments, and texts clients reminders so you get fewer no-shows.
+I know salons and spas miss booking calls when every stylist is with a client. The agent I made for you answers every booking call, schedules appointments, and texts clients reminders so you get fewer no-shows.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -877,7 +877,7 @@ bedford@enlightenlaser.ca,Aimee,Avery,Enlighten Laser,Business Owner,Beauty,2,3,
 
 Following up — I was wondering how Enlighten Laser handles booking calls during your busiest hours. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every booking call, schedules appointments, and texts clients reminders so you get fewer no-shows. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for Enlighten Laser that answers every booking call, schedules appointments, and texts clients reminders so you get fewer no-shows. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 bedford@enlightenlaser.ca,Aimee,Avery,Enlighten Laser,Business Owner,Beauty,3,5,,"Hi Aimee,
@@ -895,13 +895,13 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Enlighten Laser,
 Dylan"
-info@sunnysidepsychological.com,Anita,Scott,Sunnyside Psychological Services,Registered Psychologist and Practice Owner,Mental Health,1,0,For Anita at Sunnyside Psychological Services,"Hi Anita,
+info@sunnysidepsychological.com,Anita,Scott,Sunnyside Psychological Services,Registered Psychologist and Practice Owner,Mental Health,1,0,Anita — Dal student with something for Sunnyside Psychological Services,"Hi Anita,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Sunnyside Psychological Services.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for Sunnyside Psychological Services.
 
-I know therapists and counsellors can't answer the phone during sessions, and clients rarely call back. I built something that answers every call while you're in session, handles intake questions, and books consultations automatically.
+I know therapists and counsellors can't answer the phone during sessions, and clients rarely call back. The agent I made for you answers every call while you're in session, handles intake questions, and books consultations automatically.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -909,7 +909,7 @@ info@sunnysidepsychological.com,Anita,Scott,Sunnyside Psychological Services,Reg
 
 Following up — I was thinking about how many potential clients call Sunnyside Psychological Services during sessions and never call back. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every call while you're in session, handles intake questions, and books consultations automatically. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for Sunnyside Psychological Services that answers every call while you're in session, handles intake questions, and books consultations automatically. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 info@sunnysidepsychological.com,Anita,Scott,Sunnyside Psychological Services,Registered Psychologist and Practice Owner,Mental Health,3,5,,"Hi Anita,
@@ -927,13 +927,13 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Sunnyside Psychological Services,
 Dylan"
-info@justquitlaser.com,Tina,McDonald,Just Quit Laser Therapy,Owner,Healthcare,1,0,Tina — Dal student with something for Just Quit Laser Therapy,"Hi Tina,
+info@justquitlaser.com,Tina,McDonald,Just Quit Laser Therapy,Owner,Healthcare,1,0,"Quick idea for Just Quit Laser Therapy, Tina","Hi Tina,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Just Quit Laser Therapy.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for Just Quit Laser Therapy.
 
-I know healthcare practices lose patient calls when the front desk is busy or after hours. I built something that answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while.
+I know healthcare practices lose patient calls when the front desk is busy or after hours. The agent I made for you answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -941,7 +941,7 @@ info@justquitlaser.com,Tina,McDonald,Just Quit Laser Therapy,Owner,Healthcare,2,
 
 Following up — I was thinking about how many new patient calls Just Quit Laser Therapy might miss during appointments. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for Just Quit Laser Therapy that answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 info@justquitlaser.com,Tina,McDonald,Just Quit Laser Therapy,Owner,Healthcare,3,5,,"Hi Tina,
@@ -961,11 +961,11 @@ All the best with Just Quit Laser Therapy,
 Dylan"
 suzanne@coastalsportsandwellness.com,Suzanne,Moroney,Coastal Sports & Wellness,Clinic Owner,Healthcare,1,0,For Suzanne at Coastal Sports & Wellness,"Hi Suzanne,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Coastal Sports & Wellness.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for Coastal Sports & Wellness.
 
-I know healthcare practices lose patient calls when the front desk is busy or after hours. I built something that answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while.
+I know healthcare practices lose patient calls when the front desk is busy or after hours. The agent I made for you answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -973,7 +973,7 @@ suzanne@coastalsportsandwellness.com,Suzanne,Moroney,Coastal Sports & Wellness,C
 
 Following up — I was thinking about how many new patient calls Coastal Sports & Wellness might miss during appointments. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for Coastal Sports & Wellness that answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 suzanne@coastalsportsandwellness.com,Suzanne,Moroney,Coastal Sports & Wellness,Clinic Owner,Healthcare,3,5,,"Hi Suzanne,
@@ -991,13 +991,13 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Coastal Sports & Wellness,
 Dylan"
-info@movephysio.ca,Mitchell,Squarey,MOVE Physiotherapy,Owner and Physiotherapist,Healthcare,1,0,"Mitchell, quick question about MOVE Physiotherapy","Hi Mitchell,
+info@movephysio.ca,Mitchell,Squarey,MOVE Physiotherapy,Owner and Physiotherapist,Healthcare,1,0,Mitchell — Dal student with something for MOVE Physiotherapy,"Hi Mitchell,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across MOVE Physiotherapy.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for MOVE Physiotherapy.
 
-I know healthcare practices lose patient calls when the front desk is busy or after hours. I built something that answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while.
+I know healthcare practices lose patient calls when the front desk is busy or after hours. The agent I made for you answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -1005,7 +1005,7 @@ info@movephysio.ca,Mitchell,Squarey,MOVE Physiotherapy,Owner and Physiotherapist
 
 Following up — I was thinking about how many new patient calls MOVE Physiotherapy might miss during appointments. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for MOVE Physiotherapy that answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 info@movephysio.ca,Mitchell,Squarey,MOVE Physiotherapy,Owner and Physiotherapist,Healthcare,3,5,,"Hi Mitchell,
@@ -1025,11 +1025,11 @@ All the best with MOVE Physiotherapy,
 Dylan"
 info@imaginesalonspa.ca,Ian Marc,Smith,Imagine Salon & Spa,Owner And Stylist,Beauty,1,0,"Quick idea for Imagine Salon & Spa, Ian Marc","Hi Ian Marc,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Imagine Salon & Spa.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for Imagine Salon & Spa.
 
-I know salons and spas miss booking calls when every stylist is with a client. I built something that answers every booking call, schedules appointments, and texts clients reminders so you get fewer no-shows.
+I know salons and spas miss booking calls when every stylist is with a client. The agent I made for you answers every booking call, schedules appointments, and texts clients reminders so you get fewer no-shows.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -1037,7 +1037,7 @@ info@imaginesalonspa.ca,Ian Marc,Smith,Imagine Salon & Spa,Owner And Stylist,Bea
 
 Following up — I was wondering how Imagine Salon & Spa handles booking calls during your busiest hours. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every booking call, schedules appointments, and texts clients reminders so you get fewer no-shows. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for Imagine Salon & Spa that answers every booking call, schedules appointments, and texts clients reminders so you get fewer no-shows. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 info@imaginesalonspa.ca,Ian Marc,Smith,Imagine Salon & Spa,Owner And Stylist,Beauty,3,5,,"Hi Ian Marc,
@@ -1055,13 +1055,13 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Imagine Salon & Spa,
 Dylan"
-info@thebracespace.com,Sarah,Davidson,The Brace Space,Orthodontist and Co-Owner,Dental,1,0,For Sarah at The Brace Space,"Hi Sarah,
+info@thebracespace.com,Sarah,Davidson,The Brace Space,Orthodontist and Co-Owner,Dental,1,0,"Sarah, quick question about The Brace Space","Hi Sarah,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across The Brace Space.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for The Brace Space.
 
-I know dental offices miss new patient calls during procedures and cleanings. I built something that answers every patient call 24/7, books appointments, and follows up on missed calls automatically.
+I know dental offices miss new patient calls during procedures and cleanings. The agent I made for you answers every patient call 24/7, books appointments, and follows up on missed calls automatically.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -1069,7 +1069,7 @@ info@thebracespace.com,Sarah,Davidson,The Brace Space,Orthodontist and Co-Owner,
 
 Following up — I was thinking about how many new patient calls The Brace Space might lose during procedures. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every patient call 24/7, books appointments, and follows up on missed calls automatically. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for The Brace Space that answers every patient call 24/7, books appointments, and follows up on missed calls automatically. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 info@thebracespace.com,Sarah,Davidson,The Brace Space,Orthodontist and Co-Owner,Dental,3,5,,"Hi Sarah,
@@ -1089,11 +1089,11 @@ All the best with The Brace Space,
 Dylan"
 info@jadorenails.ca,Bruce,Luong,J'adore Nails Salon & Spa,Owner and Operator,Beauty,1,0,Bruce — Dal student with something for J'adore Nails Salon & Spa,"Hi Bruce,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across J'adore Nails Salon & Spa.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for J'adore Nails Salon & Spa.
 
-I know salons and spas miss booking calls when every stylist is with a client. I built something that answers every booking call, schedules appointments, and texts clients reminders so you get fewer no-shows.
+I know salons and spas miss booking calls when every stylist is with a client. The agent I made for you answers every booking call, schedules appointments, and texts clients reminders so you get fewer no-shows.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -1101,7 +1101,7 @@ info@jadorenails.ca,Bruce,Luong,J'adore Nails Salon & Spa,Owner and Operator,Bea
 
 Following up — I was wondering how J'adore Nails Salon & Spa handles booking calls during your busiest hours. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every booking call, schedules appointments, and texts clients reminders so you get fewer no-shows. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for J'adore Nails Salon & Spa that answers every booking call, schedules appointments, and texts clients reminders so you get fewer no-shows. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 info@jadorenails.ca,Bruce,Luong,J'adore Nails Salon & Spa,Owner and Operator,Beauty,3,5,,"Hi Bruce,
@@ -1121,11 +1121,11 @@ All the best with J'adore Nails Salon & Spa,
 Dylan"
 admin@cybct.ca,Neal S.,Henderson,Creating Your Balance Counselling Therapy,Owner and Operator,Mental Health,1,0,"Neal S., quick question about Creating Your Balance Counselling Therapy","Hi Neal S.,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Creating Your Balance Counselling Therapy.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for Creating Your Balance Counselling Therapy.
 
-I know therapists and counsellors can't answer the phone during sessions, and clients rarely call back. I built something that answers every call while you're in session, handles intake questions, and books consultations automatically.
+I know therapists and counsellors can't answer the phone during sessions, and clients rarely call back. The agent I made for you answers every call while you're in session, handles intake questions, and books consultations automatically.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -1133,7 +1133,7 @@ admin@cybct.ca,Neal S.,Henderson,Creating Your Balance Counselling Therapy,Owner
 
 Following up — I was thinking about how many potential clients call Creating Your Balance Counselling Therapy during sessions and never call back. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every call while you're in session, handles intake questions, and books consultations automatically. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for Creating Your Balance Counselling Therapy that answers every call while you're in session, handles intake questions, and books consultations automatically. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 admin@cybct.ca,Neal S.,Henderson,Creating Your Balance Counselling Therapy,Owner and Operator,Mental Health,3,5,,"Hi Neal S.,
@@ -1151,13 +1151,13 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Creating Your Balance Counselling Therapy,
 Dylan"
-barb.brennan@honeyandginger.ca,Barb,Brennan,Honey & Ginger,Owner,Healthcare,1,0,For Barb at Honey & Ginger,"Hi Barb,
+barb.brennan@honeyandginger.ca,Barb,Brennan,Honey & Ginger,Owner,Healthcare,1,0,"Barb, quick question about Honey & Ginger","Hi Barb,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Honey & Ginger.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for Honey & Ginger.
 
-I know healthcare practices lose patient calls when the front desk is busy or after hours. I built something that answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while.
+I know healthcare practices lose patient calls when the front desk is busy or after hours. The agent I made for you answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -1165,7 +1165,7 @@ barb.brennan@honeyandginger.ca,Barb,Brennan,Honey & Ginger,Owner,Healthcare,2,3,
 
 Following up — I was thinking about how many new patient calls Honey & Ginger might miss during appointments. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for Honey & Ginger that answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 barb.brennan@honeyandginger.ca,Barb,Brennan,Honey & Ginger,Owner,Healthcare,3,5,,"Hi Barb,
@@ -1183,13 +1183,13 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Honey & Ginger,
 Dylan"
-southgate@novaphysiotherapy.ca,Jeff,Walsh,Nova Physiotherapy,Owner and Physiotherapist,Healthcare,1,0,Jeff — Dal student with something for Nova Physiotherapy,"Hi Jeff,
+southgate@novaphysiotherapy.ca,Jeff,Walsh,Nova Physiotherapy,Owner and Physiotherapist,Healthcare,1,0,For Jeff at Nova Physiotherapy,"Hi Jeff,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Nova Physiotherapy.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for Nova Physiotherapy.
 
-I know healthcare practices lose patient calls when the front desk is busy or after hours. I built something that answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while.
+I know healthcare practices lose patient calls when the front desk is busy or after hours. The agent I made for you answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -1197,7 +1197,7 @@ southgate@novaphysiotherapy.ca,Jeff,Walsh,Nova Physiotherapy,Owner and Physiothe
 
 Following up — I was thinking about how many new patient calls Nova Physiotherapy might miss during appointments. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for Nova Physiotherapy that answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 southgate@novaphysiotherapy.ca,Jeff,Walsh,Nova Physiotherapy,Owner and Physiotherapist,Healthcare,3,5,,"Hi Jeff,
@@ -1215,13 +1215,13 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Nova Physiotherapy,
 Dylan"
-appointments@vibesalonspa.com,Kerri,LeBlanc,Vibe Salon,Owner and Operator Spa Director,Beauty,1,0,"Quick idea for Vibe Salon, Kerri","Hi Kerri,
+appointments@vibesalonspa.com,Kerri,LeBlanc,Vibe Salon,Owner and Operator Spa Director,Beauty,1,0,Kerri — Dal student with something for Vibe Salon,"Hi Kerri,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Vibe Salon.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for Vibe Salon.
 
-I know salons and spas miss booking calls when every stylist is with a client. I built something that answers every booking call, schedules appointments, and texts clients reminders so you get fewer no-shows.
+I know salons and spas miss booking calls when every stylist is with a client. The agent I made for you answers every booking call, schedules appointments, and texts clients reminders so you get fewer no-shows.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -1229,7 +1229,7 @@ appointments@vibesalonspa.com,Kerri,LeBlanc,Vibe Salon,Owner and Operator Spa Di
 
 Following up — I was wondering how Vibe Salon handles booking calls during your busiest hours. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every booking call, schedules appointments, and texts clients reminders so you get fewer no-shows. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for Vibe Salon that answers every booking call, schedules appointments, and texts clients reminders so you get fewer no-shows. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 appointments@vibesalonspa.com,Kerri,LeBlanc,Vibe Salon,Owner and Operator Spa Director,Beauty,3,5,,"Hi Kerri,
@@ -1247,13 +1247,13 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Vibe Salon,
 Dylan"
-jim@morashconstruction.com,Jim R.,Morash,Morash Construction,Owner,Construction,1,0,"Jim R., quick question about Morash Construction","Hi Jim R.,
+jim@morashconstruction.com,Jim R.,Morash,Morash Construction,Owner,Construction,1,0,For Jim R. at Morash Construction,"Hi Jim R.,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Morash Construction.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for Morash Construction.
 
-I know contractors miss calls from potential clients when they're on-site all day. I built something that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
+I know contractors miss calls from potential clients when they're on-site all day. The agent I made for you answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -1261,7 +1261,7 @@ jim@morashconstruction.com,Jim R.,Morash,Morash Construction,Owner,Construction,
 
 I was thinking about how many estimate requests Morash Construction might miss when the crew is on-site. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for Morash Construction that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 jim@morashconstruction.com,Jim R.,Morash,Morash Construction,Owner,Construction,3,5,,"Hi Jim R.,
@@ -1279,13 +1279,13 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Morash Construction,
 Dylan"
-mike@iloverenovations.ca,Mike,Tilley,I love renovations,Contractor and Co-owner,Construction,1,0,"Mike, quick question about I love renovations","Hi Mike,
+mike@iloverenovations.ca,Mike,Tilley,I love renovations,Contractor and Co-owner,Construction,1,0,"Quick idea for I love renovations, Mike","Hi Mike,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across I love renovations.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for I love renovations.
 
-I know contractors miss calls from potential clients when they're on-site all day. I built something that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
+I know contractors miss calls from potential clients when they're on-site all day. The agent I made for you answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -1293,7 +1293,7 @@ mike@iloverenovations.ca,Mike,Tilley,I love renovations,Contractor and Co-owner,
 
 I was thinking about how many estimate requests I love renovations might miss when the crew is on-site. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for I love renovations that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 mike@iloverenovations.ca,Mike,Tilley,I love renovations,Contractor and Co-owner,Construction,3,5,,"Hi Mike,
@@ -1311,13 +1311,13 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with I love renovations,
 Dylan"
-bedford@bioped.com,Brendan,Walsh,BioPed,Canadian Certified Pedorthist and Owner,Healthcare,1,0,"Quick idea for BioPed, Brendan","Hi Brendan,
+bedford@bioped.com,Brendan,Walsh,BioPed,Canadian Certified Pedorthist and Owner,Healthcare,1,0,For Brendan at BioPed,"Hi Brendan,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across BioPed.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for BioPed.
 
-I know healthcare practices lose patient calls when the front desk is busy or after hours. I built something that answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while.
+I know healthcare practices lose patient calls when the front desk is busy or after hours. The agent I made for you answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -1325,7 +1325,7 @@ bedford@bioped.com,Brendan,Walsh,BioPed,Canadian Certified Pedorthist and Owner,
 
 Following up — I was thinking about how many new patient calls BioPed might miss during appointments. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for BioPed that answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 bedford@bioped.com,Brendan,Walsh,BioPed,Canadian Certified Pedorthist and Owner,Healthcare,3,5,,"Hi Brendan,
@@ -1343,13 +1343,13 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with BioPed,
 Dylan"
-justin@bowersconstruction.ca,Justin R.,Bowers,Bowers Construction,Owner,Construction,1,0,Justin R. — Dal student with something for Bowers Construction,"Hi Justin R.,
+justin@bowersconstruction.ca,Justin R.,Bowers,Bowers Construction,Owner,Construction,1,0,"Justin R., quick question about Bowers Construction","Hi Justin R.,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Bowers Construction.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for Bowers Construction.
 
-I know contractors miss calls from potential clients when they're on-site all day. I built something that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
+I know contractors miss calls from potential clients when they're on-site all day. The agent I made for you answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -1357,7 +1357,7 @@ justin@bowersconstruction.ca,Justin R.,Bowers,Bowers Construction,Owner,Construc
 
 I was thinking about how many estimate requests Bowers Construction might miss when the crew is on-site. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for Bowers Construction that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 justin@bowersconstruction.ca,Justin R.,Bowers,Bowers Construction,Owner,Construction,3,5,,"Hi Justin R.,
@@ -1375,13 +1375,13 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Bowers Construction,
 Dylan"
-Info@cratec.ca,Gaius,Carmichael,Cratec Construction,Owner,Construction,1,0,Gaius — Dal student with something for Cratec Construction,"Hi Gaius,
+Info@cratec.ca,Gaius,Carmichael,Cratec Construction,Owner,Construction,1,0,"Gaius, quick question about Cratec Construction","Hi Gaius,
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Cratec Construction.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for Cratec Construction.
 
-I know contractors miss calls from potential clients when they're on-site all day. I built something that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
+I know contractors miss calls from potential clients when they're on-site all day. The agent I made for you answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"
@@ -1389,7 +1389,7 @@ Info@cratec.ca,Gaius,Carmichael,Cratec Construction,Owner,Construction,2,3,,"Hi 
 
 I was thinking about how many estimate requests Cratec Construction might miss when the crew is on-site. Wanted to bump this up in case it got buried.
 
-I built an AI that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for Cratec Construction that answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"
 Info@cratec.ca,Gaius,Carmichael,Cratec Construction,Owner,Construction,3,5,,"Hi Gaius,

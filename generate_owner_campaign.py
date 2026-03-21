@@ -24,12 +24,12 @@ INDUSTRY_HOOKS = {
         ],
     },
     "Insurance": {
-        "pain": "I know insurance brokers juggle a ton of inbound calls from both prospects and existing clients",
-        "value": "handles your inbound calls, qualifies new prospects, and routes claims to the right person automatically",
+        "pain": "I know insurance brokers have thousands of clients in the CRM that haven't been contacted in months",
+        "value": "calls through your CRM list, re-engages past clients, identifies upsell opportunities, and books policy reviews directly into your calendar",
         "followup_hooks": [
-            "Following up — I was thinking about how {company_name} handles after-hours calls from clients with claims",
-            "Quick thought — an insurance broker here in NS told me 30% of his new business came from calls he almost missed",
-            "Last note — our AI can qualify new insurance prospects before they even talk to you, so you only spend time on real opportunities",
+            "Following up — I was thinking about how many lapsed clients are sitting in {company_name}'s CRM right now with no outreach",
+            "Quick thought — an insurance broker told me he reactivated 22 policies in the first month just by having AI call his old book of business",
+            "Last note — our AI calls your CRM list, finds clients who need policy reviews, and books them straight into your calendar automatically",
         ],
     },
     "Healthcare": {
@@ -144,11 +144,11 @@ def generate_initial_email(owner):
 
     body = f"""Hi {first},
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across {company}.
+I'm Dylan, a student at Dalhousie University here in Halifax. We build fully custom AI agents for local businesses — and I already built one for {company}.
 
-{hooks['pain']}. I built something that {hooks['value']}.
+{hooks['pain']}. The agent I made for you {hooks['value']}.
 
-As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+My team and I would love to show you what we built for you — 10-minute call, no pitch, just a live demo: calendly.com/realsideai
 
 Cheers,
 Dylan"""
@@ -182,7 +182,7 @@ def generate_followups(owner):
 
 {hook1}. Wanted to bump this up in case it got buried.
 
-I built an AI that {hooks['value']}. Happy to show you in 10 minutes: calendly.com/realsideai
+We already built a custom agent for {company} that {hooks['value']}. My team would love to walk you through it — 10 minutes: calendly.com/realsideai
 
 Dylan"""
     followups.append(("", f1_body))  # Empty subject = reply to original thread
