@@ -61,7 +61,6 @@ NS_REGIONS = [
 # Service mapping logic:
 #   inbound  = high call volume, appointment-based, loses $ from missed calls
 #   outbound = runs ads / has leads to follow up / dormant CRM contacts / estimates
-#   recruiting = high turnover, always hiring, staffing-dependent
 NICHES = {
     # ── Healthcare / Wellness ─────────────────────────────────────────────────
     "dental": {
@@ -88,16 +87,6 @@ NICHES = {
         "queries": ["optometrist", "eye clinic", "optometry"],
         "services": ["inbound"],
         "label": "Optometry",
-    },
-    "veterinary": {
-        "queries": ["veterinarian", "vet clinic", "animal hospital"],
-        "services": ["inbound"],
-        "label": "Veterinary",
-    },
-    "pharmacy": {
-        "queries": ["pharmacy", "drug store"],
-        "services": ["inbound"],
-        "label": "Pharmacy",
     },
     "wellness": {
         "queries": ["wellness center", "IV clinic", "naturopath"],
@@ -146,11 +135,6 @@ NICHES = {
         "services": ["inbound", "outbound"],
         "label": "Landscaping",
     },
-    "cleaning": {
-        "queries": ["cleaning company", "janitorial service", "maid service"],
-        "services": ["inbound", "recruiting"],
-        "label": "Cleaning",
-    },
     "pest_control": {
         "queries": ["pest control", "exterminator"],
         "services": ["inbound", "outbound"],
@@ -185,7 +169,7 @@ NICHES = {
     },
     "car_dealership": {
         "queries": ["car dealership", "used car dealer", "auto dealer"],
-        "services": ["inbound", "outbound", "recruiting"],
+        "services": ["inbound", "outbound"],
         "label": "Car Dealership",
     },
     # ── Fitness ───────────────────────────────────────────────────────────────
@@ -194,12 +178,13 @@ NICHES = {
         "services": ["inbound", "outbound"],
         "label": "Fitness & Gym",
     },
-    # ── Home Care / Staffing (recruiting-heavy) ──────────────────────────────
+    # ── Home Care ────────────────────────────────────────────────────────────
     "homecare": {
         "queries": ["home care agency", "senior care", "home health"],
-        "services": ["inbound", "recruiting"],
+        "services": ["inbound"],
         "label": "Home Care",
     },
+    # ── Staffing (recruiting only) ───────────────────────────────────────────
     "staffing": {
         "queries": ["staffing agency", "temp agency", "employment agency"],
         "services": ["recruiting"],
