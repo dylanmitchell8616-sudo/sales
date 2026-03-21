@@ -148,7 +148,7 @@ NICHES = {
     },
     "insurance": {
         "queries": ["insurance agency", "insurance broker"],
-        "services": ["inbound", "outbound"],
+        "services": ["outbound"],
         "label": "Insurance",
     },
     "law_firm": {
