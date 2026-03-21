@@ -228,8 +228,12 @@ def run_apify_scrape(api_key: str, search_queries: list, max_results: int = 100)
     status_url = f"{APIFY_BASE_URL}/actor-runs/{run_id}"
     for attempt in range(120):  # up to 10 minutes
         time.sleep(5)
-        status_resp = requests.get(status_url, headers=headers, timeout=30)
-        status = status_resp.json().get("data", {}).get("status")
+        try:
+            status_resp = requests.get(status_url, headers=headers, timeout=30)
+            status = status_resp.json().get("data", {}).get("status")
+        except (requests.RequestException, ValueError) as e:
+            logging.warning(f"  Poll attempt {attempt + 1} failed: {e}. Retrying...")
+            continue
         if status == "SUCCEEDED":
             logging.info(f"  Run completed successfully")
             break
@@ -241,15 +245,23 @@ def run_apify_scrape(api_key: str, search_queries: list, max_results: int = 100)
         return []
 
     # Fetch results from dataset
-    dataset_id = status_resp.json().get("data", {}).get("defaultDatasetId")
-    results_url = f"{APIFY_BASE_URL}/datasets/{dataset_id}/items?format=json&limit=10000"
-    results_resp = requests.get(results_url, headers=headers, timeout=60)
-
-    if results_resp.status_code != 200:
-        logging.error(f"  Failed to fetch results: {results_resp.status_code}")
+    try:
+        dataset_id = status_resp.json().get("data", {}).get("defaultDatasetId")
+    except (ValueError, AttributeError):
+        logging.error("  Failed to parse dataset ID from response")
         return []
 
-    items = results_resp.json()
+    results_url = f"{APIFY_BASE_URL}/datasets/{dataset_id}/items?format=json&limit=10000"
+    try:
+        results_resp = requests.get(results_url, headers=headers, timeout=60)
+        if results_resp.status_code != 200:
+            logging.error(f"  Failed to fetch results: {results_resp.status_code}")
+            return []
+        items = results_resp.json()
+    except (requests.RequestException, ValueError) as e:
+        logging.error(f"  Failed to fetch/parse results: {e}")
+        return []
+
     logging.info(f"  Retrieved {len(items)} places")
     return items
 
