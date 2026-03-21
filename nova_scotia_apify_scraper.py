@@ -205,17 +205,6 @@ NICHES = {
         "services": ["recruiting"],
         "label": "Staffing Agency",
     },
-    # ── Restaurants / Hospitality ─────────────────────────────────────────────
-    "restaurant": {
-        "queries": ["restaurant", "catering company"],
-        "services": ["recruiting"],
-        "label": "Restaurant & Catering",
-    },
-    "hotel": {
-        "queries": ["hotel", "inn", "bed and breakfast"],
-        "services": ["inbound", "recruiting"],
-        "label": "Hotel & Hospitality",
-    },
 }
 
 # Apify actor ID for Google Maps Scraper (Compass)
@@ -413,6 +402,35 @@ def parse_apify_result(item: dict, niche: str, niche_label: str, services: list 
     }
 
 
+# Known franchise brands to filter out — owner can't make buying decisions
+FRANCHISE_KEYWORDS = [
+    "mcdonald", "tim horton", "subway", "burger king", "wendy", "starbucks",
+    "pizza hut", "domino", "kfc", "taco bell", "popeye", "a&w", "dairy queen",
+    "dunkin", "chick-fil-a", "five guys", "chipotle", "panera", "arby",
+    "little caesars", "papa john", "sonic drive", "jack in the box",
+    "jiffy lube", "midas", "meineke", "mr. lube", "valvoline", "maaco",
+    "servpro", "servicemaster", "stanley steemer", "chem-dry",
+    "h&r block", "liberty tax", "jackson hewitt",
+    "anytime fitness", "planet fitness", "orangetheory", "f45", "snap fitness",
+    "great clips", "supercuts", "sport clips", "fantastic sams",
+    "massage envy", "hand & stone", "elements massage",
+    "comfort inn", "holiday inn", "best western", "super 8", "days inn",
+    "hampton inn", "marriott", "hilton", "ramada", "quality inn", "motel 6",
+    "century 21", "re/max", "remax", "coldwell banker", "keller williams",
+    "royal lepage", "exit realty",
+    "shoppers drug mart", "rexall", "jean coutu", "lawton",
+    "specsavers", "lenscrafters", "pearle vision",
+    "hertz", "enterprise rent", "budget rent", "avis",
+    "walmart", "costco", "home depot", "lowe's", "canadian tire",
+]
+
+
+def is_franchise(company_name: str) -> bool:
+    """Check if a company name matches a known franchise brand."""
+    name_lower = company_name.lower().strip()
+    return any(kw in name_lower for kw in FRANCHISE_KEYWORDS)
+
+
 def deduplicate_leads(leads: list) -> list:
     """Deduplicate by domain or company name."""
     seen_domains = set()
@@ -560,6 +578,13 @@ def main():
     # Deduplicate
     unique_leads = deduplicate_leads(all_leads)
     logging.info(f"\nTotal raw: {len(all_leads)} → Deduplicated: {len(unique_leads)}")
+
+    # Filter out franchises — can't sell to franchise managers
+    pre_filter = len(unique_leads)
+    unique_leads = [l for l in unique_leads if not is_franchise(l.get("company_name", ""))]
+    franchise_removed = pre_filter - len(unique_leads)
+    if franchise_removed:
+        logging.info(f"  Removed {franchise_removed} franchise locations")
 
     # Scrape emails from websites for leads that Apify didn't find emails for
     missing_email = [l for l in unique_leads if not l.get("email")]
