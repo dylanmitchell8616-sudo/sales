@@ -1,5 +1,5 @@
 email,first_name,last_name,company_name,title,industry,sequence_step,delay_days,subject,body
-joe@foxgrovebenefits.com,Joe,Macdonald,Foxgrove Benefit Consulting,Owner and President,Insurance,1,0,For Joe at Foxgrove Benefit Consulting,"Hi Joe,
+joe@foxgrovebenefits.com,Joe,Macdonald,Foxgrove Benefit Consulting,Owner and President,Insurance,1,0,"Joe, quick question about Foxgrove Benefit Consulting","Hi Joe,
 
 I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Foxgrove Benefit Consulting.
 
@@ -31,7 +31,7 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Foxgrove Benefit Consulting,
 Dylan"
-info@ableelectric.ca,Michael,Castellani,Able Electric,Owner and President,Construction,1,0,"Michael, quick question about Able Electric","Hi Michael,
+info@ableelectric.ca,Michael,Castellani,Able Electric,Owner and President,Construction,1,0,"Quick idea for Able Electric, Michael","Hi Michael,
 
 I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Able Electric.
 
@@ -63,7 +63,7 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Able Electric,
 Dylan"
-chris@tartaninteriors.ca,Chris,Chisholm,Tartan Interiors,Owner,Construction,1,0,For Chris at Tartan Interiors,"Hi Chris,
+chris@tartaninteriors.ca,Chris,Chisholm,Tartan Interiors,Owner,Construction,1,0,"Chris, quick question about Tartan Interiors","Hi Chris,
 
 I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Tartan Interiors.
 
@@ -95,7 +95,7 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Tartan Interiors,
 Dylan"
-mike.crowe@totaldemo.ca,Michael,Crowe,Total Demolition,Owner,Construction,1,0,"Michael, quick question about Total Demolition","Hi Michael,
+mike.crowe@totaldemo.ca,Michael,Crowe,Total Demolition,Owner,Construction,1,0,"Quick idea for Total Demolition, Michael","Hi Michael,
 
 I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Total Demolition.
 
@@ -127,7 +127,7 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Total Demolition,
 Dylan"
-sean@allinprecisionpainting.com,Sean,Cameron,All-In Precision Painting,Owner,Construction,1,0,Sean — Dal student with something for All-In Precision Painting,"Hi Sean,
+sean@allinprecisionpainting.com,Sean,Cameron,All-In Precision Painting,Owner,Construction,1,0,"Sean, quick question about All-In Precision Painting","Hi Sean,
 
 I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across All-In Precision Painting.
 
@@ -159,7 +159,7 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with All-In Precision Painting,
 Dylan"
-ccoffice@eastlink.ca,Kevin,Caines,CC Office Installation,Co-Owner,Construction,1,0,For Kevin at CC Office Installation,"Hi Kevin,
+ccoffice@eastlink.ca,Kevin,Caines,CC Office Installation,Co-Owner,Construction,1,0,"Quick idea for CC Office Installation, Kevin","Hi Kevin,
 
 I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across CC Office Installation.
 
@@ -191,7 +191,7 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with CC Office Installation,
 Dylan"
-mark@concretepenneys.com,Mark,Penney,Concrete Penney's Contracting,Owner and Operator,Construction,1,0,Mark — Dal student with something for Concrete Penney's Contracting,"Hi Mark,
+mark@concretepenneys.com,Mark,Penney,Concrete Penney's Contracting,Owner and Operator,Construction,1,0,"Quick idea for Concrete Penney's Contracting, Mark","Hi Mark,
 
 I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Concrete Penney's Contracting.
 
@@ -223,7 +223,7 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Concrete Penney's Contracting,
 Dylan"
-finwick@theforeverroof.com,Finwick,King,The Forever Roof,Owner and President,Construction,1,0,"Quick idea for The Forever Roof, Finwick","Hi Finwick,
+finwick@theforeverroof.com,Finwick,King,The Forever Roof,Owner and President,Construction,1,0,Finwick — Dal student with something for The Forever Roof,"Hi Finwick,
 
 I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across The Forever Roof.
 
@@ -255,7 +255,7 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with The Forever Roof,
 Dylan"
-info@evergreenelectric.ca,Scott,Coulter,Evergreen Electric,Business Owner,Construction,1,0,"Quick idea for Evergreen Electric, Scott","Hi Scott,
+info@evergreenelectric.ca,Scott,Coulter,Evergreen Electric,Business Owner,Construction,1,0,"Scott, quick question about Evergreen Electric","Hi Scott,
 
 I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Evergreen Electric.
 
@@ -287,7 +287,7 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Evergreen Electric,
 Dylan"
-info@evergreenelectric.ca,Justin,Gillard,Evergreen Electric,Company Owner,Construction,1,0,Justin — Dal student with something for Evergreen Electric,"Hi Justin,
+info@evergreenelectric.ca,Justin,Gillard,Evergreen Electric,Company Owner,Construction,1,0,"Justin, quick question about Evergreen Electric","Hi Justin,
 
 I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Evergreen Electric.
 
@@ -319,7 +319,7 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Evergreen Electric,
 Dylan"
-john@alleast.ca,John D.,Langille,All East Mechanical,Independent Business Owner,Construction,1,0,"Quick idea for All East Mechanical, John D.","Hi John D.,
+john@alleast.ca,John D.,Langille,All East Mechanical,Independent Business Owner,Construction,1,0,For John D. at All East Mechanical,"Hi John D.,
 
 I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across All East Mechanical.
 
@@ -383,7 +383,7 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Halifax Plumbing and Heating,
 Dylan"
-joe@foxgrovebenefits.com,Aaron J.,MacDonald,Foxgrove Benefit Consulting,Owner,Insurance,1,0,"Aaron J., quick question about Foxgrove Benefit Consulting","Hi Aaron J.,
+joe@foxgrovebenefits.com,Aaron J.,MacDonald,Foxgrove Benefit Consulting,Owner,Insurance,1,0,For Aaron J. at Foxgrove Benefit Consulting,"Hi Aaron J.,
 
 I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Foxgrove Benefit Consulting.
 
@@ -415,7 +415,7 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Foxgrove Benefit Consulting,
 Dylan"
-brianc@grkelly.com,Brian,Cameron,G&R Kelly Enterprises,Co-Owner and Chief Estimator,Construction,1,0,For Brian at G&R Kelly Enterprises,"Hi Brian,
+brianc@grkelly.com,Brian,Cameron,G&R Kelly Enterprises,Co-Owner and Chief Estimator,Construction,1,0,"Brian, quick question about G&R Kelly Enterprises","Hi Brian,
 
 I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across G&R Kelly Enterprises.
 
@@ -479,7 +479,7 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Annapolis Valley Air Management,
 Dylan"
-foshea@aoms.ca,Liam,O'Shea,Atlantic Offshore Medical Services,CEO & Owner,Healthcare,1,0,"Liam, quick question about Atlantic Offshore Medical Services","Hi Liam,
+foshea@aoms.ca,Liam,O'Shea,Atlantic Offshore Medical Services,CEO & Owner,Healthcare,1,0,Liam — Dal student with something for Atlantic Offshore Medical Services,"Hi Liam,
 
 I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Atlantic Offshore Medical Services.
 
@@ -511,7 +511,7 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Atlantic Offshore Medical Services,
 Dylan"
-dana@danalandry.ca,Dana Marie,Landry,Dana Landry CCT RHN PD Hom,Owner,Healthcare,1,0,Dana Marie — Dal student with something for Dana Landry CCT RHN PD Hom,"Hi Dana Marie,
+dana@danalandry.ca,Dana Marie,Landry,Dana Landry CCT RHN PD Hom,Owner,Healthcare,1,0,"Quick idea for Dana Landry CCT RHN PD Hom, Dana Marie","Hi Dana Marie,
 
 I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Dana Landry CCT RHN PD Hom.
 
@@ -639,7 +639,7 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Cascades Day Spa,
 Dylan"
-millerdentalcentre@outlook.com,Thomas,Miller,Miller Dental Health Centre,Owner and Dentist,Dental,1,0,"Quick idea for Miller Dental Health Centre, Thomas","Hi Thomas,
+millerdentalcentre@outlook.com,Thomas,Miller,Miller Dental Health Centre,Owner and Dentist,Dental,1,0,For Thomas at Miller Dental Health Centre,"Hi Thomas,
 
 I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Miller Dental Health Centre.
 
@@ -703,7 +703,7 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Enlighten Laser,
 Dylan"
-info@sunnysidepsychological.com,Anita,Scott,Sunnyside Psychological Services,Registered Psychologist and Practice Owner,Mental Health,1,0,Anita — Dal student with something for Sunnyside Psychological Services,"Hi Anita,
+info@sunnysidepsychological.com,Anita,Scott,Sunnyside Psychological Services,Registered Psychologist and Practice Owner,Mental Health,1,0,For Anita at Sunnyside Psychological Services,"Hi Anita,
 
 I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Sunnyside Psychological Services.
 
@@ -735,7 +735,7 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Sunnyside Psychological Services,
 Dylan"
-info@justquitlaser.com,Tina,McDonald,Just Quit Laser Therapy,Owner,Healthcare,1,0,"Tina, quick question about Just Quit Laser Therapy","Hi Tina,
+info@justquitlaser.com,Tina,McDonald,Just Quit Laser Therapy,Owner,Healthcare,1,0,Tina — Dal student with something for Just Quit Laser Therapy,"Hi Tina,
 
 I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Just Quit Laser Therapy.
 
@@ -767,7 +767,7 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Just Quit Laser Therapy,
 Dylan"
-suzanne@coastalsportsandwellness.com,Suzanne,Moroney,Coastal Sports & Wellness,Clinic Owner,Healthcare,1,0,For Suzanne at Coastal Sports & Wellness,"Hi Suzanne,
+suzanne@coastalsportsandwellness.com,Suzanne,Moroney,Coastal Sports & Wellness,Clinic Owner,Healthcare,1,0,"Quick idea for Coastal Sports & Wellness, Suzanne","Hi Suzanne,
 
 I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Coastal Sports & Wellness.
 
@@ -799,7 +799,7 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Coastal Sports & Wellness,
 Dylan"
-info@movephysio.ca,Mitchell,Squarey,MOVE Physiotherapy,Owner and Physiotherapist,Healthcare,1,0,For Mitchell at MOVE Physiotherapy,"Hi Mitchell,
+info@movephysio.ca,Mitchell,Squarey,MOVE Physiotherapy,Owner and Physiotherapist,Healthcare,1,0,Mitchell — Dal student with something for MOVE Physiotherapy,"Hi Mitchell,
 
 I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across MOVE Physiotherapy.
 
@@ -831,7 +831,7 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with MOVE Physiotherapy,
 Dylan"
-info@imaginesalonspa.ca,Ian Marc,Smith,Imagine Salon & Spa,Owner And Stylist,Beauty,1,0,"Ian Marc, quick question about Imagine Salon & Spa","Hi Ian Marc,
+info@imaginesalonspa.ca,Ian Marc,Smith,Imagine Salon & Spa,Owner And Stylist,Beauty,1,0,"Quick idea for Imagine Salon & Spa, Ian Marc","Hi Ian Marc,
 
 I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Imagine Salon & Spa.
 
@@ -863,7 +863,7 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Imagine Salon & Spa,
 Dylan"
-info@thebracespace.com,Sarah,Davidson,The Brace Space,Orthodontist and Co-Owner,Dental,1,0,Sarah — Dal student with something for The Brace Space,"Hi Sarah,
+info@thebracespace.com,Sarah,Davidson,The Brace Space,Orthodontist and Co-Owner,Dental,1,0,For Sarah at The Brace Space,"Hi Sarah,
 
 I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across The Brace Space.
 
@@ -895,7 +895,7 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with The Brace Space,
 Dylan"
-info@jadorenails.ca,Bruce,Luong,J'adore Nails Salon & Spa,Owner and Operator,Beauty,1,0,"Bruce, quick question about J'adore Nails Salon & Spa","Hi Bruce,
+info@jadorenails.ca,Bruce,Luong,J'adore Nails Salon & Spa,Owner and Operator,Beauty,1,0,For Bruce at J'adore Nails Salon & Spa,"Hi Bruce,
 
 I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across J'adore Nails Salon & Spa.
 
@@ -927,7 +927,7 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with J'adore Nails Salon & Spa,
 Dylan"
-admin@cybct.ca,Neal S.,Henderson,Creating Your Balance Counselling Therapy,Owner and Operator,Mental Health,1,0,For Neal S. at Creating Your Balance Counselling Therapy,"Hi Neal S.,
+admin@cybct.ca,Neal S.,Henderson,Creating Your Balance Counselling Therapy,Owner and Operator,Mental Health,1,0,Neal S. — Dal student with something for Creating Your Balance Counselling Therapy,"Hi Neal S.,
 
 I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Creating Your Balance Counselling Therapy.
 
@@ -958,6 +958,38 @@ I'll keep this short — I've reached out a few times about an AI phone agent fo
 If you ever want to see how it works, my calendar's always open: calendly.com/realsideai
 
 All the best with Creating Your Balance Counselling Therapy,
+Dylan"
+barb.brennan@honeyandginger.ca,Barb,Brennan,Honey & Ginger,Owner,Healthcare,1,0,"Quick idea for Honey & Ginger, Barb","Hi Barb,
+
+I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Honey & Ginger.
+
+I know healthcare practices lose patient calls when the front desk is busy or after hours. I built something that answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while.
+
+As a fellow Nova Scotian, I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+
+Cheers,
+Dylan"
+barb.brennan@honeyandginger.ca,Barb,Brennan,Honey & Ginger,Owner,Healthcare,2,3,,"Hi Barb,
+
+Following up — I was thinking about how many new patient calls Honey & Ginger might miss during appointments. Wanted to bump this up in case it got buried.
+
+I built an AI that answers every patient call 24/7, books appointments, and follows up with patients who haven't been in for a while. Happy to show you in 10 minutes: calendly.com/realsideai
+
+Dylan"
+barb.brennan@honeyandginger.ca,Barb,Brennan,Honey & Ginger,Owner,Healthcare,3,5,,"Hi Barb,
+
+Quick thought — a clinic owner here told me they recovered 15 hours/week of admin time with an AI receptionist.
+
+Would a quick call be worth 10 minutes of your time? calendly.com/realsideai
+
+Dylan"
+barb.brennan@honeyandginger.ca,Barb,Brennan,Honey & Ginger,Owner,Healthcare,4,8,,"Hi Barb,
+
+I'll keep this short — I've reached out a few times about an AI phone agent for Honey & Ginger. If the timing isn't right, totally understand.
+
+If you ever want to see how it works, my calendar's always open: calendly.com/realsideai
+
+All the best with Honey & Ginger,
 Dylan"
 southgate@novaphysiotherapy.ca,Jeff,Walsh,Nova Physiotherapy,Owner and Physiotherapist,Healthcare,1,0,For Jeff at Nova Physiotherapy,"Hi Jeff,
 
@@ -991,7 +1023,7 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Nova Physiotherapy,
 Dylan"
-appointments@vibesalonspa.com,Kerri,LeBlanc,Vibe Salon,Owner and Operator Spa Director,Beauty,1,0,For Kerri at Vibe Salon,"Hi Kerri,
+appointments@vibesalonspa.com,Kerri,LeBlanc,Vibe Salon,Owner and Operator Spa Director,Beauty,1,0,Kerri — Dal student with something for Vibe Salon,"Hi Kerri,
 
 I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across Vibe Salon.
 
@@ -1023,7 +1055,7 @@ If you ever want to see how it works, my calendar's always open: calendly.com/re
 
 All the best with Vibe Salon,
 Dylan"
-bedford@bioped.com,Brendan,Walsh,BioPed,Canadian Certified Pedorthist and Owner,Healthcare,1,0,"Quick idea for BioPed, Brendan","Hi Brendan,
+bedford@bioped.com,Brendan,Walsh,BioPed,Canadian Certified Pedorthist and Owner,Healthcare,1,0,"Brendan, quick question about BioPed","Hi Brendan,
 
 I'm Dylan, a student at Dalhousie University here in Halifax. I've been building an AI phone agent for local businesses and came across BioPed.
 
