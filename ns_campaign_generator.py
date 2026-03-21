@@ -1,612 +1,219 @@
 #!/usr/bin/env python3
 """
-Niche-Specific Campaign Generator (Claude-Powered)
-====================================================
-Generates fully custom, AI-written emails for each lead using Claude API.
-No templates, no variable swaps. Each email is uniquely crafted per business.
-
-Input CSV must have columns: email, first_name, last_name, company_name, niche, city, rating, reviews, website
-(Optional columns: state, phone, linkedin, job_title)
-
-Usage:
-    python ns_campaign_generator.py --input leads.csv
-    python ns_campaign_generator.py --input leads.csv --output output/ns_campaign.csv
-    python ns_campaign_generator.py --input leads.csv --resume  # resume from checkpoint
-    python ns_campaign_generator.py --input leads.csv --dry-run --limit 3  # test with 3 leads
+Nova Scotia Campaign Generator
+Generates personalized cold emails for all qualified NS leads.
+Emphasizes Dylan as a Dalhousie student building AI for local businesses.
+Outputs CSV ready for Instantly uploader.
 """
 
-import argparse
 import csv
 import json
 import os
 import sys
 import time
-import random
-from datetime import datetime
 
 try:
     import anthropic
 except ImportError:
-    print("Error: anthropic package required. Install with: pip install anthropic")
+    print("pip install anthropic")
     sys.exit(1)
 
-# ---------------------------------------------------------------------------
-# Config
-# ---------------------------------------------------------------------------
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-CONFIG_PATH = os.path.join(SCRIPT_DIR, "config.json")
-DEFAULT_OUTPUT_DIR = os.path.join(SCRIPT_DIR, "output")
-CHECKPOINT_SUFFIX = ".checkpoint.json"
+CONFIG_PATH = "config.json"
+INPUT_FILE = "output/ns_leads_qualified.csv"
+OUTPUT_FILE = "output/ns_campaign_emails.csv"
 
-MODEL = "claude-sonnet-4-20250514"
-DELAY_MIN = 1.0  # min seconds between API calls
-DELAY_MAX = 2.5  # max seconds between API calls
-
-# Niche-to-product mapping — inbound for almost everything
-# Only insurance and staffing get outbound pitch
-PRODUCT_MAP = {
-    "insurance": "outbound",
-    "staffing": "recruiting",
-    # Everything else defaults to inbound receptionist
+# Category-specific pain points
+PAIN_POINTS = {
+    "Dentist": "missed calls from new patients, front desk overwhelmed during cleanings, and no-shows eating into your schedule",
+    "Dental clinic": "missed calls from new patients, front desk overwhelmed during cleanings, and no-shows eating into your schedule",
+    "Orthodontist": "parents calling about consultations going to voicemail, and follow-up calls for retainer checks falling through the cracks",
+    "Medical spa": "losing Botox and filler leads because calls go unanswered after hours, and rebooking lapsed clients sitting in your CRM",
+    "Chiropractor": "new patient calls going to voicemail when your front desk is busy, and reactivating past patients who haven't booked in months",
+    "Optometrist": "appointment requests piling up, patients calling about lens orders tying up your staff, and annual exam reminders going unsent",
+    "Wellness center": "losing first-time clients when calls go unanswered, and manually following up with everyone who came for one session",
+    "Hair salon": "missing booking calls during busy hours, last-minute cancellations leaving empty chairs, and clients forgetting to rebook",
+    "Beauty salon": "phone ringing off the hook during appointments, walk-ins you can't track, and clients not rebooking after their first visit",
+    "Massage therapist": "calls going to voicemail when you're with a client, no-shows costing you money, and past clients not rebooking",
+    "Physical therapist": "intake calls going to voicemail, patients not scheduling their follow-ups, and referrals from doctors falling through",
+    "Physical therapy clinic": "intake calls going to voicemail, patients not scheduling their follow-ups, and referrals from doctors falling through",
+    "Barber shop": "missed calls when every chair is full, walk-in chaos, and regulars not rebooking consistently",
+    "Spa": "losing high-value bookings to unanswered after-hours calls, and gift certificate buyers never converting to regulars",
+    "Day spa": "losing high-value bookings to unanswered after-hours calls, and gift certificate buyers never converting to regulars",
+    "Health spa": "losing high-value bookings to unanswered after-hours calls, and gift certificate buyers never converting to regulars",
+    "Nail salon": "phone ringing non-stop during appointments, double-bookings, and clients not knowing when their next fill is due",
+    "Skin care clinic": "consultation requests going to voicemail, and clients who did one treatment never booking the follow-up series",
+    "Acupuncture clinic": "new patient calls going unanswered during sessions, and patients dropping off their treatment plan mid-way",
+    "Naturopathic practitioner": "initial consultation calls going to voicemail, and follow-up scheduling falling through the cracks",
+    "Counselor": "intake calls from new clients going to voicemail, and the admin burden of scheduling and rescheduling",
+    "Psychologist": "potential clients calling during sessions and never calling back, and the back-and-forth of scheduling",
+    "Mental health service": "potential clients calling during sessions and never calling back, and the back-and-forth of scheduling",
+    "Laser hair removal service": "consultation requests going unanswered and losing them to a competitor down the street",
+    "Medical clinic": "high call volume overwhelming your front desk, patients waiting on hold, and after-hours calls going to voicemail",
+    "Eye care center": "appointment calls competing with walk-ins at the front desk, and annual exam reminders going unsent",
+    "Hairdresser": "missing booking calls during busy hours, last-minute cancellations leaving gaps, and clients forgetting to rebook",
+    "Osteopath": "new patient calls going to voicemail during treatments, and past patients not coming back for maintenance visits",
+    "Facial spa": "losing consultation bookings to unanswered calls, and one-time facial clients never rebooking",
 }
 
-# Niche-specific pain points for richer prompt context
-NICHE_PAIN_POINTS = {
-    "med spa": [
-        "Front desk gets slammed during peak hours and calls go to voicemail",
-        "New patient inquiries from ads sit for hours before anyone follows up",
-        "Botox and filler consultations lost because nobody answered the phone at 7pm",
-        "Repeat clients can't book easily and end up going to a competitor",
-    ],
-    "dental": [
-        "Hygienist schedule has gaps because recall patients aren't being called",
-        "New patient calls ring out during lunch hour when front desk is short-staffed",
-        "Emergency calls after hours go to a generic voicemail that nobody checks until morning",
-        "Insurance verification calls eat up half the front desk's day",
-    ],
-    "wellness": [
-        "Clients call to book but hang up after 4 rings when the practitioner is in session",
-        "Class and appointment reminders are manual and no-show rates are climbing",
-        "New lead inquiries from Google sit in a contact form for days",
-        "Phone tag with potential clients who want to ask about services before booking",
-    ],
-    "plastic surgery": [
-        "High-value consult requests go unanswered after hours",
-        "Prospective patients researching procedures call multiple clinics and book whoever picks up first",
-        "Front desk spends 30 minutes per call explaining financing options",
-        "Post-op follow-up calls are falling through the cracks",
-    ],
-    "iv therapy": [
-        "Walk-in and call-in demand spikes are unpredictable and the phone gets overwhelmed",
-        "Group bookings and party inquiries need fast follow-up or they book elsewhere",
-        "Membership and package upsells aren't happening because staff is too busy",
-        "After-hours calls from people feeling sick go straight to voicemail",
-    ],
-    "chiropractic": [
-        "New patient calls during adjustments go unanswered",
-        "Reactivation of lapsed patients isn't happening because there's no bandwidth",
-        "Insurance and billing questions eat up front desk time",
-        "After-hours calls from people in pain go to voicemail",
-    ],
-    "insurance": [
-        "Speed-to-lead on new quote requests is way too slow",
-        "Renewal follow-ups aren't happening consistently",
-        "Old leads in the CRM are gathering dust with no one to call them",
-        "Agents spend half their day on outbound calls that don't connect",
-    ],
-    "recruiting": [
-        "Candidate outreach is bottlenecked by how many calls recruiters can make per day",
-        "Hot candidates go cold because follow-up takes too long",
-        "Sourced candidates sit in the ATS without a first touch for days",
-        "Phone screens for high-volume roles eat up senior recruiter time",
-    ],
-    "staffing": [
-        "Speed-to-contact on new applicants determines placement rates",
-        "Database of past candidates isn't being worked because there aren't enough callers",
-        "No-shows spike when confirmation calls don't happen",
-        "After-hours applicant calls go unanswered and they apply at the next agency",
-    ],
-    "hvac": [
-        "Emergency calls at 2am go to voicemail and the customer calls the next company",
-        "Busy season means the phone rings nonstop and half the calls get missed",
-        "Estimate requests pile up and customers book whoever responds first",
-        "Techs are on the road and nobody's answering the office line",
-    ],
-    "plumbing": [
-        "Emergency leak calls after hours go straight to voicemail",
-        "Missed calls during the day because everyone's out on jobs",
-        "Estimate follow-ups fall through the cracks when things get busy",
-        "Customers call 3 plumbers and book whoever picks up first",
-    ],
-    "electrical": [
-        "Customers need someone NOW and if you don't pick up they call the next guy",
-        "Office phone rings out when you're on a job site",
-        "Quote requests sit in voicemail for hours during busy weeks",
-        "After-hours emergency calls are going to competitors",
-    ],
-    "roofing": [
-        "Storm season hits and the phone explodes — half the calls get missed",
-        "Estimate requests from homeowners go cold if you don't respond same day",
-        "Crews are on roofs all day and nobody's manning the phone",
-        "Insurance claim calls need fast response or the homeowner moves on",
-    ],
-    "landscaping": [
-        "Spring rush means 50 calls a day and you can't answer them all",
-        "Quote requests from new customers go to voicemail while crews are out",
-        "Seasonal customers don't get called back for spring startup",
-        "Phone rings while you're on the mower and the customer calls someone else",
-    ],
-    "pest_control": [
-        "Panicked customers with a bug problem call whoever picks up first",
-        "Seasonal spikes mean the phone is ringing off the hook",
-        "Recurring service reminders aren't going out consistently",
-        "After-hours calls from people with urgent pest issues go to voicemail",
-    ],
-    "real_estate": [
-        "Zillow and Realtor.com leads sit for hours before anyone calls them back",
-        "Open house sign-in leads never get a follow-up call",
-        "Past clients aren't getting touched for referrals or repeat business",
-        "Speed-to-lead determines who gets the listing and most agents are too slow",
-    ],
-    "law_firm": [
-        "Potential clients call after hours and hire whoever picks up the phone",
-        "Intake calls during court or meetings go to voicemail",
-        "Leads from Google Ads aren't getting called back fast enough",
-        "Front desk is doing intake, scheduling, and admin all at once",
-    ],
-    "accounting": [
-        "Tax season means 100 calls a day and half go to voicemail",
-        "New client inquiries sit in the inbox while staff handles existing clients",
-        "After-hours calls from anxious business owners go unanswered",
-        "Phone tag with clients wastes hours every week",
-    ],
-    "auto_repair": [
-        "Customers calling for quotes book whoever answers first",
-        "Service advisors are busy with walk-ins and can't answer every call",
-        "Recall and maintenance reminders aren't going out to past customers",
-        "After-hours calls from people with car trouble go to voicemail",
-    ],
-    "car_dealership": [
-        "Internet leads go cold if you don't call back within 5 minutes",
-        "Service department phones ring nonstop and customers get frustrated",
-        "Sales follow-ups fall through the cracks during busy weekends",
-        "After-hours inquiries from serious buyers sit until Monday morning",
-    ],
-    "fitness": [
-        "Trial and membership inquiries call once and if nobody answers they join somewhere else",
-        "No-shows for classes and PT sessions cost you money every week",
-        "New leads from Instagram ads don't get a call back for days",
-        "Front desk is checking people in and can't answer the phone",
-    ],
-    "homecare": [
-        "Families calling about care for a loved one need someone NOW, not a voicemail",
-        "Referral calls from hospitals go to voicemail after hours",
-        "New client inquiries sit in the inbox while caregivers are on assignments",
-        "Follow-up calls to families aren't happening consistently",
-    ],
-    "salon": [
-        "Clients call to book but stylists are mid-appointment and can't answer",
-        "Walk-in heavy days mean the phone gets ignored",
-        "Rebooking and recall reminders aren't going out to past clients",
-        "After-hours booking requests go to voicemail and they book somewhere else",
-    ],
-    "spa": [
-        "Clients call to book but therapists are in session and front desk is busy",
-        "Gift certificate and package inquiries need quick follow-up",
-        "Cancellation slots could be filled if someone was calling the waitlist",
-        "Weekend and evening inquiries go unanswered until Monday",
-    ],
-    "optometry": [
-        "New patient calls go to voicemail during lunch or when staff is with patients",
-        "Annual exam recalls aren't going out consistently",
-        "Contact lens reorder calls eat up front desk time",
-        "After-hours calls from parents with kids' eye emergencies go to voicemail",
-    ],
-    "mental_health": [
-        "Someone reaching out for help calls once — if nobody answers, they don't call back",
-        "Therapists are in session all day and can't answer intake calls",
-        "New client inquiries from Psychology Today or Google sit for days",
-        "After-hours calls from people in crisis hit a voicemail",
-    ],
-    "physiotherapy": [
-        "New patient referrals from doctors need to be booked quickly or they go elsewhere",
-        "Therapists are treating patients and can't answer the phone",
-        "Recall appointments for ongoing treatment aren't being followed up",
-        "After-hours calls from athletes and post-surgery patients go to voicemail",
-    ],
-}
+DEFAULT_PAIN = "missed calls costing you new clients, your front desk overwhelmed during peak hours, and past clients sitting in your database who haven't rebooked"
+
 
 def load_config():
-    """Load config.json and return dict."""
-    if not os.path.exists(CONFIG_PATH):
-        print(f"Error: config.json not found at {CONFIG_PATH}")
-        sys.exit(1)
     with open(CONFIG_PATH) as f:
         return json.load(f)
 
 
-def get_product_pitch(niche: str) -> str:
-    """Determine which product to pitch based on niche."""
-    niche_lower = niche.lower().strip()
-    for keyword, product in PRODUCT_MAP.items():
-        if keyword in niche_lower:
-            return product
-    return "inbound"
-
-
-def get_pain_points(niche: str) -> list:
-    """Get niche-specific pain points, falling back to generic ones."""
-    niche_lower = niche.lower().strip()
-    for key, points in NICHE_PAIN_POINTS.items():
-        if key in niche_lower:
-            return points
-    # Generic fallback
-    return [
-        "Missed calls during busy hours mean lost revenue",
-        "New leads from ads and Google sit too long before follow-up",
-        "Front desk is stretched thin juggling phones, walk-ins, and admin",
-        "After-hours callers hit voicemail and book with a competitor instead",
-    ]
-
-
-def build_generation_prompt(lead: dict) -> str:
-    """Build the Claude prompt for generating a custom email for this lead."""
-    product = get_product_pitch(lead.get("niche", ""))
-    pain_points = get_pain_points(lead.get("niche", ""))
-
-    if product == "recruiting":
-        product_description = (
-            "AI Recruiting Agent that screens applicants instantly, schedules interviews, "
-            "and follows up with candidates automatically. Cuts time-to-fill in half."
-        )
-        product_label = "AI Recruiting Agent"
-    elif product == "outbound":
-        product_description = (
-            "AI Outbound Agent that calls and texts new leads within 2 minutes, "
-            "re-engages dormant CRM leads, and books appointments automatically. "
-            "Plus an AI Inbound Receptionist that answers every call 24/7. Full package."
-        )
-        product_label = "AI Outbound Agent + Inbound Receptionist"
-    else:
-        product_description = (
-            "AI Inbound Receptionist that answers every incoming call 24/7, "
-            "books appointments, handles FAQs, follows up on missed calls, and does live transfers. "
-            "Recovers 20-40% of missed calls and adds 10-25% more bookings."
-        )
-        product_label = "AI Inbound Receptionist"
-
-    # Build lead context block
-    lead_context_parts = []
-    lead_context_parts.append(f"Company: {lead.get('company_name', 'Unknown')}")
-    if lead.get("first_name"):
-        lead_context_parts.append(f"Contact first name: {lead['first_name']}")
-    if lead.get("last_name"):
-        lead_context_parts.append(f"Contact last name: {lead['last_name']}")
-    if lead.get("job_title"):
-        lead_context_parts.append(f"Title: {lead['job_title']}")
-    lead_context_parts.append(f"Niche: {lead.get('niche', 'service business')}")
-    if lead.get("city"):
-        lead_context_parts.append(f"City: {lead['city']}")
-    if lead.get("state"):
-        lead_context_parts.append(f"State: {lead['state']}")
-    if lead.get("rating"):
-        lead_context_parts.append(f"Google rating: {lead['rating']}")
-    if lead.get("reviews"):
-        lead_context_parts.append(f"Google review count: {lead['reviews']}")
-    if lead.get("website"):
-        lead_context_parts.append(f"Website: {lead['website']}")
-
-    lead_context = "\n".join(lead_context_parts)
-
-    pain_points_text = "\n".join(f"- {p}" for p in pain_points)
-
-    prompt = f"""You are Dylan Mitchell, founder of Realside AI. Write a cold outreach email to this specific business.
-
-LEAD DATA:
-{lead_context}
-
-PRODUCT TO PITCH: {product_label}
-{product_description}
-
-NICHE-SPECIFIC PAIN POINTS (use 1-2 naturally, don't list them all):
-{pain_points_text}
-
-RULES (follow every single one):
-1. The email must feel like Dylan personally wrote it for THIS business. Reference specific details: their city, their Google reviews/rating, their niche, their company name. Make it feel like you actually looked them up.
-2. Under 120 words. Tight and punchy.
-3. Tone: friendly, confident, casual. Like a real person reaching out to a business owner. Not corporate, not salesy, not robotic.
-4. Never use '--' (double dashes) anywhere.
-5. Vary the structure. Don't start with "Hi [name]" every time. Mix up openers: sometimes lead with an observation, a question, a compliment, a stat. Be creative.
-6. End with a soft CTA: either a casual question or the Calendly link (https://calendly.com/realsideai). Alternate between these.
-7. Sign off as Dylan from Realside AI. Vary sign-offs (Cheers, Best, Talk soon, etc.)
-8. Do NOT use generic filler ("I hope this email finds you well", "I wanted to reach out", "I came across your company"). Get straight to the point.
-9. Do NOT over-explain the product. Spark curiosity. The goal is to get them on a call, not close via email.
-10. If the lead has a first_name, use it naturally. If not, address the team or company.
-
-SUBJECT LINE RULES:
-- Short (3-8 words max)
-- Curiosity-driven and personalized (use company name, city, or niche reference)
-- Lowercase is fine. No clickbait. No emojis.
-- Should feel like a subject line from someone they know, not a marketing email
-
-Return your response in this exact JSON format (no markdown, no code fences):
-{{"subject": "your subject line here", "body": "your email body here"}}"""
-
-    return prompt
-
-
-def generate_email(client: anthropic.Anthropic, lead: dict) -> dict:
-    """Call Claude to generate a fully custom email for one lead."""
-    prompt = build_generation_prompt(lead)
-
-    response = client.messages.create(
-        model=MODEL,
-        max_tokens=500,
-        temperature=0.9,
-        messages=[{"role": "user", "content": prompt}],
-    )
-
-    text = response.content[0].text.strip()
-
-    # Parse JSON response
-    # Strip markdown fences if Claude added them
-    if text.startswith("```"):
-        text = text.split("\n", 1)[1] if "\n" in text else text[3:]
-        if text.endswith("```"):
-            text = text[:-3]
-        text = text.strip()
-        if text.startswith("json"):
-            text = text[4:].strip()
-
-    try:
-        result = json.loads(text)
-    except json.JSONDecodeError:
-        # Try to extract JSON from the response
-        start = text.find("{")
-        end = text.rfind("}") + 1
-        if start >= 0 and end > start:
-            try:
-                result = json.loads(text[start:end])
-            except json.JSONDecodeError:
-                print(f"  WARNING: Could not parse Claude response for {lead.get('company_name', '?')}")
-                print(f"  Raw response: {text[:200]}")
-                return None
-        else:
-            print(f"  WARNING: No JSON found in response for {lead.get('company_name', '?')}")
-            return None
-
-    subject = result.get("subject", "").strip()
-    body = result.get("body", "").strip()
-
-    if not subject or not body:
-        print(f"  WARNING: Empty subject or body for {lead.get('company_name', '?')}")
-        return None
-
-    # Enforce no '--' rule
-    body = body.replace("--", "\u2014")
-    subject = subject.replace("--", "\u2014")
-
-    return {"subject": subject, "body": body}
-
-
-def load_checkpoint(checkpoint_path: str) -> set:
-    """Load set of already-processed email addresses from checkpoint."""
-    if not os.path.exists(checkpoint_path):
-        return set()
-    with open(checkpoint_path) as f:
-        data = json.load(f)
-    return set(data.get("processed", []))
-
-
-def save_checkpoint(checkpoint_path: str, processed: set):
-    """Save processed email set to checkpoint file."""
-    with open(checkpoint_path, "w") as f:
-        json.dump({"processed": sorted(processed), "updated": datetime.now().isoformat()}, f)
-
-
-def read_leads(input_path: str) -> list:
-    """Read the input leads CSV and return list of dicts."""
-    if not os.path.exists(input_path):
-        print(f"Error: Input file not found: {input_path}")
-        sys.exit(1)
-
+def load_leads():
     leads = []
-    with open(input_path, newline="", encoding="utf-8-sig") as f:
+    with open(INPUT_FILE, 'r') as f:
         reader = csv.DictReader(f)
         for row in reader:
-            # Normalize column names to lowercase/stripped
-            lead = {k.strip().lower().replace(" ", "_"): v.strip() if v else "" for k, v in row.items()}
-            # Skip rows with no email
-            if not lead.get("email"):
-                continue
-            leads.append(lead)
-
+            if row.get('email', '').strip():
+                leads.append(row)
     return leads
 
 
+def generate_emails_batch(client, leads_batch, batch_num, total_batches):
+    """Generate personalized emails for a batch of leads using Claude."""
+
+    leads_info = []
+    for i, lead in enumerate(leads_batch):
+        category = lead.get('category', '')
+        pain = PAIN_POINTS.get(category, DEFAULT_PAIN)
+        leads_info.append({
+            "index": i,
+            "company_name": lead.get('company_name', ''),
+            "category": category,
+            "city": lead.get('city', ''),
+            "rating": lead.get('rating', ''),
+            "reviews": lead.get('reviews', ''),
+            "pain_points": pain,
+        })
+
+    prompt = f"""Generate personalized cold emails for these {len(leads_batch)} Nova Scotia businesses.
+
+SENDER CONTEXT:
+- Name: Dylan Mitchell
+- Student at Dalhousie University in Halifax, Nova Scotia
+- Building Realside AI — AI-powered phone agents for service businesses
+- Products: AI Inbound Receptionist (answers calls 24/7, books appointments) and AI Outbound Agent (follows up with leads/past clients automatically)
+- Calendar: calendly.com/realsideai
+- This is a LOCAL founder reaching out to LOCAL businesses — emphasize this connection
+
+EMAIL RULES:
+- Subject line: short, curiosity-driven, personal (use their company name or city). NO spam words (free, guaranteed, etc.)
+- Body: 3-5 sentences MAX. Casual, friendly tone like a student who genuinely wants to help local businesses.
+- MUST mention being a Dalhousie student early in the email — this builds trust and relatability
+- Reference their specific business type and a pain point they'd recognize
+- End with soft CTA: "Would you be open to a quick chat?" or similar (include calendly.com/realsideai)
+- Do NOT use dashes (--) anywhere
+- Do NOT be salesy or corporate. Be genuine, human, local.
+- Each email must be UNIQUE — vary the opening, angle, and CTA
+- Sign off as just "Dylan" (no last name, keep it casual)
+
+BUSINESSES:
+{json.dumps(leads_info, indent=2)}
+
+Return a JSON array with one object per business:
+[
+  {{
+    "index": 0,
+    "subject": "the subject line",
+    "body": "the email body in plain text (use \\n for line breaks)"
+  }},
+  ...
+]
+
+Return ONLY the JSON array, no other text."""
+
+    for attempt in range(3):
+        try:
+            response = client.messages.create(
+                model="claude-sonnet-4-20250514",
+                max_tokens=4096,
+                messages=[{"role": "user", "content": prompt}]
+            )
+
+            text = response.content[0].text.strip()
+            # Extract JSON from response
+            if text.startswith('['):
+                emails = json.loads(text)
+            else:
+                # Find JSON array in response
+                start = text.find('[')
+                end = text.rfind(']') + 1
+                emails = json.loads(text[start:end])
+
+            print(f"  Batch {batch_num}/{total_batches}: Generated {len(emails)} emails")
+            return emails
+
+        except Exception as e:
+            print(f"  Batch {batch_num} attempt {attempt+1} error: {e}")
+            if attempt < 2:
+                time.sleep(2)
+
+    return []
+
+
 def main():
-    parser = argparse.ArgumentParser(description="Generate fully custom AI-written campaign emails")
-    parser.add_argument("--input", required=True, help="Path to input leads CSV")
-    parser.add_argument("--output", default=None, help="Path to output campaign CSV (default: output/ns_campaign_TIMESTAMP.csv)")
-    parser.add_argument("--campaign-name", default=None, help="Campaign name for the output (default: auto from input filename)")
-    parser.add_argument("--resume", action="store_true", help="Resume from checkpoint (skip already-processed leads)")
-    parser.add_argument("--dry-run", action="store_true", help="Print generated emails instead of saving")
-    parser.add_argument("--limit", type=int, default=0, help="Only process first N leads (0 = all)")
-    args = parser.parse_args()
+    dry_run = '--dry-run' in sys.argv
 
-    # Load config
+    print("=== NS Campaign Email Generator (Dalhousie Student Angle) ===\n")
+
     config = load_config()
-    api_key = config.get("anthropic_api_key")
-    if not api_key:
-        print("Error: anthropic_api_key not found in config.json")
-        sys.exit(1)
+    leads = load_leads()
+    print(f"Loaded {len(leads)} leads with emails")
 
-    # Set up paths
-    input_path = os.path.abspath(args.input)
-    if args.output:
-        output_path = os.path.abspath(args.output)
-    else:
-        os.makedirs(DEFAULT_OUTPUT_DIR, exist_ok=True)
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        base_name = os.path.splitext(os.path.basename(input_path))[0]
-        output_path = os.path.join(DEFAULT_OUTPUT_DIR, f"ns_{base_name}_{timestamp}.csv")
-
-    checkpoint_path = output_path + CHECKPOINT_SUFFIX
-
-    # Campaign name
-    if args.campaign_name:
-        campaign_name = args.campaign_name
-    else:
-        base = os.path.splitext(os.path.basename(input_path))[0]
-        campaign_name = f"Realside AI — NS {base.replace('_', ' ').title()}"
-
-    # Read leads
-    leads = read_leads(input_path)
-    if not leads:
-        print("No leads found in input CSV. Make sure it has an 'email' column.")
-        sys.exit(1)
-
-    if args.limit > 0:
-        leads = leads[: args.limit]
-
-    # Load checkpoint for resume
-    processed_emails = set()
-    if args.resume:
-        processed_emails = load_checkpoint(checkpoint_path)
-        print(f"Resuming: {len(processed_emails)} leads already processed")
-
-    # Filter out already-processed leads
-    remaining = [l for l in leads if l["email"] not in processed_emails]
-    print(f"Input: {len(leads)} leads total, {len(remaining)} to process")
-    print(f"Output: {output_path}")
-    print(f"Campaign: {campaign_name}")
-    print(f"Model: {MODEL}")
-    print()
-
-    if not remaining:
-        print("All leads already processed. Nothing to do.")
+    if dry_run:
+        print(f"\n[DRY RUN] Would generate emails for {len(leads)} leads")
+        for lead in leads[:5]:
+            print(f"  {lead['company_name']} ({lead['category']}) - {lead['email']}")
         return
 
-    # Initialize Claude client
-    client = anthropic.Anthropic(api_key=api_key)
+    client = anthropic.Anthropic(api_key=config['anthropic_api_key'])
 
-    # Open output CSV (append if resuming, write new if not)
-    file_exists = os.path.exists(output_path) and args.resume
-    output_fields = [
-        "email", "first_name", "last_name", "company_name", "subject", "body",
-        "website", "linkedin", "job_title", "location", "niche", "rating",
-        "reviews", "campaign_name", "personalized"
-    ]
+    # Process in batches of 15
+    BATCH_SIZE = 15
+    all_results = []
+    total_batches = (len(leads) + BATCH_SIZE - 1) // BATCH_SIZE
 
-    mode = "a" if file_exists else "w"
-    outfile = open(output_path, mode, newline="", encoding="utf-8")
-    writer = csv.DictWriter(outfile, fieldnames=output_fields, extrasaction="ignore")
-    if not file_exists:
+    for batch_num in range(total_batches):
+        start = batch_num * BATCH_SIZE
+        end = min(start + BATCH_SIZE, len(leads))
+        batch = leads[start:end]
+
+        emails = generate_emails_batch(client, batch, batch_num + 1, total_batches)
+
+        if emails:
+            for email_data in emails:
+                idx = email_data.get('index', 0)
+                if idx < len(batch):
+                    lead = batch[idx]
+                    all_results.append({
+                        'email': lead['email'],
+                        'company_name': lead.get('company_name', ''),
+                        'domain': lead.get('domain', ''),
+                        'category': lead.get('category', ''),
+                        'city': lead.get('city', ''),
+                        'subject': email_data.get('subject', ''),
+                        'body': email_data.get('body', ''),
+                    })
+
+        # Rate limit
+        if batch_num < total_batches - 1:
+            time.sleep(1)
+
+    # Write output CSV
+    fieldnames = ['email', 'company_name', 'domain', 'category', 'city', 'subject', 'body']
+    with open(OUTPUT_FILE, 'w', newline='') as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
+        writer.writerows(all_results)
 
-    # Process each lead
-    success_count = 0
-    fail_count = 0
-    start_time = time.time()
-
-    for i, lead in enumerate(remaining, 1):
-        company = lead.get("company_name", "Unknown")
-        email = lead["email"]
-        print(f"[{i}/{len(remaining)}] Generating email for {company} ({email})...", end=" ", flush=True)
-
-        try:
-            result = generate_email(client, lead)
-        except anthropic.RateLimitError:
-            print("RATE LIMITED. Waiting 30s...")
-            time.sleep(30)
-            try:
-                result = generate_email(client, lead)
-            except Exception as e:
-                print(f"FAILED after retry: {e}")
-                fail_count += 1
-                continue
-        except Exception as e:
-            print(f"ERROR: {e}")
-            fail_count += 1
-            continue
-
-        if result is None:
-            fail_count += 1
-            print("SKIPPED (parse error)")
-            continue
-
-        # Build output row
-        location_parts = []
-        if lead.get("city"):
-            location_parts.append(lead["city"])
-        if lead.get("state"):
-            location_parts.append(lead["state"])
-        location = ", ".join(location_parts)
-
-        row = {
-            "email": email,
-            "first_name": lead.get("first_name", ""),
-            "last_name": lead.get("last_name", ""),
-            "company_name": company,
-            "subject": result["subject"],
-            "body": result["body"],
-            "website": lead.get("website", ""),
-            "linkedin": lead.get("linkedin", ""),
-            "job_title": lead.get("job_title", ""),
-            "location": location,
-            "niche": lead.get("niche", ""),
-            "rating": lead.get("rating", ""),
-            "reviews": lead.get("reviews", ""),
-            "campaign_name": campaign_name,
-            "personalized": "true",
-        }
-
-        if args.dry_run:
-            print("OK")
-            print(f"  Subject: {result['subject']}")
-            print(f"  Body:\n    " + result["body"].replace("\n", "\n    "))
-            print()
-        else:
-            writer.writerow(row)
-            outfile.flush()
-            print("OK")
-
-        # Track progress
-        processed_emails.add(email)
-        success_count += 1
-
-        # Save checkpoint every 5 leads
-        if success_count % 5 == 0 and not args.dry_run:
-            save_checkpoint(checkpoint_path, processed_emails)
-
-        # Rate limiting: random delay between API calls
-        if i < len(remaining):
-            delay = random.uniform(DELAY_MIN, DELAY_MAX)
-            time.sleep(delay)
-
-    outfile.close()
-
-    # Final checkpoint save
-    if not args.dry_run:
-        save_checkpoint(checkpoint_path, processed_emails)
-
-    # Summary
-    elapsed = time.time() - start_time
-    print()
-    print("=" * 50)
-    print(f"Done in {elapsed:.1f}s")
-    print(f"  Successful: {success_count}")
-    print(f"  Failed:     {fail_count}")
-    if not args.dry_run:
-        print(f"  Output:     {output_path}")
-        print(f"  Campaign:   {campaign_name}")
-    print()
-
-    # Clean up checkpoint if everything succeeded
-    if fail_count == 0 and not args.dry_run and os.path.exists(checkpoint_path):
-        os.remove(checkpoint_path)
-        print("Checkpoint cleaned up (all leads processed successfully)")
+    print(f"\n=== Done ===")
+    print(f"Generated {len(all_results)} emails")
+    print(f"Saved to {OUTPUT_FILE}")
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
