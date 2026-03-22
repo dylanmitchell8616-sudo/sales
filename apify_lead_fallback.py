@@ -41,8 +41,8 @@ APIFY_BASE = "https://api.apify.com/v2"
 INSTANTLY_BASE = "https://api.instantly.ai/api/v2"
 
 # Apify actors
-GOOGLE_MAPS_ACTOR = "compass/crawler-google-places"
-CONTACT_SCRAPER_ACTOR = "vdrmota/contact-info-scraper"
+GOOGLE_MAPS_ACTOR = "compass~crawler-google-places"
+CONTACT_SCRAPER_ACTOR = "vdrmota~contact-info-scraper"
 
 # Search query templates per niche
 NICHE_QUERIES = {
