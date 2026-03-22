@@ -66,8 +66,7 @@ def format_suggested_times(days: list[datetime], calendar_link: str | None = Non
         slots.append(f"{label} at 10:00 AM or 2:00 PM")
 
     times_text = "; ".join(slots)
-    if calendar_link:
-        times_text += f" | Or book directly: {calendar_link}"
+    # Calendar link removed - using simple "let me know what days work" CTA instead
     return times_text
 
 
@@ -162,9 +161,7 @@ def generate_response(
         content_summary = f"(No web content was available for {domain}. Generate based on the domain name, form message, and any knowledge you have.)"
 
     title_line = f"- Title: {contact_title}" if contact_title else ""
-    calendar_instruction = ""
-    if calendar_link:
-        calendar_instruction = f"\n8. Include this calendar booking link in the CTA: {calendar_link}"
+    calendar_instruction = "\n8. For the CTA, ask what days work for a call (never include a calendly or scheduling link)"
 
     prompt = f"""You are a world-class B2B sales rep responding to an INBOUND lead. This person has already expressed interest by filling out a form. Your job is to respond quickly with a personalized, relevant reply that moves toward a meeting.
 

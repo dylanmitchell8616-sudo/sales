@@ -34,6 +34,12 @@ except ImportError:
     print("Error: anthropic package required. Install with: pip install anthropic")
     sys.exit(1)
 
+try:
+    from campaign_memory_loader import get_memory_prompt
+except ImportError:
+    def get_memory_prompt(**kwargs):
+        return ""
+
 # Default config
 DEFAULT_SENDER_EMAIL = "dylan.realside@gmail.com"
 DEFAULT_SENDER_NAME = "Sales Team"
@@ -93,7 +99,12 @@ def generate_followup_sequence(
 ) -> list[dict]:
     """Use Claude to generate a 3-5 touch follow-up sequence for a prospect."""
 
+    # Inject campaign memory for richer context
+    memory_context = get_memory_prompt()
+
     prompt = f"""You are a world-class B2B sales copywriter specializing in follow-up sequences. Generate a follow-up email sequence for a prospect who received an initial outreach email but hasn't replied.
+
+{memory_context}
 
 PROSPECT INFO:
 - Company: {company_name}

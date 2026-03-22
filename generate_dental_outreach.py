@@ -7,7 +7,7 @@ Run once to produce output/dental_dso_outreach.csv.
 import csv
 import os
 
-CALENDAR = "https://calendly.com/realsideai"
+CALENDAR = "Let me know what days work for a call."
 OUTPUT = "output/dental_dso_outreach.csv"
 
 
@@ -28,7 +28,7 @@ Realside AI puts an AI Receptionist on every phone line. Answers 24/7, books ins
 
 DSOs in our network see 25% more bookings within 60 days.
 
-Worth 15 minutes? {CALENDAR}
+{CALENDAR}
 
 Dylan"""
     }
@@ -47,7 +47,7 @@ Realside AI deploys an AI Receptionist across every location. Every call answere
 
 DSOs we work with recover 20 to 30% of previously missed calls within 60 days.
 
-Would love to show you the numbers. {CALENDAR}
+{CALENDAR}
 
 Dylan"""
     }
@@ -64,7 +64,7 @@ Realside AI's AI Receptionist answers every call instantly. Books appointments, 
 
 Practices we work with see 25% more bookings within 60 days without adding a single headcount.
 
-Got 15 minutes to see how it works? {CALENDAR}
+{CALENDAR}
 
 Dylan"""
     }
@@ -81,7 +81,7 @@ Realside AI standardizes that moment. Every call answered instantly, professiona
 
 Patient satisfaction scores and booking rates both jump within 60 days.
 
-Would love to show you a demo. {CALENDAR}
+{CALENDAR}
 
 Dylan"""
     }
@@ -100,7 +100,7 @@ At {company}'s scale, recovering even 5% of missed calls across hundreds of loca
 
 Easy API integration. Live in days. ROI visible in month one.
 
-Worth 15 minutes? {CALENDAR}
+{CALENDAR}
 
 Dylan"""
     }
@@ -117,7 +117,7 @@ Most dental groups miss 15 to 25% of inbound calls during peak hours. That is re
 
 Realside AI's AI Receptionist answers every call 24/7, books appointments, and never misses a new patient. We see 25% booking increases within 60 days.
 
-Open to a quick demo? {CALENDAR}
+{CALENDAR}
 
 Dylan"""
     }
@@ -138,7 +138,7 @@ One stat that comes up a lot with DSO leaders: dental practices that deploy AI c
 
 For {company}, that math gets interesting fast.
 
-I can walk you through exactly how it works in 15 minutes. {CALENDAR}
+{CALENDAR}
 
 Dylan"""
     }
@@ -155,7 +155,7 @@ Front desk turnover averages 35% annually in dental. Every time someone leaves, 
 
 Realside AI removes that variable entirely. The AI handles every inbound call the same way, every time, across every {company} location.
 
-Happy to show you how other DSOs have solved this. {CALENDAR}
+{CALENDAR}
 
 Dylan"""
     }
@@ -170,7 +170,7 @@ Following up from last week.
 
 One of the regional managers we work with added 47 net-new appointments per location in the first month. No new hires. Just AI answering every call that used to go to voicemail.
 
-Happy to share the specifics on a short call. {CALENDAR}
+{CALENDAR}
 
 Dylan"""
     }
@@ -185,7 +185,7 @@ One thing I keep hearing from CX leaders we work with: the biggest driver of pat
 
 Realside AI ensures every {company} patient reaches a professional, helpful voice on the first try, 24/7, with zero hold time.
 
-Would love to show you what that looks like in practice. {CALENDAR}
+{CALENDAR}
 
 Dylan"""
     }
@@ -200,7 +200,7 @@ One common concern I hear is that deploying AI sounds complicated.
 
 Realside AI integrates with your existing phone system and practice management software via API. Most {company} locations can be live within 5 business days. No hardware, no disruption to current workflows.
 
-Happy to walk through the technical setup. {CALENDAR}
+{CALENDAR}
 
 Dylan"""
     }
@@ -217,7 +217,7 @@ Three of the top 10 DSOs in the country are now running AI phone answering acros
 
 {company} is in a strong position to move on this before it becomes table stakes.
 
-Worth a 15-minute look? {CALENDAR}
+{CALENDAR}
 
 Dylan"""
     }
@@ -236,7 +236,7 @@ I know your inbox is full so I'll keep this short.
 
 We help DSOs like {company} recover missed calls and add 20 to 30% more bookings without adding headcount. If the timing is not right, no worries at all.
 
-But if you have 15 minutes in the next couple weeks, I think the ROI conversation will be worth it. {CALENDAR}
+If you think the ROI conversation would be worth it, let me know what days work.
 
 Dylan"""
     }
@@ -251,7 +251,7 @@ Last follow-up, I promise.
 
 If {company} is dealing with any of these: inconsistent call handling across locations, front desk overflow during peak hours, or missed new patient calls — we have a direct solution.
 
-Happy to show you a 15-minute demo whenever makes sense. {CALENDAR}
+{CALENDAR}
 
 Dylan"""
     }
@@ -266,7 +266,7 @@ Just closing the loop on my previous notes.
 
 If adding 20 to 30% more bookings per location without hiring is on your radar, I'd love to show you how Realside AI makes that happen.
 
-If the timing is off, no worries at all. {CALENDAR}
+If the timing is off, no worries at all. Just let me know whenever it makes sense.
 
 Dylan"""
     }
@@ -296,7 +296,7 @@ One last note.
 
 If {company} is evaluating AI tools this year, Realside AI is the only solution built specifically for multi-location dental and med spa groups. Not a generic chatbot. Purpose-built AI Employees.
 
-Happy to do a quick walkthrough whenever. {CALENDAR}
+{CALENDAR}
 
 Dylan"""
     }

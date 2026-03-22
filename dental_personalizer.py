@@ -142,7 +142,7 @@ TEMPLATE STRUCTURE (keep this flow but make each line feel personal):
 - Mention you tried calling their office (or that patients calling their office might face the same issue)
 - Stat: clinics lose 20-40% of new patient calls to voicemail
 - What we do: custom AI receptionist that answers every call 24/7, books appointments, confirms insurance, sends follow-up texts
-- CTA: which days work this week for a quick walkthrough
+- CTA: ask what days work for a call (never include a calendly or scheduling link)
 
 RULES:
 - Subject line: short, personal, lowercase style. Reference their practice name or specialty if known.

@@ -64,7 +64,7 @@ Realside AI builds **AI Employees** for service businesses. These AI Employees a
 
 ## Contact
 - Website: https://realsideai.com
-- Booking: https://calendly.com/realsideai
+- Booking CTA: "Let me know what days work for a call."
 - Email: info@realsideai.com
 
 ## Key Metrics Achieved

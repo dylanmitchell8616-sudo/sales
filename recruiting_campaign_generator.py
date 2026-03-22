@@ -59,9 +59,7 @@ We built an AI that handles the entire recruiting process from application to fi
 
 {{testimonial_placeholder}}
 
-Would a 15-minute call make sense to see how this fits {{company_name}}?
-
-{{calendar_link}}
+Let me know what days work for a call to see how this fits {{company_name}}.
 
 {{sender_name}}
 {{sender_email}}"""
@@ -83,9 +81,7 @@ Meanwhile, conversion rates drop 8x when follow-up is delayed by just 5 minutes.
 
 Our AI contacts every applicant within seconds of applying, screens them, and books the final interview. No recruiter time wasted on the 90% of applicants who won't get hired. Your team only talks to candidates who are qualified and ready.
 
-Worth 15 minutes to see if the math works for {{company_name}}?
-
-{{calendar_link}}
+Let me know what days work for a call to see if the math works for {{company_name}}.
 
 {{sender_name}}"""
 
@@ -102,9 +98,7 @@ STEP3_BODY = """{{first_name}},
 
 If {{company_name}} is spending more time screening than closing, or losing good candidates to faster-moving agencies, that's exactly what our AI fixes. Application to final interview, fully automated.
 
-If the timing is off, no hard feelings. But if you're curious, 15 minutes and I'll show you how it works.
-
-{{calendar_link}}
+If the timing is off, no hard feelings. But if you're curious, let me know what days work for a call and I'll show you how it works.
 
 {{sender_name}}"""
 

@@ -59,6 +59,14 @@ except ImportError:
     print("Error: anthropic package required. Install with: pip install anthropic")
     sys.exit(1)
 
+try:
+    from campaign_memory_loader import get_memory_prompt, get_objection_context
+except ImportError:
+    def get_memory_prompt(**kwargs):
+        return ""
+    def get_objection_context(objection_type):
+        return ""
+
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
@@ -694,7 +702,15 @@ def generate_response(
     logging.info("Using response variant %s (%s) for %s",
                  variant, variant_config["name"], contact_name or company_name)
 
+    # Inject campaign memory and objection-specific context
+    memory_context = get_memory_prompt()
+    objection_ctx = get_objection_context(category)
+
     prompt = f"""Act as an expert SDR for Realside AI. Realside AI builds AI Employees for service businesses (med spas, dental, wellness). Products: AI Inbound Receptionist (answers calls 24/7, books appointments) and AI Outbound Agent (calls/texts leads within 2 mins, reactivates dormant CRM leads).
+
+{memory_context}
+
+{objection_ctx}
 
 The prospect replied to our cold email with this objection type: {category}
 
@@ -711,7 +727,7 @@ CASE STUDIES FOR SOCIAL PROOF:
 Rules:
 - Under 120 words
 - Never use '--' or em dashes or en dashes of any kind
-- Always include calendar link: {calendar_link}
+- CTA: Ask what days work for a call (never include a calendly or scheduling link)
 - For pricing: deflect to call first, if they push anchor at $2K/mo tied to 40 pre-qualified appointments
 - For "how does it work": redirect to demo call
 - For "send proof": offer to walk through case studies on a call
@@ -744,7 +760,7 @@ Return ONLY a JSON object with these keys:
                 f"Hi {contact_name},\n\n"
                 f"Thanks for getting back to me. I'd love to show you how we're helping "
                 f"businesses like {company_name} capture more revenue with AI.\n\n"
-                f"Here's my calendar if you have 15 minutes: {calendar_link}\n\n"
+                f"Let me know what days work for a call.\n\n"
                 f"Best,\n{first_name}"
             ),
             "variant": variant,

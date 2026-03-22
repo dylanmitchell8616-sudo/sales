@@ -37,6 +37,14 @@ except ImportError:
     print("Error: anthropic package required. Install with: pip install anthropic")
     sys.exit(1)
 
+try:
+    from campaign_memory_loader import get_memory_prompt, get_objection_context
+except ImportError:
+    def get_memory_prompt(**kwargs):
+        return ""
+    def get_objection_context(objection_type):
+        return ""
+
 
 VALID_REPLY_TYPES = {
     "direct_intent",
@@ -157,7 +165,15 @@ def generate_objection_response(
 ) -> dict:
     """Use Claude to generate an objection response based on the Imperium framework."""
 
+    # Inject campaign memory and objection-specific context
+    memory_context = get_memory_prompt()
+    objection_context = get_objection_context(reply_type)
+
     prompt = f"""You are an expert SDR trained in selling to service businesses (med spas, dental offices, wellness centers, aesthetic clinics, IV clinics).
+
+{memory_context}
+
+{objection_context}
 
 OFFER:
 Realside AI builds AI Employees for service businesses.
@@ -201,7 +217,7 @@ IMPERIUM FRAMEWORK RULES:
 6. Never use '--' in messaging
 7. For objections: empathize first, reframe with logic or social proof, end with a low-friction CTA
 8. Keep the response under 120 words
-9. Calendar link: {calendar_link}
+9. CTA: Ask what days work for a call (never include a calendly or scheduling link)
 10. Sign off with sender's first name only
 
 YOUR TASK:
@@ -249,7 +265,7 @@ Return ONLY the JSON object, no markdown formatting."""
         # Fallback response
         result = {
             "subject": f"Quick note for {contact_name}",
-            "body": f"Hi {contact_name},\n\nThanks for getting back to me. I'd love to chat briefly about how we're helping businesses like {company_name}.\n\nHere's my calendar if you have 15 minutes: {calendar_link}\n\nBest,\n{sender_name.split()[0]}",
+            "body": f"Hi {contact_name},\n\nThanks for getting back to me. I'd love to chat briefly about how we're helping businesses like {company_name}.\n\nLet me know what days work for a call.\n\nBest,\n{sender_name.split()[0]}",
             "action": "send_calendly",
         }
 

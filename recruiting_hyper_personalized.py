@@ -52,7 +52,7 @@ RULES:
 - Reference specific details: their industry, employee count, location, title, company growth, revenue context
 - Tone: direct, peer-to-peer, conversational. Like a text from a smart friend who happens to know their industry
 - Each email should have a DIFFERENT angle — don't repeat the same pitch
-- End each email with a soft CTA pointing to the calendar link
+- End each email with a soft CTA asking what days work for a call (never include a calendly or scheduling link)
 - Never use '--' in messaging
 - Use line breaks for readability (short paragraphs, 1-2 sentences each)
 - Do NOT include "Subject:" prefix in subject lines
@@ -62,7 +62,7 @@ PRODUCT (weave in naturally, don't dump features):
 - Screens candidates, asks qualifying questions, checks availability, books interviews
 - Contacts applicants within seconds of applying (vs industry avg of 2+ days)
 - Recruiters only talk to pre-qualified, ready-to-start candidates
-- Calendar link: {calendar_link}
+- CTA style: Ask what days work for a call (never include a calendly or scheduling link)
 - Sender: {sender_name}
 
 INDUSTRY STATS (use sparingly, pick the most relevant per lead):
@@ -113,7 +113,7 @@ Use ALL of this context to make each email feel like you spent 10 minutes resear
 Sign off as:
 {sender_name}
 
-Calendar link to include: {calendar_link}
+CTA style: Ask what days work for a call (never include a calendly or scheduling link)
 
 Return ONLY the JSON object, no other text."""
 
@@ -349,17 +349,17 @@ def generate_fallback_emails(lead, sender_name, sender_email, calendar_link):
         {
             "num": 1, "delay": 0,
             "subject": f"{first}, quick question about {company}'s hiring process",
-            "body": f"{first},\n\nRunning {company}{emp_note} in {industry} means your team is probably spending more time screening than actually placing.\n\n43% of interviews in staffing are no-shows. By the time most recruiters call back, the best candidates have moved on.\n\nWe built an AI that screens applicants the moment they apply, qualifies them, and books the interview. Your team only talks to ready-to-start candidates.\n\nWorth a 15-minute look?\n\n{calendar_link}\n\n{sender_name}",
+            "body": f"{first},\n\nRunning {company}{emp_note} in {industry} means your team is probably spending more time screening than actually placing.\n\n43% of interviews in staffing are no-shows. By the time most recruiters call back, the best candidates have moved on.\n\nWe built an AI that screens applicants the moment they apply, qualifies them, and books the interview. Your team only talks to ready-to-start candidates.\n\nLet me know what days work for a call.\n\n{sender_name}",
         },
         {
             "num": 2, "delay": 3,
             "subject": f"The math behind {company}'s open roles",
-            "body": f"Hey {first},\n\nQuick follow-up with one number: every day a role sits open costs ~$240 in lost revenue per shift.\n\nWith 77% annual turnover in this industry, that adds up fast. Our AI cuts time-to-fill by contacting applicants within seconds instead of days.\n\nHappy to walk through how it'd work for {company} specifically.\n\n{calendar_link}\n\n{sender_name}",
+            "body": f"Hey {first},\n\nQuick follow-up with one number: every day a role sits open costs ~$240 in lost revenue per shift.\n\nWith 77% annual turnover in this industry, that adds up fast. Our AI cuts time-to-fill by contacting applicants within seconds instead of days.\n\nHappy to walk through how it'd work for {company} specifically. Let me know what days work for a call.\n\n{sender_name}",
         },
         {
             "num": 3, "delay": 7,
             "subject": f"Last note, {first}",
-            "body": f"{first},\n\nTotally get it if the timing is off. Just didn't want {company} to keep burning recruiter hours on the 90% of applicants who won't get hired.\n\nIf you're ever curious, the offer stands: 15 minutes and I'll show you exactly how it works.\n\n{calendar_link}\n\n{sender_name}",
+            "body": f"{first},\n\nTotally get it if the timing is off. Just didn't want {company} to keep burning recruiter hours on the 90% of applicants who won't get hired.\n\nIf you're ever curious, just let me know what days work for a call and I'll show you exactly how it works.\n\n{sender_name}",
         },
     ]
 
