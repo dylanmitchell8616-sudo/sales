@@ -1,18 +1,125 @@
 #!/usr/bin/env python3
 """
-Generate fully custom emails + follow-ups for Halifax business owners.
+Generate fully custom emails + follow-ups for business owners.
 Each email is unique per owner, references their name, title, company, and industry.
-Dalhousie student angle throughout.
+
+Now loads industry-specific templates from campaign_templates.json for pain points,
+tone, CTA style, and personalization depth. Falls back to built-in defaults if no
+template file is found or no vertical matches.
 """
 
 import csv
 import json
+import os
 import random
 
 INPUT_FILE = "output/halifax_owners_enriched.csv"
 OUTPUT_FILE = "output/owner_campaign_emails.csv"
+TEMPLATES_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "campaign_templates.json")
 
-# Industry-specific pain points and hooks
+
+# ---------------------------------------------------------------------------
+# Campaign template loading
+# ---------------------------------------------------------------------------
+
+def load_campaign_templates(filepath: str = TEMPLATES_FILE) -> dict:
+    """Load campaign templates from JSON file."""
+    if not os.path.exists(filepath):
+        print(f"Warning: Campaign templates file '{filepath}' not found, using built-in defaults")
+        return {}
+    with open(filepath, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def detect_vertical(industry: str, company_name: str, templates: dict) -> tuple:
+    """Auto-detect the best matching vertical from campaign_templates.json.
+
+    Checks the lead's industry (and company name as fallback) against each
+    vertical's aliases list. Returns (vertical_key, vertical_config) or
+    (None, None) if no match is found.
+    """
+    verticals = templates.get("verticals", {})
+    if not verticals:
+        return None, None
+
+    # Normalize search terms
+    search_text = f"{industry} {company_name}".lower()
+
+    for vertical_key, vertical_config in verticals.items():
+        aliases = vertical_config.get("aliases", [])
+        for alias in aliases:
+            if alias.lower() in search_text:
+                return vertical_key, vertical_config
+
+    return None, None
+
+
+def build_hooks_from_template(vertical: dict) -> dict:
+    """Convert a campaign_templates.json vertical config into the hooks format
+    used by the email generator (pain, value, followup_hooks)."""
+    pain_points = vertical.get("pain_points", [])
+    value_props = vertical.get("value_props", [])
+    followup_hooks_raw = vertical.get("followup_hooks", [])
+
+    # Pick the first pain point as the primary pain statement
+    pain = pain_points[0] if pain_points else "local business owners miss calls and opportunities when they're busy running the business"
+    # Make it conversational: "I know [pain]"
+    if not pain.lower().startswith("i know"):
+        pain = f"I know {pain[0].lower()}{pain[1:]}"
+
+    # Pick the first value prop
+    value = value_props[0] if value_props else "answers every call 24/7, books appointments, and follows up with leads automatically"
+    # Strip leading "AI receptionist/agent" prefix for flow after "The agent I made for you..."
+    value_lower = value.lower()
+    for prefix in ["ai receptionist ", "ai outbound agent ", "ai agent ", "ai "]:
+        if value_lower.startswith(prefix):
+            value = value[len(prefix):]
+            break
+
+    return {
+        "pain": pain,
+        "value": value,
+        "followup_hooks": followup_hooks_raw if followup_hooks_raw else [
+            "Following up. I was thinking about how many calls {company_name} might miss during your busiest hours",
+            "Quick thought. A business owner told me he was losing clients just because no one could answer the phone",
+            "Last note. Our AI handles everything by phone so you can focus on running {company_name}",
+        ],
+    }
+
+
+def get_template_settings(vertical: dict | None, templates: dict) -> dict:
+    """Extract tone, CTA style, email length, and followup cadence from a vertical
+    config, falling back to global defaults."""
+    defaults = templates.get("global_defaults", {})
+    if vertical is None:
+        return {
+            "tone": defaults.get("tone", "friendly"),
+            "cta_style": defaults.get("cta_style", "soft_ask"),
+            "email_length": defaults.get("email_length", "short"),
+            "followup_cadence_days": defaults.get("followup_cadence_days", [3, 5, 8]),
+            "personalization_depth": defaults.get("personalization_depth", "medium"),
+            "subject_line_angles": [],
+            "proof_points": [],
+        }
+    return {
+        "tone": vertical.get("tone", defaults.get("tone", "friendly")),
+        "cta_style": vertical.get("cta_style", defaults.get("cta_style", "soft_ask")),
+        "email_length": vertical.get("email_length", defaults.get("email_length", "short")),
+        "followup_cadence_days": vertical.get("followup_cadence_days", defaults.get("followup_cadence_days", [3, 5, 8])),
+        "personalization_depth": vertical.get("personalization_depth", defaults.get("personalization_depth", "medium")),
+        "subject_line_angles": vertical.get("subject_line_angles", []),
+        "proof_points": vertical.get("proof_points", []),
+    }
+
+
+# Load templates at module level
+_CAMPAIGN_TEMPLATES = load_campaign_templates()
+
+
+# ---------------------------------------------------------------------------
+# Legacy industry hooks (used as fallback when no template match)
+# ---------------------------------------------------------------------------
+
 INDUSTRY_HOOKS = {
     "Construction": {
         "pain": "I know contractors miss calls from potential clients when they're on-site all day",
@@ -133,51 +240,94 @@ DEFAULT_HOOKS = {
 }
 
 
+def get_hooks_for_owner(owner: dict) -> tuple:
+    """Get the best hooks for an owner, preferring campaign_templates.json verticals
+    over legacy INDUSTRY_HOOKS, with DEFAULT_HOOKS as final fallback.
+
+    Returns (hooks_dict, template_settings_dict).
+    """
+    industry = owner.get('industry', '')
+    company = owner.get('company_name', '')
+
+    # Try campaign_templates.json first
+    vertical_key, vertical_config = detect_vertical(industry, company, _CAMPAIGN_TEMPLATES)
+    if vertical_config is not None:
+        hooks = build_hooks_from_template(vertical_config)
+        settings = get_template_settings(vertical_config, _CAMPAIGN_TEMPLATES)
+        return hooks, settings
+
+    # Fall back to legacy INDUSTRY_HOOKS
+    if industry in INDUSTRY_HOOKS:
+        hooks = INDUSTRY_HOOKS[industry]
+        settings = get_template_settings(None, _CAMPAIGN_TEMPLATES)
+        return hooks, settings
+
+    # Final fallback
+    return DEFAULT_HOOKS, get_template_settings(None, _CAMPAIGN_TEMPLATES)
+
+
 def generate_initial_email(owner):
-    """Generate a fully custom initial email for an owner."""
+    """Generate a fully custom initial email for an owner.
+    Uses campaign_templates.json for industry-aware tone, CTA, and pain points."""
     first = owner['first_name']
     company = owner['company_name']
     title = owner['title']
     industry = owner['industry']
 
-    hooks = INDUSTRY_HOOKS.get(industry, DEFAULT_HOOKS)
+    hooks, settings = get_hooks_for_owner(owner)
+
+    # Build CTA based on template settings
+    cta_style = settings.get("cta_style", "soft_ask")
+    if cta_style == "direct_ask":
+        cta_line = "Let me know what days work for a call."
+    elif cta_style == "curiosity_driven":
+        cta_line = f"I built a custom demo for {company}. Want to see it? Let me know what days work for a call."
+    else:  # soft_ask
+        cta_line = "Would a quick 10-minute call be worth your time to see how it works?"
 
     body = f"""Hi {first},
 
-I'm Dylan, a student at Dalhousie University here in Halifax. I build custom AI voice agents for local businesses, and I already built one for {company}.
+I'm Dylan, I build custom AI voice agents for local businesses, and I already built one for {company}.
 
 {hooks['pain']}. The agent I made for you {hooks['value']}.
 
-Let me know what days work for a call.
+{cta_line}
 
 Cheers,
 Dylan"""
 
-    # Custom subject using their name
-    subjects = [
-        f"Quick idea for {company}, {first}",
-        f"{first}, Dal student with something for {company}",
-        f"For {first} at {company}",
-        f"{first}, quick question about {company}",
-    ]
-    subject = random.choice(subjects)
+    # Use template subject lines if available, otherwise fall back to defaults
+    subject_angles = settings.get("subject_line_angles", [])
+    if subject_angles:
+        subject = random.choice(subject_angles).format(
+            company=company, first_name=first, first=first
+        )
+    else:
+        subjects = [
+            f"Quick idea for {company}, {first}",
+            f"{first}, I built something for {company}",
+            f"For {first} at {company}",
+            f"{first}, quick question about {company}",
+        ]
+        subject = random.choice(subjects)
 
     return subject, body
 
 
 def generate_followups(owner):
-    """Generate 3 follow-up emails."""
+    """Generate 3 follow-up emails using template-aware hooks and cadence."""
     first = owner['first_name']
     company = owner['company_name']
     industry = owner['industry']
 
-    hooks = INDUSTRY_HOOKS.get(industry, DEFAULT_HOOKS)
+    hooks, settings = get_hooks_for_owner(owner)
     followup_hooks = hooks.get('followup_hooks', DEFAULT_HOOKS['followup_hooks'])
+    proof_points = settings.get('proof_points', [])
 
     followups = []
 
-    # Follow-up 1 (Day 3)
-    hook1 = followup_hooks[0].format(company_name=company) if len(followup_hooks) > 0 else f"Following up on my note about {company}"
+    # Follow-up 1
+    hook1 = followup_hooks[0].format(company_name=company, company=company) if len(followup_hooks) > 0 else f"Following up on my note about {company}"
     f1_body = f"""Hi {first},
 
 {hook1}. Wanted to bump this up in case it got buried.
@@ -185,10 +335,15 @@ def generate_followups(owner):
 We already built a custom agent for {company} that {hooks['value']}. Let me know what days work for a quick call.
 
 Dylan"""
-    followups.append(("", f1_body))  # Empty subject = reply to original thread
+    followups.append(("", f1_body))
 
-    # Follow-up 2 (Day 5)
-    hook2 = followup_hooks[1].format(company_name=company) if len(followup_hooks) > 1 else f"Thought of {company} again"
+    # Follow-up 2 (use proof point from template if available)
+    if len(followup_hooks) > 1:
+        hook2 = followup_hooks[1].format(company_name=company, company=company)
+    elif proof_points:
+        hook2 = random.choice(proof_points)
+    else:
+        hook2 = f"Thought of {company} again"
     f2_body = f"""Hi {first},
 
 {hook2}.
@@ -198,8 +353,19 @@ Would a quick call be worth 10 minutes of your time? Let me know what days work.
 Dylan"""
     followups.append(("", f2_body))
 
-    # Follow-up 3 (Day 8) - breakup email
-    f3_body = f"""Hi {first},
+    # Follow-up 3 - breakup email
+    if len(followup_hooks) > 2:
+        hook3 = followup_hooks[2].format(company_name=company, company=company)
+        f3_body = f"""Hi {first},
+
+I'll keep this short. {hook3}
+
+If the timing isn't right, totally understand. If you ever want to see how it works, just let me know.
+
+All the best with {company},
+Dylan"""
+    else:
+        f3_body = f"""Hi {first},
 
 I'll keep this short. I've reached out a few times about an AI phone agent for {company}. If the timing isn't right, totally understand.
 
@@ -215,6 +381,13 @@ Dylan"""
 def main():
     print("=== Owner Campaign Generator (Fully Custom + Follow-ups) ===\n")
 
+    # Report template status
+    if _CAMPAIGN_TEMPLATES:
+        verticals = _CAMPAIGN_TEMPLATES.get("verticals", {})
+        print(f"Loaded campaign templates with {len(verticals)} verticals: {', '.join(verticals.keys())}")
+    else:
+        print("No campaign templates loaded, using built-in industry hooks only")
+
     # Load enriched owners
     leads = []
     with open(INPUT_FILE, 'r') as f:
@@ -225,9 +398,19 @@ def main():
 
     print(f"Loaded {len(leads)} owners with emails")
 
+    # Track which verticals were matched
+    vertical_matches = {}
+
     # Generate emails
     results = []
     for owner in leads:
+        # Detect vertical for reporting
+        industry = owner.get('industry', '')
+        company = owner.get('company_name', '')
+        vkey, _ = detect_vertical(industry, company, _CAMPAIGN_TEMPLATES)
+        match_label = vkey or industry or "generic"
+        vertical_matches[match_label] = vertical_matches.get(match_label, 0) + 1
+
         # Initial email
         subject, body = generate_initial_email(owner)
         results.append({
@@ -243,10 +426,12 @@ def main():
             'body': body,
         })
 
-        # Follow-ups
+        # Follow-ups with template-aware cadence
         followups = generate_followups(owner)
-        delays = [3, 5, 8]
+        _, settings = get_hooks_for_owner(owner)
+        delays = settings.get('followup_cadence_days', [3, 5, 8])
         for i, (fu_subject, fu_body) in enumerate(followups):
+            delay = delays[i] if i < len(delays) else delays[-1] + (i - len(delays) + 1) * 2
             results.append({
                 'email': owner['email'],
                 'first_name': owner['first_name'],
@@ -255,7 +440,7 @@ def main():
                 'title': owner['title'],
                 'industry': owner['industry'],
                 'sequence_step': i + 2,
-                'delay_days': delays[i],
+                'delay_days': delay,
                 'subject': fu_subject,
                 'body': fu_body,
             })
@@ -269,8 +454,13 @@ def main():
         writer.writerows(results)
 
     owners_count = len(leads)
-    print(f"Generated {len(results)} emails ({owners_count} owners x 4 steps)")
+    print(f"\nGenerated {len(results)} emails ({owners_count} owners x 4 steps)")
     print(f"Saved to {OUTPUT_FILE}")
+
+    # Report vertical distribution
+    print("\n--- Vertical Distribution ---")
+    for label, count in sorted(vertical_matches.items(), key=lambda x: -x[1]):
+        print(f"  {label}: {count} owners")
 
     # Show sample
     print("\n--- Sample (first owner) ---")
