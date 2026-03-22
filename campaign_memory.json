@@ -1,0 +1,348 @@
+{
+  "company": {
+    "name": "Realside AI",
+    "tagline": "AI Employees for service businesses",
+    "what_we_do": "Realside AI builds AI Employees that answer calls, follow up with leads, and book appointments automatically for service businesses.",
+    "products": {
+      "inbound_receptionist": {
+        "name": "AI Inbound Receptionist",
+        "nickname": "The Closer",
+        "description": "Answers all incoming calls instantly, even after hours. Books clients directly into the business's calendar. Handles FAQs, pricing questions, and reschedules. Follows up on missed calls automatically. Can do live transfers to team members.",
+        "pain_solved": "Businesses lose thousands every month from missed calls or delayed responses."
+      },
+      "outbound_agent": {
+        "name": "AI Outbound Agent",
+        "nickname": "The Money-Maker",
+        "description": "Calls and texts new ad leads automatically within 2 minutes. Re-engages old database leads sitting in their CRM. Books appointments or transfers calls to the business.",
+        "pain_solved": "Most businesses only convert 20-30% of their leads. The rest go cold because no one follows up fast enough."
+      }
+    },
+    "pricing": {
+      "starting_price": "$2,000/month",
+      "model": "Custom based on call volume and integrations",
+      "framing": "Always frame as ROI-positive. Pricing depends on inbound, outbound, or both and your volume.",
+      "anchor_result": "$2K/month tied to 40 pre-qualified appointments booked in their calendar"
+    },
+    "proven_results": [
+      "Recover 20-40% of missed calls",
+      "10-25% increase in booked appointments",
+      "15-30% reduction in admin load",
+      "8-18% monthly revenue lift",
+      "2-3x faster lead response (speed-to-lead)",
+      "5-15% database reactivation of dormant leads",
+      "20-40% reduction in front-desk overtime/overflow",
+      "Often replaces 0.5-1.0 FTE equivalent workload"
+    ],
+    "key_metrics": [
+      "2,500+ calls handled in a single month by one AI agent",
+      "3x revenue increase for a med spa client",
+      "$50K in revenue recovered with zero ad spend via reactivation",
+      "10+ hours/week of manual work reduced to minutes"
+    ],
+    "integrations": ["Square", "Jane", "MindBody", "major scheduling/booking platforms"],
+    "differentiators": [
+      "Every system custom-built by in-house software team, no outsourcing",
+      "Natural voices with brand-tuned language, can clone their voice",
+      "Contacts leads within 2 minutes (industry avg is 2+ days)",
+      "Both inbound and outbound in one platform",
+      "25+ clinics served, 10-15 active clients",
+      "Live demo agent shown on every consulting call"
+    ],
+    "competitors": ["Synthflow", "GoodCall", "Dialora", "Voice.AI", "Retell AI", "Vapi", "Lindy", "MySalonDesk", "Spa Voices"],
+    "calendar_link": "https://calendly.com/realsideai",
+    "website": "https://realsideai.com"
+  },
+  "sender": {
+    "name": "Dylan Mitchell",
+    "first_name": "Dylan",
+    "email": "dylan.realside@gmail.com",
+    "role": "Co-Founder at Realside AI",
+    "background": "Dalhousie University student in Halifax who builds custom AI voice agents for local businesses",
+    "sign_off": "Dylan",
+    "personal_angle": "University student who already built a custom AI agent specifically for the prospect's business"
+  },
+  "team": {
+    "kaiden_kane": "Founder, handles consulting calls and closing",
+    "dylan_mitchell": "Co-Founder, handles lead sourcing and operations",
+    "software_team": "In-house team that builds and customizes every automation"
+  },
+  "winning_patterns": {
+    "email_structure": [
+      "Short emails under 120 words",
+      "Curiosity-driven, leave them wanting more",
+      "Specific pain points for their industry, not generic pitches",
+      "No hard sell, spark curiosity to drive toward a call",
+      "Open with something specific to THEM (name, company, industry pain)",
+      "One clear CTA, never multiple",
+      "Short paragraphs, 1-2 sentences each",
+      "Feels like a text from a smart friend, not a sales pitch"
+    ],
+    "subject_lines": [
+      "Use their first name or company name",
+      "Short and specific, under 50 characters",
+      "No clickbait, no ALL CAPS, no exclamation marks",
+      "Reference something specific about their business"
+    ],
+    "ctas_that_work": [
+      "Let me know what days work for a call",
+      "Worth a 15-minute look?",
+      "Curious what that would look like for {company}?",
+      "Happy to share how if you're curious",
+      "Would a quick call be worth 10 minutes of your time?"
+    ],
+    "sign_off": "Always sign off as just 'Dylan' (first name only, no title, no company)"
+  },
+  "losing_patterns": {
+    "never_do": [
+      "NEVER use dashes (--), em dashes, or en dashes anywhere in messaging",
+      "NEVER write long emails (keep under 120 words)",
+      "NEVER use generic openers like 'I hope this email finds you well'",
+      "NEVER use a formal tone or sound robotic",
+      "NEVER use buzzwords: synergy, leverage, revolutionize, game-changer, cutting-edge",
+      "NEVER fully answer questions over email (redirect to call)",
+      "NEVER use phrases: 'just bumping this', 'circling back', 'following up on my last email', 'checking in'",
+      "NEVER reply to hostile or rude messages",
+      "NEVER use 'Re:' prefix on subject lines",
+      "NEVER include multiple CTAs in one email",
+      "NEVER use flattery like 'love what you're doing' or 'impressive growth'",
+      "NEVER use generic filler like 'I came across your company'",
+      "NEVER use exclamation marks excessively"
+    ]
+  },
+  "tone_guidelines": {
+    "overall": "Casual, confident, value-driven. Like texting a friend who happens to have something useful.",
+    "rules": [
+      "Friendly but not sycophantic",
+      "Confident but not arrogant",
+      "Direct but not pushy",
+      "Conversational, peer-to-peer",
+      "Short, punchy sentences",
+      "Speak to pain points and desired outcomes",
+      "Empathize first, then reframe with logic or social proof"
+    ]
+  },
+  "industry_context": {
+    "med_spa": {
+      "verticals": ["med spa", "aesthetic clinic", "medspa", "medical aesthetics"],
+      "pain_points": [
+        "Missing calls during procedures and treatments",
+        "Ad leads going cold because follow-up is too slow",
+        "Front desk overwhelmed during peak hours",
+        "After-hours calls going to voicemail",
+        "No-shows eating into revenue"
+      ],
+      "talking_points": [
+        "AI answers every call instantly, even during Botox appointments",
+        "New ad leads contacted within 2 minutes instead of hours",
+        "Reactivate dormant client list sitting in CRM",
+        "Reduce no-shows with automated follow-up"
+      ],
+      "relevant_stat": "3x revenue increase for a med spa client. 2,500+ calls handled in a single month."
+    },
+    "dental": {
+      "verticals": ["dental office", "dental clinic", "dentist", "orthodontist"],
+      "pain_points": [
+        "Missing new patient calls during procedures and cleanings",
+        "Front desk can't answer during busy periods",
+        "After-hours emergency calls going unanswered",
+        "Patient recall and reactivation falling through cracks"
+      ],
+      "talking_points": [
+        "Every new patient call answered, even during cleanings",
+        "After-hours calls handled, not lost to voicemail",
+        "Reactivate patients who haven't been in for 6+ months",
+        "One dental office added 12 new patients/month just by answering every call"
+      ],
+      "relevant_stat": "20-40% of missed calls recovered. 10-25% more booked appointments."
+    },
+    "wellness": {
+      "verticals": ["wellness center", "wellness clinic", "IV clinic", "health clinic", "chiropractic", "physiotherapy"],
+      "pain_points": [
+        "Thousands of dormant leads in CRM going untouched",
+        "Ad spend generating leads that never convert",
+        "No systematic follow-up process",
+        "Staff too busy with patients to answer phones"
+      ],
+      "talking_points": [
+        "Reactivate dormant database leads with zero additional ad spend",
+        "Speed-to-lead within 2 minutes increases conversions 2-3x",
+        "$34K-$50K recovered in one month from dormant leads",
+        "AI handles calls while staff focuses on patients"
+      ],
+      "relevant_stat": "$34,000-$50,000 recovered in one month by reactivating dormant database leads with zero ad spend."
+    },
+    "plastic_surgery": {
+      "verticals": ["plastic surgery", "cosmetic surgery", "plastic surgeon"],
+      "pain_points": [
+        "High-value consultations lost to missed calls",
+        "Expensive ad leads going cold",
+        "Patients need quick answers about procedures and pricing",
+        "After-hours inquiries from potential patients"
+      ],
+      "talking_points": [
+        "Every consultation inquiry answered instantly",
+        "Capture high-value patients before they call the next surgeon",
+        "Speed-to-lead means more consultations from same ad spend",
+        "Handle sensitive patient inquiries 24/7 with empathy"
+      ],
+      "relevant_stat": "2-3x faster lead response. 10-25% more booked consultations."
+    },
+    "construction": {
+      "verticals": ["construction", "contractor", "renovation", "home services"],
+      "pain_points": [
+        "Missing calls from potential clients when on-site all day",
+        "Losing estimate requests to voicemail",
+        "Homeowners call the next contractor when they can't get through"
+      ],
+      "talking_points": [
+        "AI answers every call from homeowners and GCs while crew is on-site",
+        "Qualifies the job and books estimates into your calendar",
+        "Never lose a lead to voicemail again"
+      ],
+      "relevant_stat": "Contractors lose 3-4 jobs a week just from missed calls."
+    },
+    "insurance": {
+      "verticals": ["insurance", "insurance broker", "insurance agency"],
+      "pain_points": [
+        "Thousands of clients in CRM that haven't been contacted in months",
+        "Lapsed policies going unnoticed",
+        "Manual outreach to old book of business is impossible at scale"
+      ],
+      "talking_points": [
+        "AI calls through your CRM list and re-engages past clients",
+        "Identifies upsell opportunities and books policy reviews",
+        "One broker reactivated 22 policies in the first month"
+      ],
+      "relevant_stat": "5-15% database reactivation of dormant leads."
+    },
+    "beauty": {
+      "verticals": ["salon", "spa", "beauty", "hair salon", "barbershop"],
+      "pain_points": [
+        "Missing booking calls when every stylist is with a client",
+        "No-shows eating into revenue",
+        "Past clients not rebooking"
+      ],
+      "talking_points": [
+        "AI answers every booking call during your busiest hours",
+        "Automated reminders cut no-shows by up to 40%",
+        "Text past clients who haven't rebooked to fill empty slots"
+      ],
+      "relevant_stat": "A salon owner cut no-shows by 40% with automated reminders."
+    },
+    "staffing": {
+      "verticals": ["staffing", "staffing agency", "recruitment", "hiring", "homecare", "healthcare staffing"],
+      "pain_points": [
+        "77% annual caregiver turnover, entire staff replaced every 14 months",
+        "43% interview no-show rate",
+        "Only 9.6% of homecare applicants get hired",
+        "16+ hours of screening per open position",
+        "Conversion drops 8x when follow-up delayed by 5 minutes"
+      ],
+      "talking_points": [
+        "AI screens candidates the moment they apply",
+        "Contacts applicants within seconds (industry avg is 2+ days)",
+        "Recruiters only talk to pre-qualified, ready-to-start candidates",
+        "$240/day lost revenue per unfilled shift"
+      ],
+      "relevant_stat": "$2,600-$5,000 cost per hire, 25-45 days to fill. AI cuts this dramatically."
+    }
+  },
+  "objection_handling": {
+    "framework": "Imperium Method: empathize first, reframe with logic/social proof, end with low-friction CTA",
+    "objections": {
+      "direct_intent": {
+        "description": "Prospect wants to book or learn more",
+        "strategy": "Send Calendly link immediately. Keep it short and excited.",
+        "example_response": "Great to hear you're interested. Easiest next step is to grab a time on my calendar: calendly.com/realsideai"
+      },
+      "how_does_it_work": {
+        "description": "Wants to understand the product",
+        "strategy": "Redirect to call. Say it's best explained on a demo. Don't try to explain everything over email.",
+        "example_response": "Totally fair question. Honestly, the best way to get it is a quick demo where I can walk you through a live example. 15 minutes, no pressure."
+      },
+      "how_much": {
+        "description": "Asking about pricing",
+        "strategy": "First attempt: deflect to call. If they push: anchor price ($2K/mo) to result (40 pre-qualified appointments).",
+        "example_response_first": "Great question. Pricing depends on your volume and setup. Rather than throw out a number without context, let me walk you through the ROI on a quick call so you can see exactly what you'd get.",
+        "example_response_pushed": "We charge $2,000 per month. Assuming we can land you 40 pre-qualified appointments booked in your calendar every month, would you be happy to demo it out with me?"
+      },
+      "send_proof": {
+        "description": "Wants evidence/case studies",
+        "strategy": "Offer to walk through case studies on a demo call. Don't just dump proof in email.",
+        "example_response": "We've got some great case studies. I'd love to walk you through them with full context on a quick call. I can even put you in touch with clients afterwards."
+      },
+      "not_interested": {
+        "description": "Polite decline",
+        "strategy": "Record 60-second Loom to break the pattern. Tag in Instantly, do not re-email.",
+        "example_response": "No worries at all. If anything changes, door's always open."
+      },
+      "tried_before": {
+        "description": "Tried AI or similar before, didn't work",
+        "strategy": "Differentiate Realside (custom-built, natural voices, brand-tuned). Offer proof via demo.",
+        "example_response": "Totally get it. Most AI tools out there are cookie-cutter. We custom-build every system for each business. Would 15 minutes to see the difference be worth it?"
+      },
+      "already_have": {
+        "description": "Already has a solution in place",
+        "strategy": "Acknowledge current solution. Plant a seed about what they might be missing (speed-to-lead, CRM reactivation).",
+        "example_response": "Glad you've got something in place. Just curious, are they handling outbound reactivation of your old database too? That's where most of our clients see the biggest ROI."
+      },
+      "timing": {
+        "description": "Not the right time",
+        "strategy": "Respect timing. Offer future touchpoint. Stay top-of-mind.",
+        "example_response": "Totally understand. When would be a better time? Happy to circle back whenever it makes sense for you."
+      }
+    }
+  },
+  "case_studies": {
+    "medspa_lead_generation": {
+      "customer": "Arik L's Med Spa",
+      "industry": "Med Spa / Aesthetic Clinic",
+      "pain": "Low lead conversion, manual outreach, missed calls from slow response times",
+      "result": "3x revenue. 2,500+ calls handled in one month. 30%+ missed calls recovered. 15-20% more booked appointments.",
+      "story_summary": "Staff couldn't keep up with inbound calls during peak hours. Ad leads went cold within hours. Deployed both Inbound Receptionist (24/7 call coverage) and Outbound Agent (2-minute lead response). Complete pipeline transformation."
+    },
+    "wellness_reactivation": {
+      "customer": "Wellness Centre (Confidential)",
+      "industry": "Wellness / Health Clinic",
+      "pain": "Thousands of dormant CRM leads untouched, ad spend not converting, no follow-up process",
+      "result": "$34,000-$50,000 recovered in one month. Zero additional ad spend. 2-3x conversion from speed-to-lead.",
+      "story_summary": "Years of accumulated leads in CRM with no follow-up. AI Outbound Agent systematically called every dormant lead. New leads contacted within 2 minutes instead of hours."
+    },
+    "retail_operations": {
+      "customer": "Carriage Trade Shop (Nori M)",
+      "industry": "Retail / Service Business",
+      "pain": "Manual operations, scheduling inefficiencies, outdated systems",
+      "result": "25-30% reduction in admin overhead. Hours saved weekly.",
+      "story_summary": "Owner doing everything manually. AI automated customer calls, employee scheduling, and routine inquiries. Owner freed up to focus on growth."
+    },
+    "content_workflow": {
+      "customer": "Mark K's Agency",
+      "industry": "Marketing / Content Agency",
+      "pain": "Content scheduling consuming hours of manual work",
+      "result": "Streamlined workflow. Hours saved weekly. Team focused on quality deliverables.",
+      "story_summary": "Too much time on operational tasks. Automated scheduling pipeline freed team to focus on creating content."
+    }
+  },
+  "social_proof_snippets": [
+    "We just helped a med spa 3x their revenue by answering every call and following up with old leads.",
+    "One wellness centre recovered $50K in a single month just by reactivating dormant leads in their CRM. Zero ad spend.",
+    "Our AI handled 2,500+ calls in one month for a single client.",
+    "A clinic owner cut 10+ hours/week of admin work down to minutes.",
+    "We've served 25+ clinics across med spa, wellness, and dental.",
+    "One of our clients went from losing 30%+ of calls to answering every single one, even at 2 AM."
+  ],
+  "testimonials": [
+    {
+      "name": "Arik L, Founder",
+      "quote": "Realside AI revolutionized our lead generation, helping us attract and convert more high-quality prospects while automating outreach and follow-ups."
+    },
+    {
+      "name": "Nori M, Owner, Carriage Trade Shop",
+      "quote": "Realside AI completely transformed our operations. Our AI-powered system and automated scheduling saved us hours every week!"
+    },
+    {
+      "name": "Mark K, Founder",
+      "quote": "Realside AI streamlined content workflow, automating scheduling, which saved us hours and allowed us to focus on delivering quality."
+    }
+  ]
+}
