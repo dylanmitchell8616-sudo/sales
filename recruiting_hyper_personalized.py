@@ -31,6 +31,12 @@ except ImportError:
     print("Error: requests package required. Install with: pip install requests")
     sys.exit(1)
 
+try:
+    from campaign_memory_loader import get_memory_prompt
+except ImportError:
+    def get_memory_prompt(**kwargs):
+        return ""
+
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 CONFIG_PATH = os.path.join(SCRIPT_DIR, "config.json")
 OUTPUT_DIR = os.path.join(SCRIPT_DIR, "output")
@@ -39,6 +45,9 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
 )
+
+# Load campaign memory once at module level for injection into system prompt
+_CAMPAIGN_MEMORY = get_memory_prompt(industry="staffing")
 
 SYSTEM_PROMPT = """You are a world-class cold email copywriter for Realside AI, which sells AI recruiting automation to staffing agencies, homecare companies, and healthcare organizations.
 
@@ -207,6 +216,10 @@ def generate_emails_for_lead(lead, config, retries=2):
         calendar_link=calendar_link,
         sender_name=sender_name,
     )
+
+    # Append campaign memory to system prompt for richer context
+    if _CAMPAIGN_MEMORY:
+        system = system + "\n\n" + _CAMPAIGN_MEMORY
 
     user_msg = USER_PROMPT_TEMPLATE.format(
         first_name=lead.get("first_name", "there"),
