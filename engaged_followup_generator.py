@@ -63,7 +63,7 @@ CATEGORY_SEQUENCES = {
         "num_touches": 4,  # They want to book — fewer, faster touches
         "strategy": "quick-close",
         "touches": [
-            "Confirm interest + share calendar link + mention a quick win stat",
+            "Confirm interest + ask what days work for a call + mention a quick win stat",
             "Share a 60-second case study video showing ROI for a similar business",
             "Social proof: mention how many similar businesses signed up this month",
             "Final direct ask: 'Still want to chat? Happy to work around your schedule'",
@@ -98,7 +98,7 @@ CATEGORY_SEQUENCES = {
             "Video testimonial or Loom walkthrough of a live AI receptionist in action",
             "Second case study: different vertical but impressive numbers",
             "Offer a live demo: 'Want to hear the AI handle a call in real time? Takes 10 min'",
-            "Final: 'I've shared the data. Ready to see if it works for {company}? Here's my calendar'",
+            "Final: 'I've shared the data. Ready to see if it works for {company}? Let me know what days work for a call'",
         ],
     },
     "how_does_it_work": {
@@ -109,7 +109,7 @@ CATEGORY_SEQUENCES = {
             "Share a 60-second Loom video showing the AI answering a real call",
             "Case study: show the before/after at a similar business",
             "FAQ style: answer the top 3 questions prospects ask, leave them wanting more",
-            "Direct: 'Best way to understand it is to see it. 15 minutes, no pressure: {calendar}'",
+            "Direct: 'Best way to understand it is to see it. Let me know what days work for a quick call'",
         ],
     },
     "timing": {
@@ -296,7 +296,7 @@ PROSPECT'S REPLY:
 SENDER INFO:
 - Name: {sender_name}
 - Email: {sender_email}
-- Calendar link: {calendar_link}
+- CTA style: Ask what days work for a call (never include a calendly or scheduling link)
 
 PRODUCT DESCRIPTION:
 {product_description}
@@ -314,7 +314,7 @@ RULES:
 3. Tone: friendly, confident, conversational. Not pushy or salesy
 4. NEVER use '--' (double dashes) anywhere in the messaging
 5. Each email should work as a standalone message
-6. ALWAYS include the calendar link ({calendar_link}) in every email
+6. NEVER include a calendly or scheduling link. Instead ask what days work for a call.
 7. Reference their original reply where relevant to show you remember the conversation
 8. NEVER use phrases like "bumping this", "circling back", "just following up", "checking in"
 9. Sign off with the sender's name (just first name is fine)
@@ -355,7 +355,7 @@ Return your response as a JSON array of objects, each with these exact keys:
             {
                 "followup_number": i,
                 "subject": f"Quick thought for {company_name}",
-                "body": f"Hi {contact_name},\n\nThanks for your reply! I wanted to share something relevant to {company_name}.\n\nWould love to show you how this works. Grab a time here: {calendar_link}\n\nBest,\n{sender_name}",
+                "body": f"Hi {contact_name},\n\nThanks for your reply! I wanted to share something relevant to {company_name}.\n\nWould love to show you how this works. Let me know what days work for a call.\n\nBest,\n{sender_name}",
             }
             for i in range(1, num_touches + 1)
         ]

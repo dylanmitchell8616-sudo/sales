@@ -125,6 +125,7 @@ RULES:
 8. Each email should work as a standalone message (don't assume they read previous emails)
 9. Sign off with the sender's name
 10. Do NOT use buzzwords like "synergy", "leverage", "revolutionize"
+11. Never include a calendly or scheduling link. Instead ask what days work for a call.
 
 Return your response as a JSON array of objects, each with these exact keys:
 - "followup_number": integer (1 through 4)

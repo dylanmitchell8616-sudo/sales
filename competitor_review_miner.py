@@ -252,7 +252,7 @@ INSTRUCTIONS:
    - Does NOT trash-talk the competitor — be professional
    - Positions your product as solving that specific pain
    - Keeps the email under 150 words
-   - Includes ONE clear CTA: a request for a 15-minute call
+   - Includes ONE clear CTA: ask what days work for a call (never include a calendly or scheduling link)
    - Tone: empathetic and helpful, not pushy
 
 Return your response as a JSON array of objects, each with these exact keys:

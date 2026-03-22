@@ -302,7 +302,7 @@ EMAIL RULES:
 1. Open by referencing the matched case study — e.g. "We helped [Customer] solve [pain point] and achieve [result]"
 2. Immediately connect it to something SPECIFIC about the prospect from their website
 3. Keep the email under 150 words
-4. Include exactly ONE clear call-to-action: a request for a 15-minute call
+4. Include exactly ONE clear call-to-action: ask what days work for a call (never include a calendly or scheduling link)
 5. Tone: professional but conversational, not salesy
 6. Do NOT use buzzwords like "synergy", "leverage", "revolutionize"
 7. Sign off with the sender's name

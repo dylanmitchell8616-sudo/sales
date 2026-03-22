@@ -148,7 +148,7 @@ I'm Dylan, a student at Dalhousie University here in Halifax. I build custom AI 
 
 {hooks['pain']}. The agent I made for you {hooks['value']}.
 
-I'd love to show you how it works in a quick 10-minute call. No pitch, just a demo: calendly.com/realsideai
+Let me know what days work for a call.
 
 Cheers,
 Dylan"""
@@ -182,7 +182,7 @@ def generate_followups(owner):
 
 {hook1}. Wanted to bump this up in case it got buried.
 
-We already built a custom agent for {company} that {hooks['value']}. My team would love to walk you through it. 10 minutes: calendly.com/realsideai
+We already built a custom agent for {company} that {hooks['value']}. Let me know what days work for a quick call.
 
 Dylan"""
     followups.append(("", f1_body))  # Empty subject = reply to original thread
@@ -193,7 +193,7 @@ Dylan"""
 
 {hook2}.
 
-Would a quick call be worth 10 minutes of your time? calendly.com/realsideai
+Would a quick call be worth 10 minutes of your time? Let me know what days work.
 
 Dylan"""
     followups.append(("", f2_body))
@@ -203,7 +203,7 @@ Dylan"""
 
 I'll keep this short. I've reached out a few times about an AI phone agent for {company}. If the timing isn't right, totally understand.
 
-If you ever want to see how it works, my calendar's always open: calendly.com/realsideai
+If you ever want to see how it works, just let me know what days work for a call.
 
 All the best with {company},
 Dylan"""

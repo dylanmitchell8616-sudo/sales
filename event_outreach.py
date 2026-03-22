@@ -268,7 +268,7 @@ RULES:
 1. Subject line must reference the event AND something specific about the person/company
 2. Opening line must NOT be generic — reference the event and their specific involvement
 3. Keep the email under 150 words
-4. Include exactly ONE clear call-to-action
+4. Include exactly ONE clear call-to-action: ask what days work for a call (never include a calendly or scheduling link)
 5. Tone: professional but conversational, not salesy
 6. Do NOT use buzzwords like "synergy", "leverage", "revolutionize"
 7. Sign off with the sender's name

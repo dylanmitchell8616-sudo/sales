@@ -177,7 +177,7 @@ RULES:
 2. Subject line must reference the specific news
 3. Opening line must directly tie to the news event — no generic openers
 4. Keep each email under 150 words
-5. Include exactly ONE clear call-to-action: a request for a 15-minute call
+5. Include exactly ONE clear call-to-action: ask what days work for a call (never include a calendly or scheduling link)
 6. Tone: professional but conversational, not salesy
 7. Do NOT use buzzwords like "synergy", "leverage", "revolutionize"
 8. Sign off with the sender's name
