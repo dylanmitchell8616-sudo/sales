@@ -30,11 +30,20 @@ from anthropic import Anthropic
 
 BASE_DIR = Path(__file__).resolve().parent
 OUTPUT_DIR = BASE_DIR / "output"
+DAILY_LOG_PATH = OUTPUT_DIR / "daily_booking_log.json"
 
 DAILY_MEETING_GOAL = 3  # meetings per day target
 MAX_CALLS_PER_DAY = 30
 MAX_LINKEDIN_PER_DAY = 25
 MAX_EMAILS_PER_DAY = 30  # Instantly limit per account
+
+# Best time slots for outreach by channel (based on industry data)
+OPTIMAL_WINDOWS = {
+    "cold_call": {"best": "8:00-9:30 AM", "good": "4:00-5:00 PM", "avoid": "12:00-1:00 PM"},
+    "hot_callback": {"best": "within 5 min of reply", "good": "same day", "avoid": "next day+"},
+    "linkedin": {"best": "7:30-8:30 AM", "good": "12:00-1:00 PM", "avoid": "after 6 PM"},
+    "email": {"best": "7:00-8:00 AM", "good": "1:00-2:00 PM", "avoid": "weekends"},
+}
 
 
 def load_config():
@@ -220,6 +229,111 @@ def get_gmail_queue():
     return unsent
 
 
+def load_daily_log() -> list:
+    """Load historical daily booking log for trend analysis."""
+    if os.path.exists(DAILY_LOG_PATH):
+        try:
+            with open(DAILY_LOG_PATH) as f:
+                return json.load(f)
+        except (json.JSONDecodeError, IOError):
+            pass
+    return []
+
+
+def save_daily_log(log: list):
+    """Save daily booking log."""
+    with open(DAILY_LOG_PATH, "w") as f:
+        json.dump(log, f, indent=2, default=str)
+
+
+def get_performance_trends(log: list) -> dict:
+    """Analyze recent performance to identify what's working."""
+    if not log:
+        return {"days_tracked": 0, "avg_meetings": 0, "best_channel": "unknown", "trend": "no data"}
+
+    recent = log[-7:]  # Last 7 days
+    meetings = [d.get("meetings_booked", 0) for d in recent]
+    avg = sum(meetings) / len(meetings) if meetings else 0
+
+    # Track which channels are producing meetings
+    channel_meetings = {}
+    for day in recent:
+        for meeting in day.get("meetings_detail", []):
+            ch = meeting.get("source_channel", "unknown")
+            channel_meetings[ch] = channel_meetings.get(ch, 0) + 1
+
+    best_channel = max(channel_meetings, key=channel_meetings.get) if channel_meetings else "hot callbacks"
+
+    # Trend
+    if len(meetings) >= 3:
+        recent_avg = sum(meetings[-3:]) / 3
+        older_avg = sum(meetings[:3]) / 3
+        if recent_avg > older_avg * 1.2:
+            trend = "improving"
+        elif recent_avg < older_avg * 0.8:
+            trend = "declining"
+        else:
+            trend = "stable"
+    else:
+        trend = "insufficient data"
+
+    return {
+        "days_tracked": len(log),
+        "avg_meetings": round(avg, 1),
+        "best_channel": best_channel,
+        "trend": trend,
+        "channel_breakdown": channel_meetings,
+        "last_7_meetings": meetings,
+    }
+
+
+def generate_ai_morning_brief(plan: dict, trends: dict) -> str:
+    """Use Claude to generate a personalized morning brief with coaching."""
+    try:
+        config = load_config()
+        api_key = config.get("anthropic_api_key", "")
+        if not api_key:
+            return ""
+
+        client = Anthropic(api_key=api_key)
+
+        prompt = f"""You are Dylan Mitchell's AI sales coach for Realside AI. Generate a punchy 150-word morning brief to get him fired up and focused.
+
+TODAY'S PIPELINE:
+- Hot leads to call back: {plan['summary']['hot_leads_to_call']}
+- Engaged follow-ups: {plan['summary']['engaged_followups']}
+- LinkedIn targets: {plan['summary']['linkedin_targets']}
+- Cold calls queued: {plan['summary']['cold_calls']}
+- Meeting goal: {plan['meeting_goal']}
+
+PERFORMANCE TRENDS:
+- Days tracked: {trends.get('days_tracked', 0)}
+- Average meetings/day: {trends.get('avg_meetings', 0)}
+- Best performing channel: {trends.get('best_channel', 'unknown')}
+- Trend: {trends.get('trend', 'no data')}
+- Last 7 days meetings: {trends.get('last_7_meetings', [])}
+
+TOP 3 HOT LEADS TO CALL FIRST:
+{json.dumps(plan.get('all_hot_leads', [])[:3], indent=2, default=str)}
+
+Write a brief that:
+1. Starts with a one-line energy boost (no emojis)
+2. Highlights the #1 priority action for the day
+3. Gives one specific coaching tip based on the trends
+4. Ends with the day's target number
+
+Keep it conversational, direct, and confident. No fluff."""
+
+        response = client.messages.create(
+            model="claude-sonnet-4-6",
+            max_tokens=500,
+            messages=[{"role": "user", "content": prompt}],
+        )
+        return response.content[0].text.strip()
+    except Exception as e:
+        return f"(AI brief unavailable: {e})"
+
+
 def generate_daily_plan(goal=DAILY_MEETING_GOAL):
     """Generate the full daily action plan."""
     hot_leads = get_hot_leads()
@@ -227,6 +341,10 @@ def generate_daily_plan(goal=DAILY_MEETING_GOAL):
     linkedin = get_linkedin_targets()
     calls = get_call_list()
     gmail_queue = get_gmail_queue()
+
+    # Load performance history
+    daily_log = load_daily_log()
+    trends = get_performance_trends(daily_log)
 
     # Calculate conversion math
     # Industry averages: 2% cold email reply rate, 30% of replies become meetings
@@ -304,19 +422,63 @@ def generate_daily_plan(goal=DAILY_MEETING_GOAL):
     plan["all_calls"] = calls
     plan["all_gmail_queue"] = gmail_queue
 
+    # Performance trends
+    plan["trends"] = trends
+    plan["optimal_windows"] = OPTIMAL_WINDOWS
+
+    # Log today's plan for tracking
+    today_entry = {
+        "date": plan["date"],
+        "goal": goal,
+        "hot_leads_count": len(hot_leads),
+        "engaged_count": len(engaged),
+        "calls_queued": len(calls),
+        "linkedin_queued": len(linkedin),
+        "meetings_booked": 0,  # Updated manually or via webhook
+        "meetings_detail": [],
+    }
+    # Only add if we haven't logged today yet
+    if not daily_log or daily_log[-1].get("date") != plan["date"]:
+        daily_log.append(today_entry)
+        save_daily_log(daily_log)
+
     return plan
 
 
-def format_plan_text(plan):
+def format_plan_text(plan, ai_brief=""):
     """Format plan as human-readable text."""
     lines = []
     lines.append(f"{'='*60}")
-    lines.append(f"  DAILY MEETING BOOKING PLAN — {plan['date']}")
+    lines.append(f"  DAILY MEETING BOOKING PLAN  {plan['date']}")
     lines.append(f"  Goal: {plan['meeting_goal']} meetings today")
     lines.append(f"{'='*60}")
     lines.append("")
 
+    # AI Morning Brief
+    if ai_brief:
+        lines.append(f"  MORNING BRIEF")
+        lines.append(f"  {'-'*56}")
+        for line in ai_brief.split("\n"):
+            lines.append(f"  {line}")
+        lines.append("")
+
+    # Performance trends
+    trends = plan.get("trends", {})
+    if trends.get("days_tracked", 0) > 0:
+        lines.append(f"  PERFORMANCE ({trends['days_tracked']} days tracked)")
+        lines.append(f"  {'-'*56}")
+        lines.append(f"  Avg meetings/day:  {trends.get('avg_meetings', 0)}")
+        lines.append(f"  Best channel:      {trends.get('best_channel', 'N/A')}")
+        lines.append(f"  Trend:             {trends.get('trend', 'N/A')}")
+        last7 = trends.get("last_7_meetings", [])
+        if last7:
+            sparkline = " ".join(str(m) for m in last7)
+            lines.append(f"  Last 7 days:       [{sparkline}]")
+        lines.append("")
+
     s = plan["summary"]
+    lines.append(f"  TODAY'S PIPELINE")
+    lines.append(f"  {'-'*56}")
     lines.append(f"  Hot leads to call back:  {s['hot_leads_to_call']}")
     lines.append(f"  Engaged follow-ups:      {s['engaged_followups']}")
     lines.append(f"  LinkedIn targets:        {s['linkedin_targets']}")
@@ -327,9 +489,9 @@ def format_plan_text(plan):
 
     for block_name in ["morning_block", "midday_block", "afternoon_block", "evening_block"]:
         block = plan[block_name]
-        lines.append(f"{'—'*60}")
+        lines.append(f"{'_'*60}")
         lines.append(f"  {block['time']}")
-        lines.append(f"{'—'*60}")
+        lines.append(f"{'_'*60}")
         for task in block["tasks"]:
             if task.startswith("  "):
                 lines.append(f"    {task.strip()}")
@@ -337,10 +499,18 @@ def format_plan_text(plan):
                 lines.append(f"  [ ] {task}")
         lines.append("")
 
+    # Optimal windows
+    lines.append(f"{'='*60}")
+    lines.append("  OPTIMAL OUTREACH WINDOWS")
+    lines.append(f"{'='*60}")
+    for channel, windows in OPTIMAL_WINDOWS.items():
+        lines.append(f"  {channel.replace('_', ' ').title():20s} Best: {windows['best']}")
+    lines.append("")
+
     lines.append(f"{'='*60}")
     lines.append("  CONVERSION MATH")
     lines.append(f"{'='*60}")
-    lines.append("  To book 3 meetings/day, you need ~10 quality conversations.")
+    lines.append(f"  To book {plan['meeting_goal']} meetings/day, you need ~{plan['meeting_goal'] * 3} quality conversations.")
     lines.append("  That means:")
     lines.append("    - 30 cold calls (5% connect rate = 1-2 convos)")
     lines.append("    - 30 Instantly emails sending (2% reply = 1 hot lead)")
@@ -355,6 +525,35 @@ def format_plan_text(plan):
     return "\n".join(lines)
 
 
+def log_meeting(source_channel: str, prospect_name: str, company: str):
+    """Log a booked meeting for performance tracking. Call after booking."""
+    log = load_daily_log()
+    today = datetime.now().strftime("%Y-%m-%d")
+
+    # Find today's entry or create one
+    today_entry = None
+    for entry in log:
+        if entry.get("date") == today:
+            today_entry = entry
+            break
+
+    if not today_entry:
+        today_entry = {"date": today, "goal": DAILY_MEETING_GOAL, "meetings_booked": 0, "meetings_detail": []}
+        log.append(today_entry)
+
+    today_entry["meetings_booked"] = today_entry.get("meetings_booked", 0) + 1
+    today_entry.setdefault("meetings_detail", []).append({
+        "source_channel": source_channel,
+        "prospect": prospect_name,
+        "company": company,
+        "booked_at": datetime.now().strftime("%H:%M"),
+    })
+
+    save_daily_log(log)
+    print(f"Meeting logged: {prospect_name} at {company} via {source_channel}")
+    print(f"Today's total: {today_entry['meetings_booked']}/{today_entry.get('goal', DAILY_MEETING_GOAL)}")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Daily meeting booking command center")
     parser.add_argument("--goal", type=int, default=DAILY_MEETING_GOAL,
@@ -363,19 +562,36 @@ def main():
                         help="Show channel-by-channel breakdown")
     parser.add_argument("--json-only", action="store_true",
                         help="Output JSON only, no text")
+    parser.add_argument("--no-ai", action="store_true",
+                        help="Skip AI morning brief generation")
+    parser.add_argument("--log-meeting", nargs=3, metavar=("CHANNEL", "NAME", "COMPANY"),
+                        help="Log a booked meeting: --log-meeting 'hot callback' 'Jane Doe' 'Acme Dental'")
     args = parser.parse_args()
+
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+    # Handle meeting logging
+    if args.log_meeting:
+        log_meeting(args.log_meeting[0], args.log_meeting[1], args.log_meeting[2])
+        return
 
     print(f"\nGenerating daily booking plan (goal: {args.goal} meetings)...\n")
 
     plan = generate_daily_plan(goal=args.goal)
 
+    # Generate AI morning brief
+    ai_brief = ""
+    if not args.no_ai:
+        print("Generating AI morning brief...")
+        ai_brief = generate_ai_morning_brief(plan, plan.get("trends", {}))
+        plan["ai_brief"] = ai_brief
+
     # Save JSON
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
     with open(OUTPUT_DIR / "daily_action_plan.json", "w") as f:
         json.dump(plan, f, indent=2, default=str)
 
     # Save and print text
-    text = format_plan_text(plan)
+    text = format_plan_text(plan, ai_brief=ai_brief)
     with open(OUTPUT_DIR / "daily_action_plan.txt", "w") as f:
         f.write(text)
 
