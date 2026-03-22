@@ -13,6 +13,16 @@ import json
 import os
 import random
 
+try:
+    from campaign_memory_loader import get_industry_context, get_social_proof, get_case_studies
+except ImportError:
+    def get_industry_context(industry):
+        return ""
+    def get_social_proof():
+        return []
+    def get_case_studies():
+        return {}
+
 INPUT_FILE = "output/halifax_owners_enriched.csv"
 OUTPUT_FILE = "output/owner_campaign_emails.csv"
 TEMPLATES_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "campaign_templates.json")
@@ -337,13 +347,18 @@ We already built a custom agent for {company} that {hooks['value']}. Let me know
 Dylan"""
     followups.append(("", f1_body))
 
-    # Follow-up 2 (use proof point from template if available)
+    # Follow-up 2 (use proof point from template or campaign memory)
     if len(followup_hooks) > 1:
         hook2 = followup_hooks[1].format(company_name=company, company=company)
     elif proof_points:
         hook2 = random.choice(proof_points)
     else:
-        hook2 = f"Thought of {company} again"
+        # Pull social proof from campaign memory as fallback
+        memory_proof = get_social_proof()
+        if memory_proof:
+            hook2 = random.choice(memory_proof)
+        else:
+            hook2 = f"Thought of {company} again"
     f2_body = f"""Hi {first},
 
 {hook2}.
