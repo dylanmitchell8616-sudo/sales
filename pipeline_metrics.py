@@ -9,12 +9,20 @@ Pulls data from:
 
 Exports to CSV and JSON for use in Google Sheets or BI tools.
 
+Features:
+  - Conversion funnel visualization (sent -> opened -> replied -> booked)
+  - Best-performing subject line tracking
+  - Best time-of-day / day-of-week analysis
+  - Campaign comparison (which campaign type converts best)
+  - Daily summary that's easy to scan
+
 Usage:
     python pipeline_metrics.py                         # Export all metrics
     python pipeline_metrics.py --format json           # JSON only
     python pipeline_metrics.py --format csv            # CSV only
     python pipeline_metrics.py --output-dir reports/   # Custom output dir
     python pipeline_metrics.py --dry-run               # Preview without saving
+    python pipeline_metrics.py --daily-summary         # Print daily summary only
 """
 
 import argparse
@@ -25,7 +33,7 @@ import os
 import sys
 import time
 from collections import Counter, defaultdict
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 try:
     import requests
@@ -329,6 +337,192 @@ def compute_time_to_book(processed_replies: dict) -> dict:
     }
 
 
+def compute_conversion_funnel(campaign_stats: list[dict], processed_replies: dict) -> dict:
+    """Compute the full conversion funnel: sent -> opened -> replied -> booked.
+
+    Returns a dict with absolute numbers and stage-to-stage conversion rates.
+    """
+    total_sent = sum(c.get("emails_sent", 0) for c in campaign_stats)
+    total_opened = sum(c.get("emails_opened", 0) for c in campaign_stats)
+    total_replied = sum(c.get("emails_replied", 0) for c in campaign_stats)
+
+    # Count bookings from processed replies
+    total_booked = 0
+    for _rid, data in processed_replies.items():
+        if not isinstance(data, dict):
+            continue
+        if data.get("category") in ("direct_intent", "meeting_booked"):
+            total_booked += 1
+
+    funnel = {
+        "sent": total_sent,
+        "opened": total_opened,
+        "replied": total_replied,
+        "booked": total_booked,
+        "sent_to_opened_rate": round(total_opened / total_sent * 100, 1) if total_sent > 0 else 0,
+        "opened_to_replied_rate": round(total_replied / total_opened * 100, 1) if total_opened > 0 else 0,
+        "replied_to_booked_rate": round(total_booked / total_replied * 100, 1) if total_replied > 0 else 0,
+        "sent_to_booked_rate": round(total_booked / total_sent * 100, 1) if total_sent > 0 else 0,
+    }
+    return funnel
+
+
+def compute_subject_line_performance(processed_replies: dict) -> list[dict]:
+    """Track which subject lines generate the most replies and bookings.
+
+    Returns a list of dicts sorted by reply count descending.
+    """
+    subject_stats = defaultdict(lambda: {"replies": 0, "bookings": 0, "interested": 0, "not_interested": 0})
+
+    for _rid, data in processed_replies.items():
+        if not isinstance(data, dict):
+            continue
+        subject = data.get("original_subject", "") or data.get("subject", "")
+        if not subject:
+            continue
+
+        subject_stats[subject]["replies"] += 1
+        cat = data.get("category", "")
+        if cat in ("direct_intent", "meeting_booked"):
+            subject_stats[subject]["bookings"] += 1
+        if cat not in ("not_interested", "negative_other", "unknown", "error"):
+            subject_stats[subject]["interested"] += 1
+        if cat in ("not_interested", "negative_other"):
+            subject_stats[subject]["not_interested"] += 1
+
+    results = []
+    for subject, stats in subject_stats.items():
+        total = stats["replies"]
+        results.append({
+            "subject_line": subject,
+            "total_replies": total,
+            "bookings": stats["bookings"],
+            "interested": stats["interested"],
+            "not_interested": stats["not_interested"],
+            "booking_rate": round(stats["bookings"] / total * 100, 1) if total > 0 else 0,
+            "interest_rate": round(stats["interested"] / total * 100, 1) if total > 0 else 0,
+        })
+
+    results.sort(key=lambda x: (-x["bookings"], -x["interested"], -x["total_replies"]))
+    return results
+
+
+def compute_time_analysis(processed_replies: dict) -> dict:
+    """Analyze best time-of-day and day-of-week for replies.
+
+    Returns dict with hourly and daily distributions.
+    """
+    hour_counts = Counter()
+    day_counts = Counter()
+    hour_bookings = Counter()
+    day_bookings = Counter()
+
+    day_names = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
+    for _rid, data in processed_replies.items():
+        if not isinstance(data, dict):
+            continue
+        ts = data.get("processed_at", "") or data.get("replied_at", "")
+        if not ts:
+            continue
+        try:
+            dt = datetime.fromisoformat(ts.replace("Z", "+00:00"))
+            hour = dt.hour
+            day = dt.weekday()  # 0=Monday
+            hour_counts[hour] += 1
+            day_counts[day] += 1
+            if data.get("category") in ("direct_intent", "meeting_booked"):
+                hour_bookings[hour] += 1
+                day_bookings[day] += 1
+        except (ValueError, TypeError):
+            pass
+
+    # Best hours (sorted by count)
+    hourly = []
+    for h in range(24):
+        total = hour_counts.get(h, 0)
+        bookings = hour_bookings.get(h, 0)
+        hourly.append({
+            "hour": f"{h:02d}:00",
+            "replies": total,
+            "bookings": bookings,
+            "booking_rate": round(bookings / total * 100, 1) if total > 0 else 0,
+        })
+
+    # Best days
+    daily = []
+    for d in range(7):
+        total = day_counts.get(d, 0)
+        bookings = day_bookings.get(d, 0)
+        daily.append({
+            "day": day_names[d],
+            "replies": total,
+            "bookings": bookings,
+            "booking_rate": round(bookings / total * 100, 1) if total > 0 else 0,
+        })
+
+    # Find peaks
+    best_hour = max(hourly, key=lambda x: x["replies"]) if hourly else None
+    best_day = max(daily, key=lambda x: x["replies"]) if daily else None
+    best_booking_hour = max(hourly, key=lambda x: x["bookings"]) if hourly else None
+    best_booking_day = max(daily, key=lambda x: x["bookings"]) if daily else None
+
+    return {
+        "hourly_distribution": hourly,
+        "daily_distribution": daily,
+        "best_reply_hour": best_hour["hour"] if best_hour and best_hour["replies"] > 0 else "N/A",
+        "best_reply_day": best_day["day"] if best_day and best_day["replies"] > 0 else "N/A",
+        "best_booking_hour": best_booking_hour["hour"] if best_booking_hour and best_booking_hour["bookings"] > 0 else "N/A",
+        "best_booking_day": best_booking_day["day"] if best_booking_day and best_booking_day["bookings"] > 0 else "N/A",
+    }
+
+
+def compute_campaign_comparison(campaign_stats: list[dict], processed_replies: dict) -> list[dict]:
+    """Compare campaigns side-by-side ranked by effectiveness.
+
+    Returns a list of campaign dicts sorted by booking rate descending.
+    """
+    # Count bookings per campaign from processed replies
+    campaign_bookings = Counter()
+    campaign_interested = Counter()
+    for _rid, data in processed_replies.items():
+        if not isinstance(data, dict):
+            continue
+        src = data.get("source_campaign_name") or data.get("source_campaign_id", "")
+        cat = data.get("category", "")
+        if cat in ("direct_intent", "meeting_booked"):
+            campaign_bookings[src] += 1
+        if cat not in ("not_interested", "negative_other", "unknown", "error"):
+            campaign_interested[src] += 1
+
+    comparison = []
+    for c in campaign_stats:
+        name = c.get("campaign_name", "Unknown")
+        sent = c.get("emails_sent", 0)
+        opened = c.get("emails_opened", 0)
+        replied = c.get("emails_replied", 0)
+        bookings = campaign_bookings.get(name, 0)
+        interested = campaign_interested.get(name, 0)
+
+        comparison.append({
+            "campaign_name": name,
+            "sent": sent,
+            "opened": opened,
+            "replied": replied,
+            "bookings": bookings,
+            "interested": interested,
+            "open_rate": round(opened / sent * 100, 1) if sent > 0 else 0,
+            "reply_rate": round(replied / sent * 100, 1) if sent > 0 else 0,
+            "booking_rate": round(bookings / sent * 100, 1) if sent > 0 else 0,
+            "efficiency_score": round(
+                (bookings * 3 + interested * 1) / sent * 100, 1
+            ) if sent > 0 else 0,
+        })
+
+    comparison.sort(key=lambda x: (-x["efficiency_score"], -x["booking_rate"]))
+    return comparison
+
+
 # ---------------------------------------------------------------------------
 # Export
 # ---------------------------------------------------------------------------
@@ -384,6 +578,8 @@ def export_csv(metrics: dict, output_dir: str) -> list[str]:
 
     # 3. Summary metrics CSV (single row for easy dashboard import)
     path = os.path.join(output_dir, f"summary_{timestamp}.csv")
+    funnel = metrics.get("conversion_funnel", {})
+    time_analysis = metrics.get("time_analysis", {})
     summary = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "total_replies": reply_metrics.get("total_replies", 0),
@@ -396,6 +592,13 @@ def export_csv(metrics: dict, output_dir: str) -> list[str]:
         "engaged_booked": metrics.get("engaged_metrics", {}).get("by_status", {}).get("booked", 0),
         "engaged_interested": metrics.get("engaged_metrics", {}).get("by_status", {}).get("interested", 0),
         "avg_hours_to_book": metrics.get("time_to_book", {}).get("avg_hours_to_book", 0),
+        "funnel_sent": funnel.get("sent", 0),
+        "funnel_opened": funnel.get("opened", 0),
+        "funnel_replied": funnel.get("replied", 0),
+        "funnel_booked": funnel.get("booked", 0),
+        "funnel_sent_to_booked_pct": funnel.get("sent_to_booked_rate", 0),
+        "best_reply_hour": time_analysis.get("best_reply_hour", "N/A"),
+        "best_reply_day": time_analysis.get("best_reply_day", "N/A"),
     }
     with open(path, "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=list(summary.keys()))
@@ -415,7 +618,158 @@ def export_csv(metrics: dict, output_dir: str) -> list[str]:
         files.append(path)
         logging.info("Timeline CSV: %s", path)
 
+    # 5. Subject line performance CSV
+    subject_perf = metrics.get("subject_line_performance", [])
+    if subject_perf:
+        path = os.path.join(output_dir, f"subject_lines_{timestamp}.csv")
+        fields = ["subject_line", "total_replies", "bookings", "interested",
+                   "not_interested", "booking_rate", "interest_rate"]
+        with open(path, "w", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(f, fieldnames=fields)
+            w.writeheader()
+            w.writerows(subject_perf[:50])  # Top 50
+        files.append(path)
+        logging.info("Subject line CSV: %s", path)
+
+    # 6. Campaign comparison CSV
+    campaign_comp = metrics.get("campaign_comparison", [])
+    if campaign_comp:
+        path = os.path.join(output_dir, f"campaign_comparison_{timestamp}.csv")
+        fields = ["campaign_name", "sent", "opened", "replied", "bookings",
+                   "interested", "open_rate", "reply_rate", "booking_rate", "efficiency_score"]
+        with open(path, "w", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(f, fieldnames=fields)
+            w.writeheader()
+            w.writerows(campaign_comp)
+        files.append(path)
+        logging.info("Campaign comparison CSV: %s", path)
+
+    # 7. Time analysis CSV
+    hourly = time_analysis.get("hourly_distribution", [])
+    if hourly:
+        path = os.path.join(output_dir, f"time_analysis_{timestamp}.csv")
+        with open(path, "w", newline="", encoding="utf-8") as f:
+            w = csv.writer(f)
+            w.writerow(["type", "period", "replies", "bookings", "booking_rate"])
+            for h in hourly:
+                w.writerow(["hour", h["hour"], h["replies"], h["bookings"], h["booking_rate"]])
+            for d in time_analysis.get("daily_distribution", []):
+                w.writerow(["day", d["day"], d["replies"], d["bookings"], d["booking_rate"]])
+        files.append(path)
+        logging.info("Time analysis CSV: %s", path)
+
     return files
+
+
+# ---------------------------------------------------------------------------
+# Daily summary
+# ---------------------------------------------------------------------------
+
+
+def generate_daily_summary(metrics: dict) -> str:
+    """Generate a scannable daily summary string for Dylan.
+
+    Designed to be read in 30 seconds or less.
+    """
+    rm = metrics.get("reply_metrics", {})
+    em = metrics.get("engaged_metrics", {})
+    ttb = metrics.get("time_to_book", {})
+    funnel = metrics.get("conversion_funnel", {})
+    time_analysis = metrics.get("time_analysis", {})
+    subject_perf = metrics.get("subject_line_performance", [])
+    campaign_comp = metrics.get("campaign_comparison", [])
+
+    lines = []
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    lines.append(f"PIPELINE DAILY SUMMARY - {today}")
+    lines.append("=" * 55)
+
+    # Conversion Funnel
+    lines.append("")
+    lines.append("CONVERSION FUNNEL:")
+    sent = funnel.get("sent", 0)
+    opened = funnel.get("opened", 0)
+    replied = funnel.get("replied", 0)
+    booked = funnel.get("booked", 0)
+
+    if sent > 0:
+        # ASCII bar chart
+        max_val = max(sent, 1)
+        bar_width = 30
+        sent_bar = "#" * bar_width
+        opened_bar = "#" * max(1, round(opened / max_val * bar_width))
+        replied_bar = "#" * max(1, round(replied / max_val * bar_width)) if replied > 0 else ""
+        booked_bar = "#" * max(1, round(booked / max_val * bar_width)) if booked > 0 else ""
+
+        lines.append(f"  Sent:    {sent_bar} {sent}")
+        lines.append(f"  Opened:  {opened_bar} {opened} ({funnel.get('sent_to_opened_rate', 0)}%)")
+        lines.append(f"  Replied: {replied_bar} {replied} ({funnel.get('opened_to_replied_rate', 0)}%)")
+        lines.append(f"  Booked:  {booked_bar} {booked} ({funnel.get('replied_to_booked_rate', 0)}%)")
+        lines.append(f"  Overall: {funnel.get('sent_to_booked_rate', 0)}% sent-to-book")
+    else:
+        lines.append("  (No campaign data available)")
+
+    # Key Numbers
+    lines.append("")
+    lines.append("KEY NUMBERS:")
+    lines.append(f"  Replies processed: {rm.get('total_replies', 0)}")
+    lines.append(f"  Responses sent:    {rm.get('responses_sent', 0)}")
+    lines.append(f"  Booking signals:   {rm.get('booking_signals', 0)} ({rm.get('booking_rate', 0)}%)")
+    lines.append(f"  Interest rate:     {rm.get('interest_rate', 0)}%")
+    lines.append(f"  Not interested:    {rm.get('not_interested', 0)}")
+    lines.append(f"  Engaged total:     {em.get('total_engaged', 0)}")
+
+    if ttb.get("avg_hours_to_book"):
+        lines.append(f"  Avg time to book:  {ttb['avg_hours_to_book']}h")
+
+    # Best Subject Lines
+    if subject_perf:
+        lines.append("")
+        lines.append("TOP SUBJECT LINES:")
+        for i, s in enumerate(subject_perf[:5]):
+            booking_str = f" [{s['bookings']} bookings]" if s["bookings"] > 0 else ""
+            lines.append(f"  {i+1}. \"{s['subject_line'][:60]}\" - {s['total_replies']} replies{booking_str}")
+
+    # Best Timing
+    if time_analysis.get("best_reply_hour") != "N/A":
+        lines.append("")
+        lines.append("BEST TIMING:")
+        lines.append(f"  Best hour for replies:  {time_analysis.get('best_reply_hour', 'N/A')}")
+        lines.append(f"  Best day for replies:   {time_analysis.get('best_reply_day', 'N/A')}")
+        lines.append(f"  Best hour for bookings: {time_analysis.get('best_booking_hour', 'N/A')}")
+        lines.append(f"  Best day for bookings:  {time_analysis.get('best_booking_day', 'N/A')}")
+
+    # Campaign Ranking
+    if campaign_comp:
+        lines.append("")
+        lines.append("CAMPAIGN RANKING (by efficiency):")
+        for i, c in enumerate(campaign_comp[:5]):
+            name = c["campaign_name"]
+            # Trim the "Realside AI - " prefix for readability
+            name = name.replace("Realside AI ", "").strip(" -\u2014")
+            lines.append(
+                f"  {i+1}. {name[:35]:35s} "
+                f"sent:{c['sent']:4d}  opened:{c['open_rate']:5.1f}%  "
+                f"replied:{c['reply_rate']:5.1f}%  booked:{c['booking_rate']:5.1f}%"
+            )
+
+    # Variant A/B Performance
+    variant_perf = rm.get("variant_performance", {})
+    if variant_perf:
+        lines.append("")
+        lines.append("A/B VARIANT PERFORMANCE:")
+        for v, vdata in sorted(variant_perf.items(),
+                                key=lambda x: -x[1].get("secondary_reply_rate", 0)):
+            lines.append(
+                f"  {v}: {vdata['responses_sent']} sent, "
+                f"{vdata['secondary_replies']} re-replies "
+                f"({vdata['secondary_reply_rate']}%)"
+            )
+
+    lines.append("")
+    lines.append("=" * 55)
+
+    return "\n".join(lines)
 
 
 # ---------------------------------------------------------------------------
@@ -452,6 +806,10 @@ def generate_metrics(config: dict, output_dir: str = None, export_format: str = 
     reply_metrics = compute_reply_metrics(processed_replies)
     engaged_metrics = compute_engaged_metrics(engaged_prospects)
     time_to_book = compute_time_to_book(processed_replies)
+    conversion_funnel = compute_conversion_funnel(campaign_stats, processed_replies)
+    subject_line_performance = compute_subject_line_performance(processed_replies)
+    time_analysis = compute_time_analysis(processed_replies)
+    campaign_comparison = compute_campaign_comparison(campaign_stats, processed_replies)
 
     metrics = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -459,6 +817,10 @@ def generate_metrics(config: dict, output_dir: str = None, export_format: str = 
         "engaged_metrics": engaged_metrics,
         "time_to_book": time_to_book,
         "campaign_stats": campaign_stats,
+        "conversion_funnel": conversion_funnel,
+        "subject_line_performance": subject_line_performance,
+        "time_analysis": time_analysis,
+        "campaign_comparison": campaign_comparison,
     }
 
     # Export
@@ -474,46 +836,9 @@ def generate_metrics(config: dict, output_dir: str = None, export_format: str = 
 
 
 def _print_summary(metrics: dict):
-    """Print a quick summary to the console."""
-    rm = metrics.get("reply_metrics", {})
-    em = metrics.get("engaged_metrics", {})
-    ttb = metrics.get("time_to_book", {})
-    cs = metrics.get("campaign_stats", [])
-
-    print("\n" + "=" * 55)
-    print("  PIPELINE METRICS SUMMARY")
-    print("=" * 55)
-
-    print(f"\n  Replies Processed:     {rm.get('total_replies', 0)}")
-    print(f"  Responses Sent:        {rm.get('responses_sent', 0)}")
-    print(f"  Booking Signals:       {rm.get('booking_signals', 0)}")
-    print(f"  Booking Rate:          {rm.get('booking_rate', 0)}%")
-    print(f"  Interest Rate:         {rm.get('interest_rate', 0)}%")
-    print(f"  Not Interested:        {rm.get('not_interested', 0)}")
-
-    print(f"\n  Engaged Prospects:     {em.get('total_engaged', 0)}")
-    statuses = em.get("by_status", {})
-    for status, count in statuses.items():
-        print(f"    {status}: {count}")
-
-    if ttb.get("avg_hours_to_book"):
-        print(f"\n  Avg Time to Book:      {ttb['avg_hours_to_book']}h")
-        print(f"  Min:                   {ttb['min_hours_to_book']}h")
-        print(f"  Max:                   {ttb['max_hours_to_book']}h")
-
-    if cs:
-        total_sent = sum(c.get("emails_sent", 0) for c in cs)
-        total_opened = sum(c.get("emails_opened", 0) for c in cs)
-        total_replied = sum(c.get("emails_replied", 0) for c in cs)
-        print(f"\n  Campaigns:             {len(cs)}")
-        print(f"  Total Emails Sent:     {total_sent}")
-        print(f"  Total Opens:           {total_opened}")
-        print(f"  Total Replies:         {total_replied}")
-        if total_sent > 0:
-            print(f"  Overall Open Rate:     {round(total_opened / total_sent * 100, 1)}%")
-            print(f"  Overall Reply Rate:    {round(total_replied / total_sent * 100, 1)}%")
-
-    print("\n" + "=" * 55)
+    """Print the daily summary to the console."""
+    summary = generate_daily_summary(metrics)
+    print("\n" + summary)
 
 
 def main():
@@ -527,6 +852,8 @@ def main():
                         help="Export format (default: both)")
     parser.add_argument("--output-dir", default=None, help="Output directory")
     parser.add_argument("--dry-run", action="store_true", help="Preview metrics without saving")
+    parser.add_argument("--daily-summary", action="store_true",
+                        help="Print daily summary to console only (no export)")
 
     args = parser.parse_args()
 
@@ -553,17 +880,28 @@ def main():
     if output_dir and not os.path.isabs(output_dir):
         output_dir = os.path.join(script_dir, output_dir)
 
-    if args.dry_run:
-        logging.info("[DRY-RUN] Computing metrics (no files will be saved)...")
-        # Still compute and print, just skip export
+    if args.dry_run or args.daily_summary:
+        logging.info("Computing metrics...")
         processed = load_processed_replies(script_dir)
         engaged = load_engaged_prospects(script_dir)
+
+        # Fetch campaign stats even for summary/dry-run
+        campaign_stats = []
+        api_key = config.get("instantly_api_key", "")
+        if api_key and not args.dry_run:
+            campaign_stats = fetch_campaign_stats(api_key)
+
+        reply_metrics = compute_reply_metrics(processed)
         metrics = {
             "generated_at": datetime.now(timezone.utc).isoformat(),
-            "reply_metrics": compute_reply_metrics(processed),
+            "reply_metrics": reply_metrics,
             "engaged_metrics": compute_engaged_metrics(engaged),
             "time_to_book": compute_time_to_book(processed),
-            "campaign_stats": [],
+            "campaign_stats": campaign_stats,
+            "conversion_funnel": compute_conversion_funnel(campaign_stats, processed),
+            "subject_line_performance": compute_subject_line_performance(processed),
+            "time_analysis": compute_time_analysis(processed),
+            "campaign_comparison": compute_campaign_comparison(campaign_stats, processed),
         }
         _print_summary(metrics)
     else:

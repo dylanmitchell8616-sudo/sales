@@ -69,7 +69,7 @@ COMPANY_SUFFIXES = [
     r"\s+(pa|p\.a\.)$",
     r"\s+(dba|d/b/a)$",
     r"\s+(dds|md|dmd)$",
-    r",?\s*(the)?$",
+    r",?\s*$",
 ]
 
 
@@ -209,6 +209,9 @@ def normalize_company_name(name):
         normalized = re.sub(pattern, "", normalized, flags=re.IGNORECASE)
     # Remove punctuation except hyphens
     normalized = re.sub(r"[^\w\s-]", "", normalized)
+    # Collapse whitespace
+    # Remove leading "the"
+    normalized = re.sub(r"^the\s+", "", normalized)
     # Collapse whitespace
     normalized = re.sub(r"\s+", " ", normalized).strip()
     return normalized

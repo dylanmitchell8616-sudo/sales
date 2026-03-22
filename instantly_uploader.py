@@ -556,33 +556,222 @@ def csv_to_leads(rows: list[dict]) -> list[dict]:
     return leads
 
 
-def upload_leads(api_key: str, campaign_id: str, leads: list[dict]) -> int:
-    """Upload leads one at a time to a campaign (Instantly V2 API format)."""
+def _upload_single_lead_with_retry(api_key: str, campaign_id: str, lead: dict,
+                                    max_retries: int = 3) -> dict:
+    """Upload a single lead with exponential backoff retry logic.
+
+    Args:
+        api_key: Instantly API key.
+        campaign_id: Target campaign ID.
+        lead: Lead dict to upload.
+        max_retries: Maximum number of retry attempts.
+
+    Returns:
+        dict with keys: success (bool), email (str), error (str or None), attempts (int)
+    """
+    email = lead.get("email", "?")
+    payload = {
+        "campaign": campaign_id,
+        "email": lead.get("email", ""),
+        "first_name": lead.get("first_name", ""),
+        "last_name": lead.get("last_name", ""),
+        "company_name": lead.get("company_name", ""),
+        "website": lead.get("website", ""),
+        "personalization": lead.get("custom_variables", {}).get("personalization_hook", ""),
+        "custom_variables": lead.get("custom_variables", {}),
+    }
+
+    for attempt in range(max_retries):
+        result = api_request("POST", "/leads", api_key, payload)
+        if "error" not in result:
+            return {"success": True, "email": email, "error": None, "attempts": attempt + 1}
+
+        error_text = str(result.get("error", ""))
+        status_code = result.get("status_code", 0)
+
+        # Don't retry on client errors (400, 422) - these won't succeed on retry
+        if status_code in (400, 422):
+            return {"success": False, "email": email,
+                    "error": f"Client error {status_code}: {error_text[:100]}",
+                    "attempts": attempt + 1}
+
+        # Retry on server errors (5xx) and rate limits (429) with backoff
+        if attempt < max_retries - 1:
+            wait = (2 ** attempt) * 1.5
+            time.sleep(wait)
+
+    return {"success": False, "email": email,
+            "error": f"Failed after {max_retries} attempts: {error_text[:100]}",
+            "attempts": max_retries}
+
+
+def verify_leads_uploaded(api_key: str, campaign_id: str, expected_emails: set,
+                          sample_size: int = 10) -> dict:
+    """Verify that leads were actually added to the campaign by spot-checking.
+
+    Fetches leads from the campaign and checks if a sample of expected emails exist.
+
+    Args:
+        api_key: Instantly API key.
+        campaign_id: Campaign to verify.
+        expected_emails: Set of email addresses that should exist.
+        sample_size: Number of emails to spot-check.
+
+    Returns:
+        dict with keys: verified (bool), checked (int), found (int), missing (list)
+    """
+    if not expected_emails:
+        return {"verified": True, "checked": 0, "found": 0, "missing": []}
+
+    # Fetch leads from campaign
+    result = api_request("GET", "/leads", api_key, {
+        "campaign_id": campaign_id, "limit": 200,
+    })
+    if "error" in result:
+        print(f"  Verification: Could not fetch leads to verify: {str(result.get('error', ''))[:100]}")
+        return {"verified": False, "checked": 0, "found": 0, "missing": [],
+                "error": "Could not fetch leads for verification"}
+
+    # Extract emails from response
+    items = result.get("data", result.get("items", []))
+    if isinstance(result, list):
+        items = result
+    campaign_emails = set()
+    for item in items:
+        email = item.get("email", "").lower()
+        if email:
+            campaign_emails.add(email)
+
+    # Spot-check a sample
+    import random
+    sample = list(expected_emails)
+    if len(sample) > sample_size:
+        sample = random.sample(sample, sample_size)
+
+    found = 0
+    missing = []
+    for email in sample:
+        if email.lower() in campaign_emails:
+            found += 1
+        else:
+            missing.append(email)
+
+    verified = found == len(sample)
+    if verified:
+        print(f"  Verification: {found}/{len(sample)} spot-checked leads confirmed in campaign")
+    else:
+        print(f"  Verification WARNING: {found}/{len(sample)} leads found, {len(missing)} missing")
+
+    return {"verified": verified, "checked": len(sample), "found": found, "missing": missing}
+
+
+def rollback_leads(api_key: str, campaign_id: str, emails_to_remove: list[str]) -> dict:
+    """Remove leads from a campaign (rollback after partial failure).
+
+    Args:
+        api_key: Instantly API key.
+        campaign_id: Campaign to remove leads from.
+        emails_to_remove: List of email addresses to remove.
+
+    Returns:
+        dict with keys: attempted (int), removed (int), failed (list)
+    """
+    if not emails_to_remove:
+        return {"attempted": 0, "removed": 0, "failed": []}
+
+    print(f"  Rolling back {len(emails_to_remove)} leads from campaign {campaign_id}...")
+    removed = 0
+    failed = []
+
+    for email in emails_to_remove:
+        success = delete_lead(api_key, campaign_id, email)
+        if success:
+            removed += 1
+        else:
+            failed.append(email)
+        time.sleep(0.3)
+
+    print(f"  Rollback complete: {removed}/{len(emails_to_remove)} removed")
+    if failed:
+        print(f"  Rollback failed for {len(failed)} leads: {', '.join(failed[:5])}")
+
+    return {"attempted": len(emails_to_remove), "removed": removed, "failed": failed}
+
+
+def upload_leads(api_key: str, campaign_id: str, leads: list[dict],
+                 verify: bool = True, rollback_on_failure: bool = True,
+                 failure_threshold: float = 0.5) -> int:
+    """Upload leads to a campaign with retry, verification, and rollback.
+
+    Args:
+        api_key: Instantly API key.
+        campaign_id: Target campaign ID.
+        leads: List of lead dicts to upload.
+        verify: If True, verify leads were added after upload.
+        rollback_on_failure: If True, remove all uploaded leads if failure
+                             rate exceeds the threshold.
+        failure_threshold: Fraction of failures (0.0-1.0) that triggers rollback.
+
+    Returns:
+        Number of successfully uploaded leads.
+    """
     total_uploaded = 0
+    total_failed = 0
+    uploaded_emails = []
+    failed_details = []
 
     for i, lead in enumerate(leads):
-        payload = {
-            "campaign": campaign_id,
-            "email": lead.get("email", ""),
-            "first_name": lead.get("first_name", ""),
-            "last_name": lead.get("last_name", ""),
-            "company_name": lead.get("company_name", ""),
-            "website": lead.get("website", ""),
-            "personalization": lead.get("custom_variables", {}).get("personalization_hook", ""),
-            "custom_variables": lead.get("custom_variables", {}),
-        }
+        result = _upload_single_lead_with_retry(api_key, campaign_id, lead)
 
-        result = api_request("POST", "/leads", api_key, payload)
-        if "error" in result:
-            print(f"  Error uploading lead {i + 1} ({lead.get('email', '?')}): {result['error'][:100]}")
-        else:
+        if result["success"]:
             total_uploaded += 1
+            uploaded_emails.append(result["email"])
+        else:
+            total_failed += 1
+            error_msg = result.get("error", "unknown error")
+            failed_details.append({"email": result["email"], "error": error_msg})
+            if total_failed <= 3:
+                print(f"  Failed lead {i + 1} ({result['email']}): {error_msg}")
+            elif total_failed == 4:
+                print(f"  (suppressing further individual error messages...)")
 
         # Rate limit every 5 leads
         if (i + 1) % 5 == 0:
             time.sleep(RATE_LIMIT_DELAY)
             if (i + 1) % 20 == 0:
-                print(f"  Uploaded {total_uploaded}/{i + 1} leads...")
+                print(f"  Progress: {total_uploaded} uploaded, {total_failed} failed out of {i + 1} processed...")
+
+        # Check if failure rate is too high mid-upload (early abort)
+        if i >= 9 and total_failed / (i + 1) > failure_threshold:
+            print(f"  ABORTING: Failure rate {total_failed}/{i + 1} ({total_failed / (i + 1) * 100:.0f}%) "
+                  f"exceeds threshold ({failure_threshold * 100:.0f}%)")
+            break
+
+    # Summary of upload results
+    if total_failed > 0:
+        print(f"  Upload results: {total_uploaded} succeeded, {total_failed} failed out of {len(leads)}")
+        if total_failed > 3:
+            print(f"  Common errors:")
+            error_counts = {}
+            for d in failed_details:
+                err = d["error"][:60]
+                error_counts[err] = error_counts.get(err, 0) + 1
+            for err, count in sorted(error_counts.items(), key=lambda x: -x[1])[:3]:
+                print(f"    {count}x: {err}")
+
+    # Check if rollback is needed
+    if rollback_on_failure and total_failed > 0 and len(leads) > 0:
+        failure_rate = total_failed / len(leads)
+        if failure_rate > failure_threshold:
+            print(f"  Failure rate ({failure_rate * 100:.0f}%) exceeds threshold "
+                  f"({failure_threshold * 100:.0f}%) - initiating rollback")
+            rollback_result = rollback_leads(api_key, campaign_id, uploaded_emails)
+            return 0  # All leads rolled back
+
+    # Verify upload
+    if verify and total_uploaded > 0:
+        expected = set(e.lower() for e in uploaded_emails)
+        verify_leads_uploaded(api_key, campaign_id, expected)
 
     return total_uploaded
 
@@ -601,9 +790,16 @@ def process_csv(api_key: str, csv_path: str, dry_run: bool = False,
     print(f"{'='*60}")
 
     # Read CSV
-    rows = read_pipeline_csv(csv_path)
+    try:
+        rows = read_pipeline_csv(csv_path)
+    except Exception as e:
+        print(f"  ERROR reading CSV: {e}")
+        print(f"  Check that {csv_path} exists, is valid CSV, and is not corrupted.")
+        return {"name": campaign_name, "status": "failed",
+                "reason": f"CSV read error: {e}", "new_emails": set(), "new_domains": set()}
     if not rows:
         print("  No rows found, skipping.")
+        print(f"  Tip: Check that {csv_path} has data rows (not just a header).")
         return {"name": campaign_name, "status": "skipped", "reason": "empty CSV"}
 
     # Convert to leads
@@ -713,6 +909,10 @@ def process_csv(api_key: str, csv_path: str, dry_run: bool = False,
     else:
         campaign_id = create_campaign(api_key, campaign_name, sending_accounts, campaign_options)
         if not campaign_id:
+            print(f"  TROUBLESHOOTING:")
+            print(f"    1. Verify your API key has campaign creation permissions")
+            print(f"    2. Check if you've hit Instantly's campaign limit for your plan")
+            print(f"    3. Try running with --list-campaigns to verify API connectivity")
             return {"name": campaign_name, "status": "failed", "reason": "campaign creation failed",
                     "new_emails": set(), "new_domains": set()}
 
