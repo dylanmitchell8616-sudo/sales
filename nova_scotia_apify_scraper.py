@@ -31,11 +31,52 @@ except ImportError:
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_DIR = os.path.join(SCRIPT_DIR, "output")
+CACHE_FILE = os.path.join(OUTPUT_DIR, "ns_scrape_cache.json")
 
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
 )
+
+
+# ─── Scrape cache to avoid re-scraping already-scraped businesses ────────────
+def load_cache() -> dict:
+    """Load scrape cache (domain -> lead data) from disk."""
+    if os.path.exists(CACHE_FILE):
+        try:
+            with open(CACHE_FILE, "r") as f:
+                return json.load(f)
+        except (json.JSONDecodeError, IOError):
+            pass
+    return {}
+
+
+def save_cache(cache: dict):
+    """Save scrape cache to disk."""
+    with open(CACHE_FILE, "w") as f:
+        json.dump(cache, f, indent=2)
+
+
+def api_request_with_retry(method, url, max_retries=3, **kwargs):
+    """Make an HTTP request with exponential backoff retry."""
+    kwargs.setdefault("timeout", 60)
+    for attempt in range(max_retries + 1):
+        try:
+            resp = requests.request(method, url, **kwargs)
+            if resp.status_code in (429, 500, 502, 503, 504) and attempt < max_retries:
+                wait = 2 ** (attempt + 1)
+                logging.warning(f"  HTTP {resp.status_code}, retrying in {wait}s...")
+                time.sleep(wait)
+                continue
+            return resp
+        except requests.RequestException as e:
+            if attempt < max_retries:
+                wait = 2 ** (attempt + 1)
+                logging.warning(f"  Request failed ({e}), retrying in {wait}s...")
+                time.sleep(wait)
+            else:
+                raise
+    return resp
 
 # ─── Nova Scotia regions to search ───────────────────────────────────────────
 NS_REGIONS = [
@@ -201,7 +242,6 @@ def run_apify_scrape(api_key: str, search_queries: list, max_results: int = 100)
     """Run the Apify Google Maps scraper and return results."""
     headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
 
-    # Build the actor input — scrapeEmails pulls emails from listings + websites
     actor_input = {
         "searchStringsArray": search_queries,
         "maxCrawledPlacesPerSearch": max_results,
@@ -211,11 +251,10 @@ def run_apify_scrape(api_key: str, search_queries: list, max_results: int = 100)
         "scrapeEmails": True,
     }
 
-    # Start the actor run
     url = f"{APIFY_BASE_URL}/acts/{APIFY_ACTOR_ID}/runs"
     logging.info(f"  Starting Apify run with {len(search_queries)} queries...")
 
-    resp = requests.post(url, headers=headers, json=actor_input, timeout=60)
+    resp = api_request_with_retry("POST", url, headers=headers, json=actor_input)
     if resp.status_code != 201:
         logging.error(f"  Failed to start actor: {resp.status_code} {resp.text}")
         return []
@@ -224,22 +263,26 @@ def run_apify_scrape(api_key: str, search_queries: list, max_results: int = 100)
     run_id = run_data.get("id")
     logging.info(f"  Actor run started: {run_id}")
 
-    # Poll for completion
+    # Poll for completion with progress tracking
     status_url = f"{APIFY_BASE_URL}/actor-runs/{run_id}"
+    start_time = time.time()
     for attempt in range(120):  # up to 10 minutes
         time.sleep(5)
         try:
-            status_resp = requests.get(status_url, headers=headers, timeout=30)
+            status_resp = api_request_with_retry("GET", status_url, headers=headers, timeout=30)
             status = status_resp.json().get("data", {}).get("status")
         except (requests.RequestException, ValueError) as e:
             logging.warning(f"  Poll attempt {attempt + 1} failed: {e}. Retrying...")
             continue
+        elapsed = int(time.time() - start_time)
         if status == "SUCCEEDED":
-            logging.info(f"  Run completed successfully")
+            logging.info(f"  Run completed in {elapsed}s")
             break
         elif status in ("FAILED", "ABORTED", "TIMED-OUT"):
-            logging.error(f"  Run failed with status: {status}")
+            logging.error(f"  Run failed with status: {status} after {elapsed}s")
             return []
+        elif attempt % 12 == 11:
+            logging.info(f"  Still running... ({elapsed}s elapsed)")
     else:
         logging.error("  Run timed out after 10 minutes")
         return []
@@ -253,7 +296,7 @@ def run_apify_scrape(api_key: str, search_queries: list, max_results: int = 100)
 
     results_url = f"{APIFY_BASE_URL}/datasets/{dataset_id}/items?format=json&limit=10000"
     try:
-        results_resp = requests.get(results_url, headers=headers, timeout=60)
+        results_resp = api_request_with_retry("GET", results_url, headers=headers)
         if results_resp.status_code != 200:
             logging.error(f"  Failed to fetch results: {results_resp.status_code}")
             return []
@@ -295,23 +338,54 @@ def is_valid_email(email: str) -> bool:
     return True
 
 
+def score_email(email: str, domain: str) -> int:
+    """Score an email for quality. Higher = better for outreach."""
+    score = 0
+    email_lower = email.lower()
+    domain_lower = domain.lower()
+
+    # Emails matching the business domain are strongly preferred
+    if domain_lower in email_lower:
+        score += 50
+
+    # Personal-sounding emails (owner names) are best for B2B
+    personal_patterns = re.compile(r'^[a-z]+[._]?[a-z]+@', re.IGNORECASE)
+    if personal_patterns.match(email_lower):
+        score += 20
+
+    # Generic role-based emails are okay but not ideal
+    role_prefixes = {
+        "info@": 10, "contact@": 9, "hello@": 8, "office@": 7,
+        "admin@": 5, "reception@": 5, "sales@": 3, "support@": 2,
+        "billing@": 1, "accounts@": 1,
+    }
+    for prefix, pts in role_prefixes.items():
+        if email_lower.startswith(prefix):
+            score += pts
+            break
+
+    return score
+
+
 def scrape_email_from_website(website: str, timeout: int = 10) -> str:
     """Try to scrape an email from a business website's contact/about pages."""
     if not website:
         return ""
 
-    # Normalize URL
     if not website.startswith("http"):
         website = "https://" + website
 
-    # Pages most likely to have contact emails
-    paths_to_try = ["", "/contact", "/contact-us", "/about", "/about-us"]
+    # More pages to check for better coverage
+    paths_to_try = [
+        "", "/contact", "/contact-us", "/about", "/about-us",
+        "/team", "/our-team", "/staff", "/connect",
+    ]
 
     headers = {
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
     }
 
-    found_emails = []
+    found_emails = set()
 
     for path in paths_to_try:
         try:
@@ -320,14 +394,13 @@ def scrape_email_from_website(website: str, timeout: int = 10) -> str:
             if resp.status_code != 200:
                 continue
 
-            # Find all emails on the page
             raw_emails = EMAIL_REGEX.findall(resp.text)
             for email in raw_emails:
                 if is_valid_email(email):
-                    found_emails.append(email.lower().strip())
+                    found_emails.add(email.lower().strip())
 
-            # If we found something on homepage or contact page, that's enough
-            if found_emails:
+            # If we found emails on contact or about page, stop
+            if found_emails and path in ("/contact", "/contact-us", "/about"):
                 break
 
         except (requests.RequestException, Exception):
@@ -336,18 +409,10 @@ def scrape_email_from_website(website: str, timeout: int = 10) -> str:
     if not found_emails:
         return ""
 
-    # Prefer emails that match the business domain
+    # Score and rank all found emails
     domain = website.replace("https://", "").replace("http://", "").split("/")[0].lower()
-    domain_emails = [e for e in found_emails if domain in e]
-    if domain_emails:
-        # Prefer info@, contact@, hello@ over random addresses
-        for prefix in ["info@", "contact@", "hello@", "office@", "admin@"]:
-            for e in domain_emails:
-                if e.startswith(prefix):
-                    return e
-        return domain_emails[0]
-
-    return found_emails[0]
+    scored = sorted(found_emails, key=lambda e: score_email(e, domain), reverse=True)
+    return scored[0]
 
 
 def parse_apify_result(item: dict, niche: str, niche_label: str, services: list = None) -> dict:
@@ -550,14 +615,21 @@ def main():
         logging.info(f"Estimate saved to {estimate_path}")
         return
 
+    # Load cache to skip already-scraped domains
+    cache = load_cache()
+    cached_domains = set(cache.keys())
+    logging.info(f"Loaded {len(cached_domains)} cached domains (will skip re-scraping)")
+
     # Run scrapes per niche
     all_leads = []
-    for niche_key, niche_data in niches_to_run.items():
-        logging.info(f"\n{'─' * 40}")
-        logging.info(f"Scraping: {niche_data['label']}")
-        logging.info(f"{'─' * 40}")
+    niche_stats = {}
+    total_niches = len(niches_to_run)
+    for niche_idx, (niche_key, niche_data) in enumerate(niches_to_run.items(), 1):
+        logging.info(f"\n{'=' * 40}")
+        logging.info(f"[{niche_idx}/{total_niches}] Scraping: {niche_data['label']}")
+        logging.info(f"{'=' * 40}")
 
-        # Build search queries: each query × each region
+        # Build search queries: each query x each region
         search_queries = []
         for query in niche_data["queries"]:
             for region in regions:
@@ -565,12 +637,27 @@ def main():
 
         results = run_apify_scrape(args.api_key, search_queries, args.max_per_search)
 
+        new_from_niche = 0
+        cached_from_niche = 0
         for item in results:
             lead = parse_apify_result(item, niche_key, niche_data["label"], niche_data["services"])
-            if lead["company_name"]:  # skip empty results
-                all_leads.append(lead)
+            if not lead["company_name"]:
+                continue
+            domain = lead.get("domain", "").lower()
+            if domain and domain in cached_domains:
+                cached_from_niche += 1
+                continue
+            all_leads.append(lead)
+            new_from_niche += 1
+            if domain:
+                cache[domain] = {"company": lead["company_name"], "niche": niche_key, "scraped_at": datetime.now().isoformat()}
+                cached_domains.add(domain)
 
-        logging.info(f"  {niche_data['label']}: {len(results)} raw results")
+        niche_stats[niche_key] = {"raw": len(results), "new": new_from_niche, "cached_skip": cached_from_niche}
+        logging.info(f"  {niche_data['label']}: {len(results)} raw, {new_from_niche} new, {cached_from_niche} cached/skipped")
+
+    # Save updated cache
+    save_cache(cache)
 
     # Deduplicate
     unique_leads = deduplicate_leads(all_leads)
@@ -612,16 +699,25 @@ def main():
             niche_path = os.path.join(OUTPUT_DIR, f"ns_leads_{niche_key}.csv")
             save_leads_csv(niche_leads, niche_path)
 
-    # Summary
+    # Summary report
     logging.info("\n" + "=" * 60)
-    logging.info("SCRAPE COMPLETE")
+    logging.info("SCRAPE COMPLETE — SUMMARY REPORT")
     logging.info("=" * 60)
+    logging.info(f"  {'Niche':25s} {'Leads':>6} {'Email':>6} {'Rate':>6}")
+    logging.info(f"  {'-' * 25} {'-' * 6} {'-' * 6} {'-' * 6}")
     for niche_key, niche_data in niches_to_run.items():
         niche_leads = [l for l in unique_leads if l["niche"] == niche_key]
         with_email = len([l for l in niche_leads if l.get("email")])
-        logging.info(f"  {niche_data['label']:25s} {len(niche_leads):>5} leads  ({with_email} with email)")
+        rate = f"{with_email / len(niche_leads) * 100:.0f}%" if niche_leads else "0%"
+        logging.info(f"  {niche_data['label']:25s} {len(niche_leads):>6} {with_email:>6} {rate:>6}")
     total_emails = len([l for l in unique_leads if l.get("email")])
-    logging.info(f"  {'TOTAL':25s} {len(unique_leads):>5} leads  ({total_emails} with email)")
+    total_rate = f"{total_emails / len(unique_leads) * 100:.0f}%" if unique_leads else "0%"
+    logging.info(f"  {'-' * 25} {'-' * 6} {'-' * 6} {'-' * 6}")
+    logging.info(f"  {'TOTAL':25s} {len(unique_leads):>6} {total_emails:>6} {total_rate:>6}")
+    logging.info("=" * 60)
+    logging.info(f"  Franchises removed:  {franchise_removed}")
+    logging.info(f"  Cached domains:      {len(cached_domains)}")
+    logging.info(f"  Output:              {master_path}")
     logging.info("=" * 60)
 
 

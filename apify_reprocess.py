@@ -7,6 +7,8 @@ Fetches all datasets, extracts emails, and merges into qualified leads.
 import csv
 import json
 import os
+import re
+import time
 import requests
 
 APIFY_TOKEN = os.environ.get("APIFY_TOKEN", "")
@@ -14,13 +16,40 @@ API_BASE = "https://api.apify.com/v2"
 LEADS_FILE = "output/ns_leads_qualified.csv"
 OUTPUT_FILE = "output/apify_email_results.json"
 
+JUNK_PATTERNS = [
+    'noreply', 'no-reply', 'example.com', 'sentry',
+    'wixpress', 'squarespace', 'mailchimp', 'googleapis',
+    'cloudflare', 'wordpress', 'godaddy', 'donotreply',
+]
+
+
+def api_request_with_retry(method, url, max_retries=3, **kwargs):
+    """HTTP request with exponential backoff."""
+    kwargs.setdefault("timeout", 30)
+    for attempt in range(max_retries + 1):
+        try:
+            resp = requests.request(method, url, **kwargs)
+            if resp.status_code in (429, 500, 502, 503, 504) and attempt < max_retries:
+                wait = 2 ** (attempt + 1)
+                print(f"  HTTP {resp.status_code}, retrying in {wait}s...")
+                time.sleep(wait)
+                continue
+            return resp
+        except requests.RequestException as e:
+            if attempt < max_retries:
+                wait = 2 ** (attempt + 1)
+                print(f"  Request error ({e}), retrying in {wait}s...")
+                time.sleep(wait)
+            else:
+                raise
+    return resp
+
 
 def get_recent_runs():
     """Get all recent actor runs."""
     url = f"{API_BASE}/actor-runs?token={APIFY_TOKEN}&limit=20&desc=true"
-    resp = requests.get(url, timeout=15)
+    resp = api_request_with_retry("GET", url)
     runs = resp.json()['data']['items']
-    # Filter to succeeded runs from our contact-info-scraper
     return [r for r in runs if r['status'] == 'SUCCEEDED']
 
 
@@ -28,14 +57,16 @@ def fetch_all_emails(runs):
     """Fetch emails from all run datasets."""
     domain_emails = {}
 
-    for run in runs:
+    for i, run in enumerate(runs):
         ds = run['defaultDatasetId']
         items_url = f"{API_BASE}/datasets/{ds}/items?token={APIFY_TOKEN}&limit=1000"
-        resp = requests.get(items_url, timeout=30)
+        resp = api_request_with_retry("GET", items_url)
         if resp.status_code != 200:
+            print(f"  Failed to fetch dataset {ds}: {resp.status_code}")
             continue
 
         items = resp.json()
+        print(f"  Run {i + 1}/{len(runs)}: {len(items)} items")
         for item in items:
             domain = item.get('domain', '').lower().strip()
             emails = item.get('emails', []) or []
@@ -48,37 +79,39 @@ def fetch_all_emails(runs):
 
             for e in emails:
                 e = e.strip().lower()
-                # Filter junk emails
-                if '@' in e and not any(x in e for x in [
-                    'noreply', 'no-reply', 'example.com', 'sentry',
-                    'wixpress', 'squarespace', 'mailchimp', 'googleapis',
-                    'cloudflare', 'wordpress'
-                ]):
+                if '@' in e and not any(x in e for x in JUNK_PATTERNS):
                     domain_emails[domain].add(e)
 
-    # Convert sets to lists
     return {d: list(emails) for d, emails in domain_emails.items() if emails}
 
 
+def score_email(email: str, domain: str) -> int:
+    """Score an email for outreach quality. Higher = better."""
+    score = 0
+    email_lower = email.lower()
+    domain_lower = domain.lower().replace('www.', '')
+
+    if domain_lower in email_lower:
+        score += 50
+    if re.match(r'^[a-z]+[._]?[a-z]+@', email_lower):
+        score += 20
+
+    role_scores = {
+        "info@": 10, "contact@": 9, "hello@": 8, "office@": 7,
+        "admin@": 5, "reception@": 5, "sales@": 3,
+    }
+    for prefix, pts in role_scores.items():
+        if email_lower.startswith(prefix):
+            score += pts
+            break
+    return score
+
+
 def pick_best_email(emails, domain):
-    """Pick the best email from a list - prefer info@, contact@, etc."""
-    # Priority prefixes
-    prefixes = ['info@', 'contact@', 'office@', 'hello@', 'admin@', 'reception@']
-
-    # First, prefer emails that match the domain
-    domain_clean = domain.replace('www.', '')
-    matching = [e for e in emails if domain_clean in e]
-    other = [e for e in emails if domain_clean not in e]
-
-    for email_list in [matching, other]:
-        for prefix in prefixes:
-            for e in email_list:
-                if e.startswith(prefix):
-                    return e
-        if email_list:
-            return email_list[0]
-
-    return emails[0] if emails else None
+    """Pick the best email from a list using scoring."""
+    if not emails:
+        return None
+    return sorted(emails, key=lambda e: score_email(e, domain), reverse=True)[0]
 
 
 def merge_into_leads(domain_emails):

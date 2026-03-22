@@ -7,6 +7,7 @@ Processes in batches to stay within starter pack limits.
 
 import csv
 import json
+import re
 import time
 import sys
 import requests
@@ -20,8 +21,60 @@ MAX_PAGES_PER_DOMAIN = 3
 INPUT_FILE = "output/ns_leads_qualified.csv"
 OUTPUT_FILE = "output/apify_email_results.json"
 MERGED_FILE = "output/ns_leads_qualified.csv"
+CACHE_FILE = "output/apify_email_cache.json"
 
 API_BASE = "https://api.apify.com/v2"
+
+# Basic email validation
+EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$')
+
+
+def api_request_with_retry(method, url, max_retries=3, **kwargs):
+    """HTTP request with exponential backoff retry."""
+    kwargs.setdefault("timeout", 30)
+    for attempt in range(max_retries + 1):
+        try:
+            resp = requests.request(method, url, **kwargs)
+            if resp.status_code in (429, 500, 502, 503, 504) and attempt < max_retries:
+                wait = 2 ** (attempt + 1)
+                print(f"  HTTP {resp.status_code}, retrying in {wait}s...")
+                time.sleep(wait)
+                continue
+            return resp
+        except requests.RequestException as e:
+            if attempt < max_retries:
+                wait = 2 ** (attempt + 1)
+                print(f"  Request error ({e}), retrying in {wait}s...")
+                time.sleep(wait)
+            else:
+                raise
+    return resp
+
+
+def validate_email(email: str) -> bool:
+    """Validate email format."""
+    if not email or not EMAIL_REGEX.match(email):
+        return False
+    if len(email) > 254:
+        return False
+    return True
+
+
+def load_email_cache() -> dict:
+    """Load previously scraped email results."""
+    if os.path.exists(CACHE_FILE):
+        try:
+            with open(CACHE_FILE, "r") as f:
+                return json.load(f)
+        except (json.JSONDecodeError, IOError):
+            pass
+    return {}
+
+
+def save_email_cache(cache: dict):
+    """Save email results to cache."""
+    with open(CACHE_FILE, "w") as f:
+        json.dump(cache, f, indent=2)
 
 
 def get_domains_needing_emails():
@@ -61,21 +114,19 @@ def build_start_urls(leads_batch):
 
 
 def run_actor(start_urls, batch_num, total_batches):
-    """Run the Apify contact details scraper actor."""
+    """Run the Apify contact details scraper actor with retry logic."""
     print(f"\n--- Batch {batch_num}/{total_batches} ({len(start_urls)} URLs) ---")
 
-    # Use the contact details scraper
     actor_input = {
         "startUrls": start_urls,
         "maxRequestsPerStartUrl": 1,
-        "maxDepth": 0,  # Don't crawl beyond the given URLs
+        "maxDepth": 0,
         "maxRequestsPerCrawl": len(start_urls),
         "proxyConfiguration": {"useApifyProxy": True},
     }
 
-    # Start the actor run
     url = f"{API_BASE}/acts/{ACTOR_ID}/runs?token={APIFY_TOKEN}"
-    resp = requests.post(url, json=actor_input, timeout=30)
+    resp = api_request_with_retry("POST", url, json=actor_input)
 
     if resp.status_code != 201:
         print(f"  ERROR starting actor: {resp.status_code} - {resp.text[:200]}")
@@ -83,32 +134,36 @@ def run_actor(start_urls, batch_num, total_batches):
 
     run_data = resp.json()['data']
     run_id = run_data['id']
+    start_time = time.time()
     print(f"  Run started: {run_id}")
 
     # Poll for completion
-    for attempt in range(60):  # Max 5 minutes
+    for attempt in range(60):
         time.sleep(5)
         status_url = f"{API_BASE}/actor-runs/{run_id}?token={APIFY_TOKEN}"
-        status_resp = requests.get(status_url, timeout=15)
-        status = status_resp.json()['data']['status']
+        try:
+            status_resp = api_request_with_retry("GET", status_url, timeout=15)
+            status = status_resp.json()['data']['status']
+        except (requests.RequestException, KeyError, ValueError) as e:
+            print(f"  Poll error: {e}")
+            continue
 
+        elapsed = int(time.time() - start_time)
         if status == 'SUCCEEDED':
-            print(f"  Run completed successfully")
+            print(f"  Run completed in {elapsed}s")
             break
         elif status in ('FAILED', 'ABORTED', 'TIMED-OUT'):
-            print(f"  Run {status}")
+            print(f"  Run {status} after {elapsed}s")
             return []
-        else:
-            if attempt % 6 == 0:
-                print(f"  Status: {status}...")
+        elif attempt % 6 == 0:
+            print(f"  Status: {status}... ({elapsed}s)")
     else:
         print("  Timed out waiting for run")
         return []
 
-    # Get results
     dataset_id = status_resp.json()['data']['defaultDatasetId']
     results_url = f"{API_BASE}/datasets/{dataset_id}/items?token={APIFY_TOKEN}"
-    results_resp = requests.get(results_url, timeout=30)
+    results_resp = api_request_with_retry("GET", results_url)
 
     if results_resp.status_code == 200:
         items = results_resp.json()
@@ -168,20 +223,42 @@ def extract_emails_from_results(results, leads_batch):
     return matched
 
 
+def score_email(email: str, domain: str) -> int:
+    """Score an email for outreach quality. Higher = better."""
+    score = 0
+    email_lower = email.lower()
+    domain_lower = domain.lower().replace('www.', '')
+
+    # Emails matching the business domain
+    if domain_lower in email_lower:
+        score += 50
+
+    # Personal emails (owner names) are best for B2B
+    if re.match(r'^[a-z]+[._]?[a-z]+@', email_lower):
+        score += 20
+
+    # Role-based email ranking
+    role_scores = {
+        "info@": 10, "contact@": 9, "hello@": 8, "office@": 7,
+        "admin@": 5, "reception@": 5, "sales@": 3, "support@": 2,
+    }
+    for prefix, pts in role_scores.items():
+        if email_lower.startswith(prefix):
+            score += pts
+            break
+
+    return score
+
+
 def merge_emails_into_leads(all_matches):
     """Merge found emails back into the qualified leads CSV."""
-    # Build domain -> best email mapping
     domain_email_map = {}
     for domain, info in all_matches.items():
         clean_domain = domain.lower().replace('www.', '').replace('https://', '').replace('http://', '').rstrip('/')
-        emails = info.get('emails', [])
+        emails = [e for e in info.get('emails', []) if validate_email(e)]
         if emails:
-            # Prefer info@, contact@, office@, then first available
-            best = emails[0]
-            for e in emails:
-                if any(prefix in e for prefix in ['info@', 'contact@', 'office@', 'hello@', 'admin@']):
-                    best = e
-                    break
+            # Score and pick best email
+            best = sorted(emails, key=lambda e: score_email(e, clean_domain), reverse=True)[0]
             domain_email_map[clean_domain] = best
 
     # Read and update leads
@@ -231,22 +308,40 @@ def main():
     except Exception as e:
         print(f"Could not check usage: {e}")
 
+    # Load cache to skip already-scraped domains
+    email_cache = load_email_cache()
+    cached_count = 0
+    uncached_leads = []
+    for lead in leads:
+        domain_key = lead['domain'].lower().replace('www.', '').rstrip('/')
+        if domain_key in email_cache:
+            cached_count += 1
+        else:
+            uncached_leads.append(lead)
+
+    if cached_count:
+        print(f"Skipping {cached_count} already-cached domains, {len(uncached_leads)} to scrape")
+
     if dry_run:
-        print(f"\n[DRY RUN] Would scrape {len(leads)} domains in {(len(leads) + BATCH_SIZE - 1) // BATCH_SIZE} batches")
-        for i, lead in enumerate(leads[:10]):
+        print(f"\n[DRY RUN] Would scrape {len(uncached_leads)} domains in {(len(uncached_leads) + BATCH_SIZE - 1) // BATCH_SIZE} batches")
+        for i, lead in enumerate(uncached_leads[:10]):
             print(f"  {i+1}. {lead['domain']} ({lead['company_name']})")
-        if len(leads) > 10:
-            print(f"  ... and {len(leads) - 10} more")
+        if len(uncached_leads) > 10:
+            print(f"  ... and {len(uncached_leads) - 10} more")
         return
 
-    # Process in batches
+    # Process uncached leads in batches
     all_matches = {}
-    total_batches = (len(leads) + BATCH_SIZE - 1) // BATCH_SIZE
+    total_batches = max(1, (len(uncached_leads) + BATCH_SIZE - 1) // BATCH_SIZE)
+    scrape_start = time.time()
 
     for batch_num in range(total_batches):
-        start = batch_num * BATCH_SIZE
-        end = min(start + BATCH_SIZE, len(leads))
-        batch = leads[start:end]
+        start_idx = batch_num * BATCH_SIZE
+        end_idx = min(start_idx + BATCH_SIZE, len(uncached_leads))
+        batch = uncached_leads[start_idx:end_idx]
+
+        if not batch:
+            break
 
         start_urls = build_start_urls(batch)
         results = run_actor(start_urls, batch_num + 1, total_batches)
@@ -254,13 +349,29 @@ def main():
         if results:
             matches = extract_emails_from_results(results, batch)
             all_matches.update(matches)
+            # Update cache with new results
+            for domain, info in matches.items():
+                domain_key = domain.lower().replace('www.', '').rstrip('/')
+                email_cache[domain_key] = info
             print(f"  Found emails for {len(matches)}/{len(batch)} domains in this batch")
 
-        # Small delay between batches
+        # Progress estimate
+        elapsed = time.time() - scrape_start
+        if batch_num > 0:
+            avg_per_batch = elapsed / (batch_num + 1)
+            remaining = avg_per_batch * (total_batches - batch_num - 1)
+            print(f"  Progress: {batch_num + 1}/{total_batches} batches, ~{int(remaining)}s remaining")
+
         if batch_num < total_batches - 1:
             time.sleep(2)
 
-    # Save raw results
+    # Save cache and raw results
+    save_email_cache(email_cache)
+    # Merge cached results into all_matches for the merge step
+    for domain_key, info in email_cache.items():
+        if domain_key not in all_matches:
+            all_matches[domain_key] = info
+
     with open(OUTPUT_FILE, 'w') as f:
         json.dump(all_matches, f, indent=2)
     print(f"\nSaved {len(all_matches)} email matches to {OUTPUT_FILE}")
@@ -279,11 +390,17 @@ def main():
             if row.get('email', '').strip():
                 total_with_email += 1
 
-    print(f"\n=== Final Summary ===")
-    print(f"Qualified leads: {total_leads}")
-    print(f"With email: {total_with_email}")
-    print(f"Still missing: {total_leads - total_with_email}")
-    print(f"Email coverage: {total_with_email/total_leads*100:.1f}%")
+    scrape_elapsed = int(time.time() - scrape_start)
+    print(f"\n{'=' * 40}")
+    print(f"SCRAPE COMPLETE — SUMMARY")
+    print(f"{'=' * 40}")
+    print(f"  Qualified leads:   {total_leads}")
+    print(f"  With email:        {total_with_email}")
+    print(f"  Still missing:     {total_leads - total_with_email}")
+    print(f"  Email coverage:    {total_with_email/total_leads*100:.1f}%")
+    print(f"  Domains cached:    {len(email_cache)}")
+    print(f"  Time elapsed:      {scrape_elapsed}s")
+    print(f"{'=' * 40}")
 
 
 if __name__ == '__main__':
