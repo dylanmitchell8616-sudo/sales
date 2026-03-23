@@ -63,6 +63,11 @@ NICHE_CONFIGS = {
         "titles": ["owner", "dermatologist", "medical director", "practice manager"],
         "industries": ["medical practice", "health, wellness & fitness"],
     },
+    "hvac": {
+        "keywords": ["hvac", "heating and air", "air conditioning", "heating cooling", "furnace", "ac repair", "hvac contractor", "plumbing heating"],
+        "titles": ["owner", "founder", "ceo", "president", "general manager", "operations manager"],
+        "industries": ["construction", "consumer services", "building materials"],
+    },
     "veterinary": {
         "keywords": ["veterinary", "vet clinic", "animal hospital", "veterinarian"],
         "titles": ["owner", "veterinarian", "hospital director", "practice manager"],

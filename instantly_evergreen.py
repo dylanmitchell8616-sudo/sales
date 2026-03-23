@@ -58,7 +58,9 @@ DEFAULT_SEARCH_FILTERS = {
         "med spa", "medical spa", "dental", "dentist", "aesthetics",
         "wellness center", "dermatology", "plastic surgery", "iv therapy",
         "chiropractic", "physical therapy", "veterinary", "optometry",
-        "orthodontics", "oral surgery", "cosmetic surgery"
+        "orthodontics", "oral surgery", "cosmetic surgery",
+        "hvac", "heating and air", "air conditioning", "plumbing heating",
+        "hvac contractor", "furnace", "ac repair"
     ],
 }
 

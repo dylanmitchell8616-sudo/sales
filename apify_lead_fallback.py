@@ -56,6 +56,7 @@ NICHE_QUERIES = {
     "physical_therapy": ["physical therapy clinic", "PT clinic"],
     "optometry": ["optometrist", "eye care clinic", "vision center"],
     "orthodontics": ["orthodontist", "braces clinic", "orthodontics"],
+    "hvac": ["hvac company", "heating and air conditioning", "ac repair", "hvac contractor", "furnace repair"],
 }
 
 GENERIC_EMAIL_PREFIXES = {
