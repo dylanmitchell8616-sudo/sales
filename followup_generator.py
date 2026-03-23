@@ -136,7 +136,7 @@ RULES:
 8. Each email should work as a standalone message (don't assume they read previous emails)
 9. Sign off with the sender's name
 10. Do NOT use buzzwords like "synergy", "leverage", "revolutionize"
-11. Never include a calendly or scheduling link. Instead ask what days work for a call.
+11. No calendly links. Ask what days work for a call.
 
 Return your response as a JSON array of objects, each with these exact keys:
 - "followup_number": integer (1 through 4)
@@ -172,7 +172,7 @@ Return your response as a JSON array of objects, each with these exact keys:
             {
                 "followup_number": i,
                 "subject": f"Quick thought for {company_name}",
-                "body": f"Hi {contact_name},\n\nI wanted to share something relevant to {company_name}.\n\nWould a brief call this week make sense?\n\nBest,\n{sender_name}",
+                "body": f"Hi {contact_name},\n\nWanted to share something relevant to {company_name}.\n\nWhat days work for a call?\n\nBest,\n{sender_name}",
             }
             for i in range(1, 5)
         ]

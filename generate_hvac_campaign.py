@@ -53,11 +53,9 @@ VALUE_PROPS = [
 ]
 
 CTAS = [
-    "Would love to show you how it works. What days are good for a quick call this week?",
-    "Happy to walk you through a quick demo. What does your schedule look like this week?",
-    "If you're open to it, I can show you exactly how it works in 15 minutes. What days work for you?",
-    "Let me know if you'd be open to a quick chat. I can show you the whole system in under 15 minutes.",
-    "Would it make sense to hop on a quick call? I can walk you through how it works for HVAC specifically.",
+    "Want to see how it works? What days work for a call?",
+    "Happy to walk you through it. What days work?",
+    "I can show you in 15 minutes. What days work for a call?",
 ]
 
 FOLLOWUP_1 = [
@@ -67,15 +65,15 @@ FOLLOWUP_1 = [
 ]
 
 FOLLOWUP_2 = [
-    "{first_name}, one more thought. We just helped an HVAC company capture an extra $47K in revenue last month by answering the calls they were missing. Figured that might be relevant for {company}. Want to see how?",
-    "Hey {first_name}, with summer coming up, call volume is about to spike. Having an AI agent ready before the rush could be a game changer for {company}. Want me to show you how it works?",
-    "{first_name}, quick update. We just launched a feature where the AI agent handles emergency dispatch calls and prioritizes them for your team. Thought {company} might benefit. Worth a chat?",
+    "{first_name}, one HVAC company captured an extra $47K last month just by answering the calls they were missing. Want to see how it works for {company}?",
+    "Hey {first_name}, call volume is about to spike this season. Having an AI agent ready before the rush could be huge for {company}. Worth a quick call?",
+    "{first_name}, we just launched emergency dispatch prioritization for HVAC. Thought {company} might benefit. Worth a chat?",
 ]
 
 FOLLOWUP_3 = [
-    "{first_name}, I'll keep this short. If {company} ever needs help handling more calls without hiring more staff, I'd love to help. No pressure. Just reply whenever the timing feels right.",
-    "Hey {first_name}, totally understand if now isn't the right time. Just wanted to leave the door open. If {company} ever wants to explore AI for your phones, we're here. Best of luck this season.",
-    "{first_name}, last note from me. I genuinely think this could help {company} capture more revenue without adding overhead. If you're ever curious, just reply and we'll set something up.",
+    "{first_name}, if {company} ever needs help handling more calls without hiring, just reply. No pressure.",
+    "Hey {first_name}, totally get it if now isn't the time. Door's open whenever {company} wants to explore AI for your phones.",
+    "{first_name}, last note from me. Think this could help {company} capture more revenue. Reply anytime if you're curious.",
 ]
 
 # HVAC Evergreen search filters for US + Canada

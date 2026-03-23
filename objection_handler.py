@@ -217,7 +217,7 @@ IMPERIUM FRAMEWORK RULES:
 6. Never use '--' in messaging
 7. For objections: empathize first, reframe with logic or social proof, end with a low-friction CTA
 8. Keep the response under 120 words
-9. CTA: Ask what days work for a call (never include a calendly or scheduling link)
+9. CTA: Ask what days work for a call (no calendly links)
 10. Sign off with sender's first name only
 
 YOUR TASK:
@@ -265,7 +265,7 @@ Return ONLY the JSON object, no markdown formatting."""
         # Fallback response
         result = {
             "subject": f"Quick note for {contact_name}",
-            "body": f"Hi {contact_name},\n\nThanks for getting back to me. I'd love to chat briefly about how we're helping businesses like {company_name}.\n\nLet me know what days work for a call.\n\nBest,\n{sender_name.split()[0]}",
+            "body": f"Hi {contact_name},\n\nThanks for getting back to me. We're helping businesses like {company_name} capture more revenue with AI.\n\nWhat days work for a call?\n\nBest,\n{sender_name.split()[0]}",
             "action": "send_calendly",
         }
 

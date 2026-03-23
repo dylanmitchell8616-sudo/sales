@@ -84,11 +84,9 @@
       "Reference something specific about their business"
     ],
     "ctas_that_work": [
-      "Let me know what days work for a call",
-      "Worth a 15-minute look?",
-      "Curious what that would look like for {company}?",
-      "Happy to share how if you're curious",
-      "Would a quick call be worth 10 minutes of your time?"
+      "What days work for a call?",
+      "Worth a quick look?",
+      "Want to see how this works for {company}?"
     ],
     "sign_off": "Always sign off as just 'Dylan' (first name only, no title, no company)"
   },

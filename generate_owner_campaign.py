@@ -289,11 +289,11 @@ def generate_initial_email(owner):
     # Build CTA based on template settings
     cta_style = settings.get("cta_style", "soft_ask")
     if cta_style == "direct_ask":
-        cta_line = "Let me know what days work for a call."
+        cta_line = "What days work for a call?"
     elif cta_style == "curiosity_driven":
-        cta_line = f"I built a custom demo for {company}. Want to see it? Let me know what days work for a call."
+        cta_line = f"Want to see how this works for {company}? What days work for a call?"
     else:  # soft_ask
-        cta_line = "Would a quick 10-minute call be worth your time to see how it works?"
+        cta_line = "Worth a quick call to see how it works?"
 
     body = f"""Hi {first},
 
@@ -342,7 +342,7 @@ def generate_followups(owner):
 
 {hook1}. Wanted to bump this up in case it got buried.
 
-We already built a custom agent for {company} that {hooks['value']}. Let me know what days work for a quick call.
+We already built a custom agent for {company} that {hooks['value']}. What days work for a call?
 
 Dylan"""
     followups.append(("", f1_body))
@@ -363,7 +363,7 @@ Dylan"""
 
 {hook2}.
 
-Would a quick call be worth 10 minutes of your time? Let me know what days work.
+Worth a quick call? What days work?
 
 Dylan"""
     followups.append(("", f2_body))
@@ -384,7 +384,7 @@ Dylan"""
 
 I'll keep this short. I've reached out a few times about an AI phone agent for {company}. If the timing isn't right, totally understand.
 
-If you ever want to see how it works, just let me know what days work for a call.
+If you ever want to see how it works, just let me know.
 
 All the best with {company},
 Dylan"""

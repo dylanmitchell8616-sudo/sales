@@ -69,10 +69,10 @@ CATEGORY_SEQUENCES = {
         "num_touches": 4,  # They want to book — fewer, faster touches
         "strategy": "quick-close",
         "touches": [
-            "Confirm interest + ask what days work for a call + mention a quick win stat",
-            "Share a 60-second case study video showing ROI for a similar business",
-            "Social proof: mention how many similar businesses signed up this month",
-            "Final direct ask: 'Still want to chat? Happy to work around your schedule'",
+            "Confirm interest + ask what days work for a call",
+            "Share a quick case study showing ROI for a similar business",
+            "Social proof: mention similar businesses that signed up recently",
+            "Final ask: 'Still want to chat? What days work?'",
         ],
     },
     "meeting_booked": {
@@ -93,7 +93,7 @@ CATEGORY_SEQUENCES = {
             "Comparison: what they're losing monthly in missed calls vs. cost of AI receptionist",
             "Offer a no-commitment demo to see the ROI calculator with their own numbers",
             "Share a testimonial from a price-conscious client who saw fast payback",
-            "Direct offer: 'Want me to build a custom ROI projection for {company}? Takes 15 min on a call'",
+            "Direct offer: 'Want a custom ROI projection for {company}? Takes 15 min on a call'",
         ],
     },
     "send_proof": {
@@ -104,7 +104,7 @@ CATEGORY_SEQUENCES = {
             "Video testimonial or Loom walkthrough of a live AI receptionist in action",
             "Second case study: different vertical but impressive numbers",
             "Offer a live demo: 'Want to hear the AI handle a call in real time? Takes 10 min'",
-            "Final: 'I've shared the data. Ready to see if it works for {company}? Let me know what days work for a call'",
+            "Final: 'Ready to see if it works for {company}? What days work for a call?'",
         ],
     },
     "how_does_it_work": {
@@ -115,7 +115,7 @@ CATEGORY_SEQUENCES = {
             "Share a 60-second Loom video showing the AI answering a real call",
             "Case study: show the before/after at a similar business",
             "FAQ style: answer the top 3 questions prospects ask, leave them wanting more",
-            "Direct: 'Best way to understand it is to see it. Let me know what days work for a quick call'",
+            "Direct: 'Best way to understand it is to see it. What days work for a call?'",
         ],
     },
     "timing": {
@@ -140,7 +140,7 @@ CATEGORY_SEQUENCES = {
             "Share how Realside is different from [common competitor/approach] with specific technical differences",
             "Case study: client who also tried another AI solution first, then switched to Realside",
             "Offer: 'Let me show you the difference in a 15-min side-by-side demo'",
-            "Final: 'Totally understand the skepticism. Would a free trial week change your mind?'",
+            "Final: 'Totally get the skepticism. Would a free trial week change your mind?'",
         ],
     },
     "already_have": {
@@ -150,7 +150,7 @@ CATEGORY_SEQUENCES = {
             "Acknowledge their current solution, ask how it's working for them",
             "Share a specific capability they likely don't have (speed-to-lead, CRM reactivation)",
             "Case study: client who switched from [competitor] and saw X% improvement",
-            "Offer: 'No pressure to switch. Would a quick comparison call be useful?'",
+            "Offer: 'No pressure to switch. Worth a quick comparison call?'",
             "Breakup: 'Sounds like you're in good hands. If anything changes, I'm here'",
         ],
     },
@@ -307,7 +307,7 @@ PROSPECT'S REPLY:
 SENDER INFO:
 - Name: {sender_name}
 - Email: {sender_email}
-- CTA style: Ask what days work for a call (never include a calendly or scheduling link)
+- CTA style: Ask what days work for a call (no calendly links)
 
 PRODUCT DESCRIPTION:
 {product_description}
@@ -325,7 +325,7 @@ RULES:
 3. Tone: friendly, confident, conversational. Not pushy or salesy
 4. NEVER use '--' (double dashes) anywhere in the messaging
 5. Each email should work as a standalone message
-6. NEVER include a calendly or scheduling link. Instead ask what days work for a call.
+6. NEVER include a calendly or scheduling link. Ask what days work for a call.
 7. Reference their original reply where relevant to show you remember the conversation
 8. NEVER use phrases like "bumping this", "circling back", "just following up", "checking in"
 9. Sign off with the sender's name (just first name is fine)
@@ -366,7 +366,7 @@ Return your response as a JSON array of objects, each with these exact keys:
             {
                 "followup_number": i,
                 "subject": f"Quick thought for {company_name}",
-                "body": f"Hi {contact_name},\n\nThanks for your reply! I wanted to share something relevant to {company_name}.\n\nWould love to show you how this works. Let me know what days work for a call.\n\nBest,\n{sender_name}",
+                "body": f"Hi {contact_name},\n\nThanks for your reply! Wanted to share something relevant to {company_name}.\n\nWhat days work for a call?\n\nBest,\n{sender_name}",
             }
             for i in range(1, num_touches + 1)
         ]

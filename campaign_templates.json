@@ -20,9 +20,9 @@
   },
 
   "cta_styles": {
-    "soft_ask": "End with a low-pressure question like 'Would it be worth a quick chat?' or 'Open to seeing how this works?'",
-    "direct_ask": "End with a clear calendar link and direct request: 'Grab 15 minutes here: {calendar_link}'",
-    "curiosity_driven": "End with an intriguing hook that makes them want to learn more: 'I built something for {company} I think you should see' or 'Want me to show you what this looks like for your business?'"
+    "soft_ask": "End with: 'Worth a quick call?' or 'Open to a quick chat?'",
+    "direct_ask": "End with: 'What days work for a call?'",
+    "curiosity_driven": "End with: 'Want to see how this works for {company}?'"
   },
 
   "email_lengths": {

@@ -631,27 +631,24 @@ Return ONLY a JSON object with these keys:
 RESPONSE_VARIANTS = {
     "A": {
         "name": "imperium_empathy",
-        "description": "Empathize first, reframe with logic/social proof, low-friction CTA",
-        "style_instructions": """Style: Empathize first, reframe with logic or social proof, end with low-friction CTA.
-- Friendly, confident, value-driven tone
-- Short, punchy sentences
-- Spark curiosity, don't fully answer questions over email""",
+        "description": "Empathize, reframe, low-friction CTA",
+        "style_instructions": """Style: Empathize first, reframe with social proof, end with simple CTA.
+- Friendly, confident tone. Short sentences.
+- Spark curiosity. Don't fully answer over email.""",
     },
     "B": {
         "name": "direct_value",
-        "description": "Lead with a specific result/number, social proof first, curiosity-driven CTA",
-        "style_instructions": """Style: Lead with a specific, impressive result or number right away. Social proof first.
-- Open with a stat or case study result (e.g. "We just helped a 3-location med spa recover $14K/mo in missed calls")
-- Confident, direct tone. No fluff
-- End with a curiosity-driven question, not a calendar link push (e.g. "Curious what that would look like for {company}?")""",
+        "description": "Lead with a result, curiosity CTA",
+        "style_instructions": """Style: Lead with an impressive result or stat. Social proof first.
+- Confident, direct. No fluff.
+- End with a curiosity question (e.g. "Want to see how this works for {company}?")""",
     },
     "C": {
         "name": "question_led",
-        "description": "Open with a provocative question, challenge assumptions, soft close",
-        "style_instructions": """Style: Open with a thought-provoking question that challenges their assumptions.
-- Start with "What if..." or "Have you ever wondered..." or a surprising question
-- Keep it conversational and curious, like a peer not a salesperson
-- End with a soft offer, not a hard CTA (e.g. "Happy to share how if you're curious")""",
+        "description": "Provocative question, soft close",
+        "style_instructions": """Style: Open with a question that challenges assumptions.
+- Conversational and curious, like a peer.
+- End with a soft offer (e.g. "Happy to share how if you're curious")""",
     },
 }
 
@@ -727,7 +724,7 @@ CASE STUDIES FOR SOCIAL PROOF:
 Rules:
 - Under 120 words
 - Never use '--' or em dashes or en dashes of any kind
-- CTA: Ask what days work for a call (never include a calendly or scheduling link)
+- CTA: Ask what days work for a call (no calendly links)
 - For pricing: deflect to call first, if they push anchor at $2K/mo tied to 40 pre-qualified appointments
 - For "how does it work": redirect to demo call
 - For "send proof": offer to walk through case studies on a call
@@ -758,9 +755,9 @@ Return ONLY a JSON object with these keys:
             "subject": f"Quick follow-up, {contact_name}",
             "body": (
                 f"Hi {contact_name},\n\n"
-                f"Thanks for getting back to me. I'd love to show you how we're helping "
-                f"businesses like {company_name} capture more revenue with AI.\n\n"
-                f"Let me know what days work for a call.\n\n"
+                f"Thanks for getting back to me. We're helping businesses like "
+                f"{company_name} capture more revenue with AI.\n\n"
+                f"What days work for a call?\n\n"
                 f"Best,\n{first_name}"
             ),
             "variant": variant,
