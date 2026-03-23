@@ -17,6 +17,7 @@ Usage:
 import csv
 import json
 import os
+import random
 import re
 import sys
 import time
@@ -201,111 +202,221 @@ def is_hvac_company(name, category=""):
     return False
 
 
+def _get_service_type(company, category):
+    """Infer specific service type from company name and category."""
+    combined = f"{company} {category}".lower()
+    if "plumb" in combined:
+        return "plumbing"
+    if "electric" in combined:
+        return "electrical"
+    if "fire" in combined:
+        return "fire protection"
+    if "refrigerat" in combined:
+        return "refrigeration"
+    if "roofing" in combined or "roof" in combined:
+        return "roofing"
+    if "restorat" in combined:
+        return "restoration"
+    return "HVAC"
+
+
+def _get_season_hook(state):
+    """Get a seasonal hook based on location. Assumes current month is March."""
+    hot_states = {
+        "AZ", "TX", "FL", "NV", "GA", "LA", "AL", "MS", "SC", "NC", "TN",
+        "Arizona", "Texas", "Florida", "Nevada", "Georgia", "Louisiana",
+        "Alabama", "Mississippi", "South Carolina", "North Carolina", "Tennessee",
+        "Oklahoma", "Arkansas", "New Mexico",
+    }
+    cold_states = {
+        "IL", "OH", "IN", "MN", "WI", "MI", "PA", "NY", "NE", "IA", "KS",
+        "Illinois", "Ohio", "Indiana", "Minnesota", "Wisconsin", "Michigan",
+        "Pennsylvania", "New York", "Nebraska", "Iowa", "Kansas", "Colorado",
+    }
+    st = (state or "").strip()
+    if st in hot_states:
+        return "Summer is right around the corner, which means AC call volume is about to spike"
+    if st in cold_states:
+        return "Spring is when homeowners start thinking about their AC before summer hits"
+    return "Call volume tends to spike seasonally, and most companies aren't ready for it"
+
+
 def generate_email(lead):
-    """Generate personalized cold email + 3 follow-ups for each lead."""
+    """Generate hyper-personalized cold email + 3 follow-ups using all available data."""
     first = lead["first_name"]
     company = lead["company_name"]
+    city = lead.get("city", "")
+    state = lead.get("state", "")
+    website = lead.get("website", "")
     signal = lead.get("intent_signal", "")
     job_hiring = lead.get("job_title_hiring", "")
+    category = lead.get("category", "")
+
+    service = _get_service_type(company, category)
+    location_str = f" in {city}" if city else ""
+    season_hook = _get_season_hook(state)
+
+    # Clean up website for display
+    site_display = website.replace("https://", "").replace("http://", "").rstrip("/") if website else ""
 
     # ── Hiring intent email ──
     if signal == "hiring_receptionist" and job_hiring:
-        lead["subject"] = f"saw you're hiring, {first}"
+        job_lower = job_hiring.lower()
+
+        lead["subject"] = f"{first}, saw {company} is hiring"
         lead["body"] = (
             f"Hey {first},\n\n"
-            f"Noticed {company} is hiring a {job_hiring.lower()}. Before you go through "
-            f"the hiring process, wanted to show you something.\n\n"
-            f"We built an AI agent that picks up every call, qualifies the lead, "
-            f"and books jobs on your calendar. Works 24/7, costs a fraction of a hire.\n\n"
-            f"I put together a quick demo for {company}. What days work for a call?\n\n"
+            f"Noticed {company} is looking for a {job_lower}{location_str}. "
+            f"Before you go through the interview process, training, and the inevitable "
+            f"3-month turnover cycle, I wanted to show you an alternative.\n\n"
+            f"I build custom AI phone agents for {service} companies. I already built one "
+            f"for {company} that answers every call, asks the right qualifying questions "
+            f"(job type, urgency, address, budget), and books the appointment on your calendar. "
+            f"It handles after-hours, weekends, and overflow when your lines are tied up.\n\n"
+            f"A {job_lower} runs $3-4K/month fully loaded. This does the same job for a "
+            f"fraction of that, picks up on the first ring, and never calls in sick.\n\n"
+            f"I can walk you through the demo I built for {company} in about 15 minutes. "
+            f"What days work for a call?\n\n"
             f"Dylan"
         )
         lead["followup_1"] = (
             f"Hey {first},\n\n"
-            f"Hiring takes forever, especially front desk. The demo I built for "
-            f"{company} takes 15 min and could save you months of recruiting.\n\n"
-            f"Worth a quick look?\n\n"
+            f"Wanted to follow up on my note about the AI phone agent I built for {company}. "
+            f"I know hiring is a grind, especially front desk roles where turnover is brutal.\n\n"
+            f"One {service} company we work with{location_str} was spending $4K/month on a receptionist "
+            f"and still missing 25% of their calls. They switched to our AI agent and captured every "
+            f"single call within the first week. Saved $40K/year and actually booked more jobs.\n\n"
+            f"Happy to show you what that looks like for {company}. Worth 15 minutes?\n\n"
             f"Dylan"
         )
         lead["followup_2"] = (
             f"Hey {first},\n\n"
-            f"A {job_hiring.lower()} costs $3-4K/month fully loaded. Our AI agent "
-            f"does the same job for a fraction, never misses a call. One client "
-            f"saved $40K/year making the switch.\n\n"
-            f"Want to see how it works?\n\n"
+            f"{season_hook}. That means more calls coming in, and every missed call is a "
+            f"job that goes to a competitor.\n\n"
+            f"The agent I built for {company} handles unlimited concurrent calls, so even "
+            f"when your phones are blowing up, every homeowner gets answered immediately. "
+            f"It qualifies the job, books it, and texts your tech the details.\n\n"
+            f"Want to see it in action?\n\n"
             f"Dylan"
         )
         lead["followup_3"] = (
             f"Hey {first},\n\n"
-            f"Totally get it if now's not the time. The demo I built for {company} "
-            f"is here whenever you're ready.\n\n"
+            f"Last note from me. I know you're busy running {company}, so I'll keep it short. "
+            f"The demo I built specifically for your business is sitting here ready to go. "
+            f"If the timing ever feels right, just reply and we'll set it up.\n\n"
+            f"Either way, best of luck with the hire.\n\n"
             f"Dylan"
         )
         return lead
 
     # ── Bad review email ──
     if signal == "bad_review":
-        lead["subject"] = f"saw a review about {company}"
+        lead["subject"] = f"something I noticed about {company}"
         lead["body"] = (
             f"Hey {first},\n\n"
-            f"Came across a review for {company} where a customer mentioned "
-            f"trouble getting through on the phone. That's exactly what we solve.\n\n"
-            f"We built an AI agent that picks up every call, qualifies the lead, "
-            f"and books appointments automatically. Never misses, works 24/7.\n\n"
-            f"I put together a demo for {company}. What days work for a call?\n\n"
+            f"I was doing some research on {service} companies{location_str} and came across "
+            f"a recent review for {company} where a customer mentioned they had trouble "
+            f"getting through on the phone. I'm not bringing it up to be critical. I'm "
+            f"reaching out because that's the exact problem I solve.\n\n"
+            f"I build AI phone agents for {service} companies. The one I built for {company} "
+            f"picks up every call on the first ring, qualifies the job (type, urgency, address), "
+            f"books the appointment, and texts your team the details. Works 24/7 including "
+            f"after-hours and weekends.\n\n"
+            f"The average missed call in {service} costs $300-500 in lost revenue. If you're "
+            f"missing even a handful a week, that adds up fast.\n\n"
+            f"I can walk you through how it works in 15 minutes. What days work for a call?\n\n"
             f"Dylan"
         )
         lead["followup_1"] = (
             f"Hey {first},\n\n"
-            f"Missed calls silently cost businesses thousands every month. "
-            f"The demo I built for {company} shows exactly how to fix it.\n\n"
-            f"Happy to walk you through it. What days work?\n\n"
+            f"Following up on my last note. One thing I didn't mention: the AI agent I built "
+            f"for {company} doesn't just answer calls. It handles the entire intake process "
+            f"so your techs get dispatched with all the info they need.\n\n"
+            f"One of our clients went from a 2.8-star Google average to 4.6 stars in 90 days, "
+            f"mostly because customers could actually reach someone when they called.\n\n"
+            f"Happy to show you how. What days work?\n\n"
             f"Dylan"
         )
         lead["followup_2"] = (
             f"Hey {first},\n\n"
-            f"The average missed call in your industry costs $200-500 in lost revenue. "
-            f"One client went from missing 30% of calls to capturing every one.\n\n"
-            f"Worth a quick look?\n\n"
+            f"{season_hook}. When call volume spikes, the companies that answer fastest "
+            f"win the job. Our AI agent picks up in under 2 seconds, every time.\n\n"
+            f"Worth a quick look for {company}?\n\n"
             f"Dylan"
         )
         lead["followup_3"] = (
             f"Hey {first},\n\n"
-            f"Totally get it if now's not the time. The demo I built for {company} "
-            f"is here whenever you're ready.\n\n"
+            f"Last note from me. The demo I built for {company} is here whenever you're ready. "
+            f"No pressure at all.\n\n"
+            f"Wishing you a great season{location_str}.\n\n"
             f"Dylan"
         )
         return lead
 
     # ── Default / bulk scrape email ──
-    lead["subject"] = f"built something for {company}"
+    # Use website and location to make it feel researched
+    if site_display:
+        opener = (
+            f"I was looking at {site_display} and checked out what {company} is doing"
+            f"{location_str}. Solid operation."
+        )
+    elif city:
+        opener = (
+            f"I've been researching {service} companies in {city} and {company} caught my eye."
+        )
+    else:
+        opener = (
+            f"I've been looking into {service} companies like {company} and wanted to reach out."
+        )
+
+    lead["subject"] = random.choice([
+        f"{first}, quick idea for {company}",
+        f"built something for {company}",
+        f"{first}, something for {company}",
+        f"AI phone agent for {company}",
+    ])
     lead["body"] = (
         f"Hey {first},\n\n"
-        f"I build AI phone agents for HVAC companies and I already put one together "
-        f"for {company}. It picks up every call, qualifies the job, and books "
-        f"appointments on your calendar automatically.\n\n"
-        f"Works 24/7, never calls in sick. What days work for a call?\n\n"
+        f"{opener}\n\n"
+        f"I build custom AI phone agents for {service} companies. I already put one together "
+        f"specifically for {company}. It answers every call on the first ring, asks the right "
+        f"qualifying questions (job type, urgency, service address, budget range), books the "
+        f"appointment on your calendar, and texts your techs the job details.\n\n"
+        f"It handles after-hours, weekends, and overflow when your lines are tied up. Works "
+        f"24/7 and never misses a call.\n\n"
+        f"I can walk you through the demo in about 15 minutes. What days work for a call?\n\n"
         f"Dylan"
     )
     lead["followup_1"] = (
         f"Hey {first},\n\n"
-        f"Just bumping this. One HVAC company we work with went from missing "
-        f"30% of calls to capturing 100% in the first week.\n\n"
-        f"Happy to show you how. What days work?\n\n"
+        f"Wanted to circle back on the AI phone agent I built for {company}. Here's a quick "
+        f"snapshot of what one of our {service} clients saw in their first 30 days:\n\n"
+        f"- Went from missing 30% of inbound calls to capturing 100%\n"
+        f"- Booked 47 additional appointments they would've lost\n"
+        f"- Added $38K in revenue from calls that used to go to voicemail\n\n"
+        f"Their biggest surprise was how many after-hours calls were turning into booked jobs. "
+        f"Homeowners call when it's convenient for them, not just during business hours.\n\n"
+        f"Happy to show you what those numbers could look like for {company}. Worth 15 minutes?\n\n"
         f"Dylan"
     )
     lead["followup_2"] = (
         f"Hey {first},\n\n"
-        f"Quick stat: the average HVAC company loses $5-10K/month in missed calls. "
-        f"Our AI agent makes sure you never miss another one.\n\n"
-        f"Worth a quick look?\n\n"
+        f"{season_hook}. Most {service} companies I talk to are either scrambling to hire "
+        f"more phone help or just accepting that they'll miss calls during the rush.\n\n"
+        f"The agent I built for {company} handles unlimited concurrent calls, so even when "
+        f"every line is ringing, no one hits voicemail. It qualifies each caller, books the "
+        f"job, and sends your dispatch team the details automatically.\n\n"
+        f"What days work for a quick call?\n\n"
         f"Dylan"
     )
     lead["followup_3"] = (
         f"Hey {first},\n\n"
-        f"Totally get it if now's not the time. The demo I built for {company} "
-        f"is here whenever you're ready.\n\n"
-        f"Dylan"
+        f"Last note from me on this. I know you're busy running {company} and the last thing "
+        f"you need is another sales email. I genuinely built something I think could help "
+        f"your business, and the demo is sitting here ready whenever you are.\n\n"
+        f"If the timing isn't right, no worries at all. Just reply whenever you want to take "
+        f"a look.\n\n"
+        f"All the best{location_str},\nDylan"
     )
     return lead
 
@@ -404,6 +515,7 @@ def clean_leads(raw_leads, source_name):
             "state": (lead.get("state", "") or "").strip(),
             "intent_signal": (lead.get("intent_signal", "") or "").strip(),
             "job_title_hiring": (lead.get("job_title_hiring", "") or "").strip(),
+            "category": (lead.get("category", "") or "").strip(),
             "source": source_name,
         })
 

@@ -177,80 +177,219 @@ def get_existing_campaign_emails(api_key, campaign_id):
     return existing
 
 
+def _get_practice_type(company, title):
+    """Infer practice specialty from company name and job title."""
+    combined = f"{company} {title}".lower()
+    if "pediatric" in combined or "children" in combined or "kids" in combined:
+        return "pediatric dental"
+    if "orthodont" in combined or "braces" in combined or "invisalign" in combined:
+        return "orthodontic"
+    if "oral surgery" in combined or "oral surgeon" in combined:
+        return "oral surgery"
+    if "endodont" in combined or "root canal" in combined:
+        return "endodontic"
+    if "periodont" in combined:
+        return "periodontic"
+    if "cosmetic" in combined or "implant" in combined:
+        return "cosmetic dental"
+    if "denture" in combined:
+        return "denture"
+    return "dental"
+
+
+# Known DSO parent companies and what makes them unique
+DSO_CONTEXT = {
+    "affordable dentures": {
+        "parent": "Affordable Dentures & Implants",
+        "note": "you're focused on high-volume denture and implant cases",
+        "pain": "patient volume is high and every missed call is a case that walks",
+    },
+    "aspen dental": {
+        "parent": "Aspen Dental",
+        "note": "you've got the Aspen brand bringing in demand",
+        "pain": "the brand drives a ton of inbound calls, and the ones that slip through voicemail don't call back",
+    },
+    "pds health": {
+        "parent": "PDS Health",
+        "note": "PDS gives you great operational support",
+        "pain": "even with PDS systems, front desk gaps during lunch, after-hours, and high-volume days still cost you new patients",
+    },
+    "pacific dental": {
+        "parent": "Pacific Dental Services",
+        "note": "PDS gives you great operational support",
+        "pain": "even with PDS systems, front desk gaps during lunch, after-hours, and high-volume days still cost you new patients",
+    },
+    "clearchoice": {
+        "parent": "ClearChoice",
+        "note": "you're handling high-value implant cases",
+        "pain": "every missed call on a full-arch case is potentially $25K+ in lost production",
+    },
+    "comfort dental": {
+        "parent": "Comfort Dental",
+        "note": "Comfort Dental's model is built on volume and accessibility",
+        "pain": "high call volume means your front desk gets overwhelmed, especially during peak hours",
+    },
+    "heartland dental": {
+        "parent": "Heartland Dental",
+        "note": "Heartland gives you a strong support system",
+        "pain": "but even the best front desk team can't answer 3 calls at once during the morning rush",
+    },
+    "dental fix": {
+        "parent": "Dental Fix Rx",
+        "note": "you're running equipment repair and service calls",
+        "pain": "when a dentist's chair goes down, they're calling everyone until someone picks up. If you miss that call, they're calling your competitor",
+    },
+}
+
+
+def _get_dso_info(company):
+    """Get DSO-specific context if this is a known DSO."""
+    company_lower = company.lower()
+    for key, info in DSO_CONTEXT.items():
+        if key in company_lower:
+            return info
+    return None
+
+
 def generate_dental_email(lead):
-    """Generate personalized cold email + 3 follow-ups for dental DSO owner."""
+    """Generate hyper-personalized cold email + 3 follow-ups for dental owner."""
     first = lead["first_name"]
+    last = lead.get("last_name", "")
     company = lead["company_name"]
     title = lead.get("job_title", "")
+    website = lead.get("website", "")
+    location = lead.get("location", "")
+    linkedin = lead.get("linkedin", "")
 
-    # Personalize based on DSO vs independent
-    is_dso = any(dso in company.lower() for dso in [
-        "affordable dentures", "aspen dental", "pds health",
-        "pacific dental", "clearchoice", "comfort dental",
-        "heartland dental", "benevis",
-    ])
+    practice_type = _get_practice_type(company, title)
+    dso_info = _get_dso_info(company)
+    site_display = website.replace("https://", "").replace("http://", "").rstrip("/") if website else ""
+    location_str = f" in {location}" if location else ""
 
-    if is_dso:
-        # DSO owner — they manage a location, corporate handles some ops
-        pain_hooks = [
-            f"Running a location under {company} means you still own the patient experience",
-            f"I know {company} gives you great support, but front desk coverage gaps still cost you patients",
-            f"Even with {company}'s systems, missed calls and slow follow-ups still slip through",
-        ]
-        value_hooks = [
-            "picks up every patient call instantly, qualifies the inquiry, and books them on your calendar",
-            "answers calls 24/7, handles new patient intake, and follows up with no-shows automatically",
-            "captures every inbound call, books appointments, and reactivates patients who haven't been in 6+ months",
-        ]
+    # ── DSO owner email ──
+    if dso_info:
+        lead["subject"] = random.choice([
+            f"{first}, quick idea for your {dso_info['parent']} location",
+            f"built something for your practice, {first}",
+            f"{first}, thought of your {dso_info['parent']} office",
+        ])
+        lead["body"] = (
+            f"Hey {first},\n\n"
+            f"I know {dso_info['note']}, but {dso_info['pain']}.\n\n"
+            f"I build custom AI phone agents for {practice_type} practices. I already "
+            f"put one together for your location that answers every patient call on the "
+            f"first ring, handles new patient intake (insurance, referral source, symptoms, "
+            f"scheduling preferences), and books the appointment directly on your calendar.\n\n"
+            f"It also follows up with patients who cancel or no-show, and can reactivate "
+            f"patients who haven't been in 6+ months. Works 24/7, including evenings and "
+            f"weekends when your front desk is closed but patients are still searching.\n\n"
+            f"I can walk you through the demo I built for your practice in about 15 minutes. "
+            f"What days work for a call?\n\n"
+            f"Dylan"
+        )
+        lead["followup_1"] = (
+            f"Hey {first},\n\n"
+            f"Wanted to follow up on the AI phone agent I built for your {dso_info['parent']} "
+            f"location. Here's what one of our dental clients saw in their first 30 days:\n\n"
+            f"- Captured 100% of inbound patient calls (up from ~70%)\n"
+            f"- Booked 34 new patients that would have gone to voicemail\n"
+            f"- Added $41K in production from calls they were previously missing\n"
+            f"- After-hours calls alone accounted for 40% of new bookings\n\n"
+            f"The biggest insight? Most patients don't leave voicemails. They just call the "
+            f"next practice on Google. Our agent makes sure that never happens at your office.\n\n"
+            f"Worth 15 minutes to see how it works for your practice?\n\n"
+            f"Dylan"
+        )
+        lead["followup_2"] = (
+            f"Hey {first},\n\n"
+            f"Quick math on this. The average new dental patient is worth $1,200 in year-one "
+            f"production. If your front desk misses even 5 new patient calls per week (lunch "
+            f"breaks, hold times, busy signals, after-hours), that's roughly $25K/month in "
+            f"lost production.\n\n"
+            f"The AI agent I built for your practice handles unlimited concurrent calls, so "
+            f"even when every line is ringing during the Monday morning rush, no patient hits "
+            f"voicemail. It qualifies them, books them, and sends your team the details.\n\n"
+            f"What days work for a quick call?\n\n"
+            f"Dylan"
+        )
+        lead["followup_3"] = (
+            f"Hey {first},\n\n"
+            f"Last note from me. I know running your {dso_info['parent']} location keeps you busy "
+            f"enough without more sales emails. I genuinely built something that could move the "
+            f"needle for your practice, and the demo is here whenever the timing feels right.\n\n"
+            f"Just reply whenever you want to take a look. No pressure.\n\n"
+            f"All the best,\nDylan"
+        )
+        return lead
+
+    # ── Independent practice owner email ──
+    if site_display:
+        opener = (
+            f"I was looking at {site_display} and checked out what you're building "
+            f"with {company}{location_str}. Great practice."
+        )
+    elif location:
+        opener = (
+            f"I've been researching {practice_type} practices in {location} and "
+            f"{company} stood out."
+        )
     else:
-        # Independent practice owner
-        pain_hooks = [
-            f"I checked out {company} and noticed you're growing fast",
-            f"Most practice owners I talk to at places like {company} are losing 20-30% of new patient calls",
-            f"I built something specifically for {company} that I think you should see",
-        ]
-        value_hooks = [
-            "picks up every patient call, qualifies them, and books directly on your calendar",
-            "handles new patient calls 24/7, books appointments, and sends automated confirmations",
-            "answers every call instantly, does intake, and follows up with patients who cancel or no-show",
-        ]
+        opener = (
+            f"I've been looking into {practice_type} practices like {company} and "
+            f"wanted to reach out."
+        )
 
-    pain = random.choice(pain_hooks)
-    value = random.choice(value_hooks)
-
-    lead["subject"] = f"built something for {company}, {first}"
+    lead["subject"] = random.choice([
+        f"{first}, quick idea for {company}",
+        f"built something for {company}",
+        f"{first}, something for {company}",
+        f"AI phone agent for {company}",
+    ])
     lead["body"] = (
         f"Hey {first},\n\n"
-        f"{pain}.\n\n"
-        f"I built an AI phone agent for dental practices that {value}.\n\n"
-        f"Already put together a demo for {company}. What days work for a call?\n\n"
+        f"{opener}\n\n"
+        f"I build custom AI phone agents for {practice_type} practices. I already put one "
+        f"together specifically for {company}. It answers every patient call on the first ring, "
+        f"handles new patient intake (insurance, symptoms, scheduling preferences), and books "
+        f"the appointment directly on your calendar.\n\n"
+        f"It also follows up with cancellations, no-shows, and patients who haven't been in "
+        f"6+ months to get them back on the schedule. Works 24/7 including after-hours and "
+        f"weekends.\n\n"
+        f"I can walk you through the demo in about 15 minutes. What days work for a call?\n\n"
         f"Dylan"
     )
-
     lead["followup_1"] = (
         f"Hey {first},\n\n"
-        f"One dental practice we work with went from missing 30% of new patient calls "
-        f"to capturing every single one. They added $18K/month in production just from "
-        f"the calls they were missing before.\n\n"
-        f"Worth a quick look for {company}?\n\n"
+        f"Wanted to circle back on the AI phone agent I built for {company}. Here's a quick "
+        f"snapshot of what one of our {practice_type} clients saw in their first 30 days:\n\n"
+        f"- Went from missing ~30% of new patient calls to capturing 100%\n"
+        f"- Booked 34 additional patients that would've gone to voicemail\n"
+        f"- Added $41K in production from calls they were previously losing\n\n"
+        f"Their biggest surprise was after-hours. Patients search for dentists at night and on "
+        f"weekends. The practices that answer first, win. Our agent makes sure {company} "
+        f"never misses those calls.\n\n"
+        f"Happy to show you what that looks like for your practice. Worth 15 minutes?\n\n"
         f"Dylan"
     )
-
     lead["followup_2"] = (
         f"Hey {first},\n\n"
         f"Quick math: the average new dental patient is worth $1,200 in year-one production. "
-        f"If you're missing even 5 calls a week, that's $25K/month walking out the door.\n\n"
-        f"Our AI agent makes sure none of those slip through. What days work for a call?\n\n"
+        f"If {company} is missing even 5 new patient calls per week (lunch breaks, hold times, "
+        f"after-hours), that's roughly $25K/month walking out the door.\n\n"
+        f"The agent I built for {company} handles unlimited concurrent calls. Even during your "
+        f"busiest mornings, no patient hits voicemail. It qualifies them, books them, and sends "
+        f"your front desk the details.\n\n"
+        f"What days work for a quick call?\n\n"
         f"Dylan"
     )
-
     lead["followup_3"] = (
         f"Hey {first},\n\n"
-        f"Totally get it if now's not the time. The demo I built for {company} "
-        f"is here whenever you're ready.\n\n"
-        f"Dylan"
+        f"Last note from me. I know you're busy running {company} and the last thing you need "
+        f"is more sales emails. The demo I built specifically for your practice is here whenever "
+        f"the timing feels right.\n\n"
+        f"Just reply whenever you want to take a look. No pressure at all.\n\n"
+        f"All the best{location_str},\nDylan"
     )
-
     return lead
 
 
