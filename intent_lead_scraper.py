@@ -45,7 +45,7 @@ STATE_FILE = os.path.join(OUTPUT_DIR, "intent_scraper_state.json")
 MASTER_EMAILS = os.path.join(OUTPUT_DIR, "intent_master_emails.json")
 
 APIFY_BASE = "https://api.apify.com/v2"
-INDEED_ACTOR = "misceres/indeed-scraper"
+INDEED_ACTOR = "hMvNSpz3JnHgl5jkh"
 GOOGLE_MAPS_EMAIL_ACTOR = "WnMxbsRLNbPeYL6ge"
 INSTANTLY_BASE = "https://api.instantly.ai/api/v2"
 
