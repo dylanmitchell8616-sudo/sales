@@ -1,0 +1,293 @@
+{
+  "_description": "Reusable campaign templates for Realside AI outreach. Each vertical has pre-built configurations with industry-specific pain points, tone, CTA style, and personalization depth. Scripts like generate_owner_campaign.py and prospect_researcher.py auto-detect the prospect's industry and load the matching template.",
+
+  "global_defaults": {
+    "tone": "friendly",
+    "cta_style": "soft_ask",
+    "email_length": "short",
+    "followup_cadence_days": [3, 5, 8],
+    "personalization_depth": "medium",
+    "max_email_words": 150,
+    "calendar_link": "calendly.com/realsideai",
+    "sender_sign_off": "Dylan"
+  },
+
+  "tones": {
+    "casual": "Write like you're texting a friend who happens to be a business owner. Short sentences, no formal language, contractions everywhere.",
+    "friendly": "Warm and approachable but still professional. Use first names, light humor is OK, conversational flow.",
+    "professional": "Polished and business-appropriate. Still personable but more structured. Suitable for corporate or medical prospects.",
+    "urgent": "Time-sensitive framing. Reference seasonality, competitor moves, or market windows. Create FOMO without being pushy."
+  },
+
+  "cta_styles": {
+    "soft_ask": "End with a low-pressure question like 'Would it be worth a quick chat?' or 'Open to seeing how this works?'",
+    "direct_ask": "End with a clear calendar link and direct request: 'Grab 15 minutes here: {calendar_link}'",
+    "curiosity_driven": "End with an intriguing hook that makes them want to learn more: 'I built something for {company} I think you should see' or 'Want me to show you what this looks like for your business?'"
+  },
+
+  "email_lengths": {
+    "short": "Under 80 words. Punchy, one core idea, single CTA.",
+    "medium": "80-120 words. Room for one pain point, one proof point, one CTA.",
+    "long": "120-150 words. Full context: pain point, social proof, value prop, CTA. Use only when personalization depth is heavy."
+  },
+
+  "personalization_depths": {
+    "light": "Use first name and company name only. Generic industry pain point. Good for high-volume campaigns.",
+    "medium": "Reference their specific industry, company size signals, and one detail from their website or listing. Good for targeted campaigns.",
+    "heavy": "Deep research: reference specific website content, recent news, reviews, team size, tech stack, or competitors. Best for high-value prospects."
+  },
+
+  "verticals": {
+    "med_spa": {
+      "name": "Med Spa / Aesthetic Clinic",
+      "aliases": ["med spa", "medspa", "medical spa", "aesthetics", "aesthetic clinic", "cosmetic clinic", "botox", "laser clinic", "skin clinic", "beauty clinic", "anti-aging", "coolsculpting", "injectable"],
+      "tone": "friendly",
+      "cta_style": "curiosity_driven",
+      "email_length": "medium",
+      "followup_cadence_days": [2, 4, 7],
+      "personalization_depth": "medium",
+      "pain_points": [
+        "Missing calls from high-value leads while providers are in treatment rooms",
+        "No-shows costing $200-500 per empty slot with no automated reminders",
+        "Leads from Facebook/Instagram ads going cold because follow-up takes hours, not minutes",
+        "After-hours calls from prospects ready to book going straight to voicemail",
+        "Front desk overwhelmed during peak hours, forcing new patients to wait or hang up",
+        "Thousands of past patients in the CRM who haven't been contacted in 6+ months"
+      ],
+      "value_props": [
+        "AI receptionist answers every call 24/7, books consultations, and handles pricing FAQs",
+        "Outbound agent contacts ad leads within 2 minutes and books them before they cool off",
+        "Database reactivation brings back 5-15% of dormant patients without a single ad dollar",
+        "Automated reminders and confirmations cut no-shows by 20-40%"
+      ],
+      "proof_points": [
+        "One med spa recovered $50K in revenue from reactivating old leads alone",
+        "Clients see 10-25% more booked appointments within the first month",
+        "2,500+ calls handled in a single month by one AI agent",
+        "3x revenue increase for a med spa client using both inbound and outbound AI"
+      ],
+      "subject_line_angles": [
+        "The calls {company} is missing after 5pm",
+        "{first_name}, quick question about {company}'s no-shows",
+        "How {company} can book more consults without more ad spend",
+        "{first_name}, I built something for {company}"
+      ],
+      "followup_hooks": [
+        "I was thinking about how many consultation calls {company} might miss during treatments",
+        "A med spa owner told me she was losing $8K/month just from after-hours missed calls",
+        "Our AI also re-engages past patients who haven't booked in 6+ months, filling empty slots automatically"
+      ]
+    },
+
+    "dental": {
+      "name": "Dental Office",
+      "aliases": ["dental", "dentist", "dental office", "dental practice", "dental clinic", "orthodontics", "orthodontist", "oral surgery", "periodontics", "endodontics", "dental group"],
+      "tone": "professional",
+      "cta_style": "soft_ask",
+      "email_length": "medium",
+      "followup_cadence_days": [3, 5, 8],
+      "personalization_depth": "medium",
+      "pain_points": [
+        "New patient calls going to voicemail during procedures and cleanings",
+        "Patient reactivation: hundreds of patients overdue for cleanings sitting in the PMS with no outreach",
+        "Recall management requiring manual calls that staff never has time for",
+        "New patient acquisition cost rising while conversion from calls stays flat",
+        "After-hours and weekend calls from emergency patients going unanswered",
+        "Front desk juggling check-ins, insurance verification, and phone calls simultaneously"
+      ],
+      "value_props": [
+        "AI receptionist answers every patient call 24/7, books appointments, and handles insurance questions",
+        "Outbound agent calls overdue patients for recall, reactivating 5-15% of the dormant list",
+        "Speed-to-lead on new patient inquiries: AI responds in under 2 minutes",
+        "After-hours emergency triage routes urgent calls immediately"
+      ],
+      "proof_points": [
+        "A dental office added 12 new patients/month just by answering every call",
+        "Clients reduce admin load by 15-30%, freeing staff for in-office patient care",
+        "AI handles 2,500+ calls/month without hiring additional front desk staff",
+        "20-40% reduction in front-desk overflow during peak hours"
+      ],
+      "subject_line_angles": [
+        "The new patient calls {company} is missing during procedures",
+        "{first_name}, a thought on {company}'s recall list",
+        "How {company} can reactivate overdue patients automatically",
+        "{first_name}, who answers when your team is with patients?"
+      ],
+      "followup_hooks": [
+        "I was thinking about how many new patient calls {company} might lose during procedures",
+        "A dental office here told me they added 12 new patients/month just by answering every call",
+        "Our AI also handles after-hours calls and texts back anyone who called when you were closed"
+      ]
+    },
+
+    "insurance": {
+      "name": "Insurance Agency / Brokerage",
+      "aliases": ["insurance", "insurance agency", "insurance broker", "insurance brokerage", "financial services", "insurance agent", "property casualty", "life insurance", "health insurance", "commercial insurance"],
+      "tone": "professional",
+      "cta_style": "direct_ask",
+      "email_length": "medium",
+      "followup_cadence_days": [3, 6, 9],
+      "personalization_depth": "medium",
+      "pain_points": [
+        "Thousands of clients in the CRM who haven't been contacted for policy reviews in months",
+        "Client retention suffering because renewals aren't being proactively managed",
+        "Claims routing and intake calls overwhelming the office during storm season or peak periods",
+        "Cross-sell and upsell opportunities sitting untouched in the book of business",
+        "New leads from referrals or web forms not getting called back for hours or days",
+        "Producers spending time on admin calls instead of writing new business"
+      ],
+      "value_props": [
+        "AI outbound agent calls through CRM lists, re-engages lapsed clients, and books policy reviews",
+        "Inbound AI handles claims intake calls, routes urgency, and answers coverage FAQs",
+        "Database reactivation identifies cross-sell opportunities and books them into producer calendars",
+        "Speed-to-lead ensures every new inquiry gets a call within 2 minutes"
+      ],
+      "proof_points": [
+        "An insurance broker reactivated 22 policies in the first month by having AI call his old book",
+        "5-15% database reactivation rate on dormant client lists",
+        "Producers save 10+ hours/week when AI handles routine calls and scheduling",
+        "2-3x faster response time on new lead inquiries"
+      ],
+      "subject_line_angles": [
+        "The clients sitting in {company}'s CRM right now",
+        "{first_name}, quick thought on {company}'s book of business",
+        "How {company} can reactivate lapsed policies on autopilot",
+        "{first_name}, are your producers spending time on the right calls?"
+      ],
+      "followup_hooks": [
+        "I was thinking about how many lapsed clients are sitting in {company}'s CRM right now with no outreach",
+        "An insurance broker told me he reactivated 22 policies in the first month just by having AI call his old book",
+        "Our AI calls your CRM list, finds clients who need policy reviews, and books them straight into your calendar"
+      ]
+    },
+
+    "construction": {
+      "name": "Construction / Trades",
+      "aliases": ["construction", "contractor", "general contractor", "plumbing", "plumber", "electrician", "electrical", "hvac", "roofing", "roofer", "painting", "remodeling", "renovation", "home improvement", "handyman", "flooring", "masonry", "concrete", "landscaping", "landscape", "tree service", "fencing", "siding", "windows", "solar"],
+      "tone": "casual",
+      "cta_style": "direct_ask",
+      "email_length": "short",
+      "followup_cadence_days": [2, 4, 7],
+      "personalization_depth": "light",
+      "pain_points": [
+        "Missing calls from potential clients when the crew is on job sites all day",
+        "Quote follow-up falling through the cracks because nobody has time to chase them",
+        "Scheduling chaos when calls come in but the office is one person deep",
+        "Homeowners calling competitors because they got voicemail instead of a live answer",
+        "Seasonal demand spikes overwhelming the phone with estimate requests",
+        "Evenings and weekends: homeowners call after hours but nobody picks up"
+      ],
+      "value_props": [
+        "AI answers every call from homeowners and GCs, qualifies the job, and books estimates into your calendar",
+        "Follows up on sent quotes that haven't been accepted, closing more jobs without your involvement",
+        "After-hours and weekend calls get answered and booked so you never lose a lead to voicemail",
+        "Handles scheduling, rescheduling, and confirmations automatically"
+      ],
+      "proof_points": [
+        "A contractor told us he was losing 3-4 jobs a week just from missed calls on site",
+        "Clients recover 20-40% of missed calls that were previously going to voicemail",
+        "Reduces admin overhead by 15-30%, letting you focus on the work",
+        "A landscaping company owner was losing $10K/month in jobs from missed calls"
+      ],
+      "subject_line_angles": [
+        "The calls {company} is missing on the job site",
+        "{first_name}, quick question about {company}'s estimate bookings",
+        "How {company} can stop losing jobs to voicemail",
+        "{first_name}, who answers when your crew is on site?"
+      ],
+      "followup_hooks": [
+        "I was thinking about how many estimate requests {company} might miss when the crew is on-site",
+        "A contractor here told me he was losing 3-4 jobs a week just from missed calls",
+        "Our AI books estimates directly into your calendar so homeowners don't call the next company on Google"
+      ]
+    },
+
+    "wellness": {
+      "name": "Wellness / Chiropractic",
+      "aliases": ["wellness", "chiropractic", "chiropractor", "acupuncture", "acupuncturist", "naturopath", "naturopathic", "holistic", "functional medicine", "physical therapy", "physiotherapy", "massage therapy", "massage", "yoga studio", "pilates", "iv clinic", "iv therapy", "cryotherapy", "float spa", "wellness center", "health center"],
+      "tone": "friendly",
+      "cta_style": "soft_ask",
+      "email_length": "medium",
+      "followup_cadence_days": [3, 5, 8],
+      "personalization_depth": "medium",
+      "pain_points": [
+        "Appointment booking calls missed while practitioners are with patients",
+        "Patient retention dropping because recall and reactivation outreach isn't happening",
+        "Recall for lapsed patients requires manual calling that staff can't keep up with",
+        "New patient inquiries from Google or ads going unanswered for hours",
+        "Front desk handling intake, scheduling, and phone calls all at once",
+        "After-hours calls from patients wanting to book going to voicemail"
+      ],
+      "value_props": [
+        "AI receptionist answers every call 24/7, books appointments, and handles intake questions",
+        "Outbound agent re-engages patients who haven't been in for 3-6+ months",
+        "Speed-to-lead on new patient inquiries ensures no one falls through the cracks",
+        "Automated recall brings back lapsed patients without manual staff effort"
+      ],
+      "proof_points": [
+        "A clinic owner recovered 15 hours/week of admin time with an AI receptionist",
+        "5-15% of dormant patient lists reactivated within the first month",
+        "10-25% increase in booked appointments from answering every call",
+        "Clients often replace 0.5-1.0 FTE equivalent workload with AI"
+      ],
+      "subject_line_angles": [
+        "The patient calls {company} is missing during appointments",
+        "{first_name}, a thought on {company}'s recall list",
+        "How {company} can bring back lapsed patients automatically",
+        "{first_name}, what happens when every line is busy at {company}?"
+      ],
+      "followup_hooks": [
+        "I was thinking about how many new patient calls {company} might miss during appointments",
+        "A clinic owner here told me they recovered 15 hours/week of admin time with an AI receptionist",
+        "Our AI can also re-engage patients who haven't booked in 6+ months, bringing them back automatically"
+      ]
+    },
+
+    "recruiting": {
+      "name": "Recruiting / Staffing",
+      "aliases": ["recruiting", "staffing", "staffing agency", "recruitment", "talent acquisition", "headhunter", "employment agency", "temp agency", "executive search", "hr services", "placement", "workforce solutions"],
+      "tone": "professional",
+      "cta_style": "curiosity_driven",
+      "email_length": "medium",
+      "followup_cadence_days": [2, 4, 7],
+      "personalization_depth": "medium",
+      "pain_points": [
+        "Candidate screening calls eating up recruiter time that should be spent on placements",
+        "High-volume inbound calls from applicants overwhelming the team",
+        "Placement follow-up with clients falling behind because recruiters are sourcing all day",
+        "Speed-to-candidate: the best applicants accept other offers because response time is too slow",
+        "Database of past candidates and clients sitting untouched with no reactivation outreach",
+        "After-hours applicant calls going to voicemail, losing candidates to faster agencies"
+      ],
+      "value_props": [
+        "AI handles initial candidate screening calls: qualifications, availability, salary expectations",
+        "Inbound AI answers every applicant call 24/7, collects info, and routes qualified candidates",
+        "Outbound agent reactivates past candidates and clients in the ATS/CRM",
+        "Speed-to-candidate: AI contacts new applicants within 2 minutes of applying"
+      ],
+      "proof_points": [
+        "Recruiters save 10+ hours/week when AI handles screening and scheduling",
+        "2-3x faster candidate response time vs. manual outreach",
+        "5-15% reactivation rate on dormant candidate and client databases",
+        "20-40% reduction in admin overhead for recruiting teams"
+      ],
+      "subject_line_angles": [
+        "The candidates {company} is losing to slower agencies",
+        "{first_name}, a thought on {company}'s candidate response time",
+        "How {company} can screen candidates without recruiter hours",
+        "{first_name}, what if {company}'s ATS database called itself?"
+      ],
+      "followup_hooks": [
+        "I was thinking about how many qualified candidates {company} might lose because of response time",
+        "A staffing agency owner told me the best candidates are gone within 24 hours if you don't call fast",
+        "Our AI also reactivates past candidates in your ATS so you always have a warm bench to pull from"
+      ]
+    }
+  },
+
+  "industry_detection_rules": {
+    "_description": "Rules for auto-detecting industry from lead data. Check fields in this order: industry, company_name, title, domain, website content. Match against vertical aliases.",
+    "fields_to_check": ["industry", "company_name", "title", "domain", "website_text"],
+    "fallback_vertical": null
+  }
+}

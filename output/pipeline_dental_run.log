@@ -1,0 +1,293 @@
+=================================================================
+  REALSIDE AI — FULL SALES PIPELINE
+  Started: 2026-03-19 01:46:24
+=================================================================
+  [INFO]    Config loaded from /home/user/sales/config.json
+  [INFO]    Sender: Dylan Mitchell <dylan.realside@gmail.com>
+  [INFO]    Output: output/
+
+=================================================================
+  PHASE 0: Lead Discovery (SKIPPED)
+=================================================================
+  [SKIP]    Using existing targets.csv
+
+=================================================================
+  PHASE 1: Sales Pipeline (ICP + Outreach + Follow-ups)
+=================================================================
+  [INFO]    Running: /usr/local/bin/python /home/user/sales/run_pipeline.py --config /home/user/sales/config.json
+    | [2026-03-19 01:46:24] INFO     ============================================================
+    | [2026-03-19 01:46:24] INFO     SALES PIPELINE STARTED  2026-03-19 01:46:24
+    | [2026-03-19 01:46:24] INFO     ============================================================
+    | [2026-03-19 01:46:24] INFO     --- PHASE 1: ICP List Building ---
+    | [2026-03-19 01:46:24] INFO     Running icp_list_builder ...
+    | [2026-03-19 01:48:30] INFO       ✓ icp_list_builder completed in 126.0s (5 rows)
+    | [2026-03-19 01:48:30] INFO     --- PHASE 2: Outreach Generation (6 scripts in parallel) ---
+    | [2026-03-19 01:48:30] INFO       Launching prospect_researcher ...
+    | [2026-03-19 01:48:30] INFO       Launching news_trigger ...
+    | [2026-03-19 01:48:30] INFO       Launching job_signal_monitor ...
+    | [2026-03-19 01:48:30] INFO       Launching social_listener ...
+    | [2026-03-19 01:48:30] INFO       Launching competitor_review_miner ...
+    | [2026-03-19 01:48:30] INFO       Launching case_study_matcher ...
+    | [2026-03-19 01:49:01] INFO       ✓ news_trigger completed in 31.2s (3 rows)
+    | [2026-03-19 01:51:12] INFO       ✓ job_signal_monitor completed in 161.9s (1 rows)
+    | [2026-03-19 01:51:38] INFO       ✓ prospect_researcher completed in 188.4s (5 rows)
+    | [2026-03-19 01:53:50] INFO       ✓ case_study_matcher completed in 158.8s (5 rows)
+    | [2026-03-19 01:55:18] INFO       ✓ competitor_review_miner completed in 377.4s (45 rows)
+    | [2026-03-19 01:56:17] INFO       ✓ social_listener completed in 467.3s (4 rows)
+    | [2026-03-19 01:56:17] INFO     --- PHASE 3: Follow-up Generation ---
+    | [2026-03-19 01:56:17] INFO     Running followup_generator ...
+    | [2026-03-19 01:57:53] INFO       ✓ followup_generator completed in 96.5s (20 rows)
+    | [2026-03-19 01:57:53] INFO     
+    | [2026-03-19 01:57:53] INFO     ============================================================
+    | [2026-03-19 01:57:53] INFO     PIPELINE SUMMARY
+    | [2026-03-19 01:57:53] INFO     ============================================================
+    | [2026-03-19 01:57:53] INFO       [OK] icp_list_builder              5 emails  (126.0s)  → icp_prospects.csv
+    | [2026-03-19 01:57:53] INFO       [OK] news_trigger                  3 emails  (31.2s)  → news_triggered_emails.csv
+    | [2026-03-19 01:57:53] INFO       [OK] job_signal_monitor            1 emails  (161.9s)  → job_signal_emails.csv
+    | [2026-03-19 01:57:53] INFO       [OK] prospect_researcher           5 emails  (188.4s)  → prospect_emails.csv
+    | [2026-03-19 01:57:53] INFO       [OK] case_study_matcher            5 emails  (158.8s)  → case_study_emails.csv
+    | [2026-03-19 01:57:53] INFO       [OK] competitor_review_miner      45 emails  (377.4s)  → displacement_emails.csv
+    | [2026-03-19 01:57:53] INFO       [OK] social_listener               4 emails  (467.3s)  → social_outreach_emails.csv
+    | [2026-03-19 01:57:53] INFO       [OK] followup_generator           20 emails  (96.5s)  → followup_sequences.csv
+    | [2026-03-19 01:57:53] INFO     ------------------------------------------------------------
+    | [2026-03-19 01:57:53] INFO       Total emails generated: 88
+    | [2026-03-19 01:57:53] INFO       Output directory: /home/user/sales/output
+    | [2026-03-19 01:57:53] INFO       Full log: /home/user/sales/output/pipeline.log
+    | [2026-03-19 01:57:53] INFO     ============================================================
+    | [2026-03-19 01:57:53] INFO     PIPELINE FINISHED  2026-03-19 01:57:53
+    | [2026-03-19 01:57:53] INFO     ============================================================
+  [OK]      Pipeline completed in 690.0s
+
+=================================================================
+  PHASE 2: Contact Email Enrichment
+=================================================================
+  [WARN]    icp_prospects.csv: 5 leads (5 need email enrichment)
+  [WARN]    prospect_emails.csv: 5 leads (5 need email enrichment)
+  [WARN]    case_study_emails.csv: 5 leads (5 need email enrichment)
+  [WARN]    news_triggered_emails.csv: 3 leads (3 need email enrichment)
+  [WARN]    displacement_emails.csv: 45 leads (45 need email enrichment)
+  [WARN]    social_outreach_emails.csv: 4 leads (4 need email enrichment)
+  [WARN]    job_signal_emails.csv: 1 leads (1 need email enrichment)
+
+  [WARN]    68/68 leads need real email addresses.
+  [WARN]    Enrich via Clay (clay.com), Apollo, or Hunter.io before uploading.
+  [WARN]    Leads with placeholder emails (contact@domain.com) will still be uploaded but won't be deliverable.
+  [SKIP]    No replies.csv found — skipping objection handling
+  [SKIP]    No engaged_prospects.csv found — skipping engaged followups
+
+=================================================================
+  PHASE 3: Upload to Instantly.ai
+=================================================================
+  [INFO]    Running Instantly uploader (dry_run=False)
+    | Instantly.ai Campaign Uploader
+    | ============================================================
+    | Files to process: 8
+    | 
+    | Checking API access...
+    |   Found 43 connected account(s)
+    |     - dylan_mitchell@realsideai.biz
+    |     - d.mitchell@realsideai.biz
+    |     - dylan.m@realsideai.biz
+    |     - dylan.mitchell@realsideai.biz
+    |     - dylan@realsideai.biz
+    |     - dylan@gorealsideai.info
+    |     - mitchell.dylan@gorealsideai.info
+    |     - dylan.m@gorealsideai.info
+    |     - dylan.mitchell@gorealsideai.info
+    |     - dylan_mitchell@gorealsideai.info
+    |     - dylan@realsideai.co
+    |     - d.m@realsideai.co
+    |     - d.mitchell@realsideai.co
+    |     - dylan.m@realsideai.co
+    |     - dylan.mitchell@realsideai.co
+    |     - dylan@realsideai.me
+    |     - d.m@realsideai.me
+    |     - d.mitchell@realsideai.me
+    |     - dylan.m@realsideai.me
+    |     - dylan.mitchell@realsideai.me
+    |     - dylanm@realsideai.info
+    |     - mitchell.dylan@userealside.info
+    |     - d.mitchell@userealside.info
+    |     - dylan.m@userealside.info
+    |     - dylan.mitchell@userealside.info
+    |     - dylan@userealside.info
+    |     - mitchell.dylan@onrealsideai.com
+    |     - d.mitchell@onrealsideai.com
+    |     - dylan.m@onrealsideai.com
+    |     - dylan.mitchell@onrealsideai.com
+    |     - dylan@onrealsideai.com
+    |     - mitchell.dylan@atrealsideai.com
+    |     - d.mitchell@atrealsideai.com
+    |     - dylan.m@atrealsideai.com
+    |     - dylan.mitchell@atrealsideai.com
+    |     - dylan@atrealsideai.com
+    |     - mitchell.dylan@userealsideai.com
+    |     - d.mitchell@userealsideai.com
+    |     - dylan.m@userealsideai.com
+    |     - dylan.mitchell@userealsideai.com
+    |     - dylan@userealsideai.com
+    |     - dylan@realsideai.info
+    |     - d.mitchell@realsideai.info
+    |   Rotating across ALL 43 connected accounts
+    |   Campaign options overridden: ['timezone', 'daily_limit_per_account', 'campaign_duration_days', 'morning_start', 'morning_end', 'afternoon_start', 'afternoon_end', 'open_tracking', 'link_tracking']
+    | 
+    | ============================================================
+    | Processing: case_study_emails.csv
+    | Campaign:   Realside AI — Case Study Match
+    | ============================================================
+    |   Leads: 5 total
+    |   ⚠ 5 leads have placeholder emails (need enrichment)
+    |   Rotating across 43 sending accounts
+    |   Created campaign: Realside AI — Case Study Match (ID: 904fca58-9f59-4449-9154-a6ce77a19412)
+    |     Schedule: 07:00-09:00 + 13:00-15:00 Mon-Fri (America/Chicago)
+    |     Daily limit/account: 30 | Duration: 90 days
+    |   Total uploaded: 5/5
+    | 
+    | ============================================================
+    | Processing: dental_dso_outreach.csv
+    | Campaign:   Realside AI — Dental DSO Outreach
+    | ============================================================
+    |   Leads: 65 total
+    |   Rotating across 43 sending accounts
+    |   Created campaign: Realside AI — Dental DSO Outreach (ID: 8615c5e9-4976-42da-9f1b-de046bb53d2a)
+    |     Schedule: 07:00-09:00 + 13:00-15:00 Mon-Fri (America/Chicago)
+    |     Daily limit/account: 30 | Duration: 90 days
+    |   Uploaded 20/20 leads...
+    |   Uploaded 40/40 leads...
+    |   Uploaded 60/60 leads...
+    |   Total uploaded: 65/65
+    | 
+    | ============================================================
+    | Processing: displacement_emails.csv
+    | Campaign:   Realside AI — Competitor Displacement
+    | ============================================================
+    |   Leads: 0 total
+    |   Rotating across 43 sending accounts
+    |   Created campaign: Realside AI — Competitor Displacement (ID: 466e3392-12aa-4800-a0fd-2cbd6c97bff6)
+    |     Schedule: 07:00-09:00 + 13:00-15:00 Mon-Fri (America/Chicago)
+    |     Daily limit/account: 30 | Duration: 90 days
+    |   Total uploaded: 0/0
+    | 
+    | ============================================================
+    | Processing: followup_sequences.csv
+    | Campaign:   Realside AI — Follow-up Sequences
+    | ============================================================
+    |   Leads: 20 total
+    |   ⚠ 20 leads have placeholder emails (need enrichment)
+    |   Rotating across 43 sending accounts
+    |   Created campaign: Realside AI — Follow-up Sequences (ID: 00825ad5-e33c-45b6-9832-31f66ea6c36b)
+    |     Schedule: 07:00-09:00 + 13:00-15:00 Mon-Fri (America/Chicago)
+    |     Daily limit/account: 30 | Duration: 90 days
+    |   Uploaded 20/20 leads...
+    |   Total uploaded: 20/20
+    | 
+    | ============================================================
+    | Processing: job_signal_emails.csv
+    | Campaign:   Realside AI — Job Signal Outreach
+    | ============================================================
+    |   Leads: 1 total
+    |   ⚠ 1 leads have placeholder emails (need enrichment)
+    |   Rotating across 43 sending accounts
+    |   Created campaign: Realside AI — Job Signal Outreach (ID: 3592d0da-a4b2-4c1a-9bee-f413ea62dc83)
+    |     Schedule: 07:00-09:00 + 13:00-15:00 Mon-Fri (America/Chicago)
+    |     Daily limit/account: 30 | Duration: 90 days
+    |   Total uploaded: 1/1
+    | 
+    | ============================================================
+    | Processing: news_triggered_emails.csv
+    | Campaign:   Realside AI — News Trigger
+    | ============================================================
+    |   Leads: 3 total
+    |   ⚠ 3 leads have placeholder emails (need enrichment)
+    |   Rotating across 43 sending accounts
+    |   Created campaign: Realside AI — News Trigger (ID: 59087312-4762-41dd-922f-95ae2d292751)
+    |     Schedule: 07:00-09:00 + 13:00-15:00 Mon-Fri (America/Chicago)
+    |     Daily limit/account: 30 | Duration: 90 days
+    |   Total uploaded: 3/3
+    | 
+    | ============================================================
+    | Processing: prospect_emails.csv
+    | Campaign:   Realside AI — Prospect Outreach
+    | ============================================================
+    |   Leads: 5 total
+    |   ⚠ 5 leads have placeholder emails (need enrichment)
+    |   Rotating across 43 sending accounts
+    |   Created campaign: Realside AI — Prospect Outreach (ID: af437bde-fb8d-4fdd-a27b-9c533f72de91)
+    |     Schedule: 07:00-09:00 + 13:00-15:00 Mon-Fri (America/Chicago)
+    |     Daily limit/account: 30 | Duration: 90 days
+    |   Total uploaded: 5/5
+    | 
+    | ============================================================
+    | Processing: social_outreach_emails.csv
+    | Campaign:   Realside AI — Social Warm Outreach
+    | ============================================================
+    |   Leads: 4 total
+    |   ⚠ 4 leads have placeholder emails (need enrichment)
+    |   Rotating across 43 sending accounts
+    |   Created campaign: Realside AI — Social Warm Outreach (ID: 650ab6b6-3c60-4e14-8242-d43273cce160)
+    |     Schedule: 07:00-09:00 + 13:00-15:00 Mon-Fri (America/Chicago)
+    |     Daily limit/account: 30 | Duration: 90 days
+    |   Total uploaded: 4/4
+    | 
+    | ============================================================
+    | UPLOAD SUMMARY
+    | ============================================================
+    |   [✓] Realside AI — Case Study Match: success
+    |       5/5 leads uploaded
+    |       ⚠ 5 leads need real email addresses
+    |       Campaign ID: 904fca58-9f59-4449-9154-a6ce77a19412 [DRAFT]
+    |   [✓] Realside AI — Dental DSO Outreach: success
+    |       65/65 leads uploaded
+    |       Campaign ID: 8615c5e9-4976-42da-9f1b-de046bb53d2a [DRAFT]
+    |   [✓] Realside AI — Competitor Displacement: success
+    |       Campaign ID: 466e3392-12aa-4800-a0fd-2cbd6c97bff6 [DRAFT]
+    |   [✓] Realside AI — Follow-up Sequences: success
+    |       20/20 leads uploaded
+    |       ⚠ 20 leads need real email addresses
+    |       Campaign ID: 00825ad5-e33c-45b6-9832-31f66ea6c36b [DRAFT]
+    |   [✓] Realside AI — Job Signal Outreach: success
+    |       1/1 leads uploaded
+    |       ⚠ 1 leads need real email addresses
+    |       Campaign ID: 3592d0da-a4b2-4c1a-9bee-f413ea62dc83 [DRAFT]
+    |   [✓] Realside AI — News Trigger: success
+    |       3/3 leads uploaded
+    |       ⚠ 3 leads need real email addresses
+    |       Campaign ID: 59087312-4762-41dd-922f-95ae2d292751 [DRAFT]
+    |   [✓] Realside AI — Prospect Outreach: success
+    |       5/5 leads uploaded
+    |       ⚠ 5 leads need real email addresses
+    |       Campaign ID: af437bde-fb8d-4fdd-a27b-9c533f72de91 [DRAFT]
+    |   [✓] Realside AI — Social Warm Outreach: success
+    |       4/4 leads uploaded
+    |       ⚠ 4 leads need real email addresses
+    |       Campaign ID: 650ab6b6-3c60-4e14-8242-d43273cce160 [DRAFT]
+    | 
+    | ⚠ IMPORTANT: Campaigns are created in DRAFT mode.
+    |   → Log in to Instantly.ai to review and activate each campaign.
+    |   → Leads with placeholder emails (contact@domain.com) need real addresses.
+  [OK]      Instantly upload completed in 43.4s
+
+=================================================================
+  FULL PIPELINE SUMMARY
+=================================================================
+  [SKIP]    Discovery:  SKIPPED
+  [OK]      Pipeline:   COMPLETED
+  [WARN]    Enrichment: 68 leads found, 68 need real emails
+  [OK]      Objections: COMPLETED (no replies to process)
+  [OK]      Followups:  COMPLETED (no engaged prospects to process)
+  [OK]      Upload:     COMPLETED
+
+  [INFO]    Output directory: /home/user/sales/output
+  [INFO]    CSV files: 10
+  [INFO]    Total leads/emails across all CSVs: 216
+  [INFO]    Pipeline log: /home/user/sales/output/pipeline.log
+
+=================================================================
+  NEXT STEPS:
+    1. Add zoominfo_api_key to config.json for auto-enrichment
+       Or enrich manually via Clay, Apollo, or Hunter.io
+    2. Re-run with: python run_full_pipeline.py --skip-pipeline
+=================================================================
+  Total time: 733.4s
+  Finished: 2026-03-19 01:58:37
+=================================================================

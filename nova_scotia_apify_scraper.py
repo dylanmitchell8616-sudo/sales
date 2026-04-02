@@ -1,0 +1,725 @@
+#!/usr/bin/env python3
+"""
+Nova Scotia Lead Scraper via Apify Google Maps
+================================================
+Scrapes local business leads across all service niches in Nova Scotia
+using Apify's Google Maps Scraper actor, then outputs a clean CSV
+ready for campaign generation.
+
+Usage:
+    python nova_scotia_apify_scraper.py --api-key YOUR_APIFY_KEY
+    python nova_scotia_apify_scraper.py --api-key YOUR_APIFY_KEY --dry-run
+    python nova_scotia_apify_scraper.py --api-key YOUR_APIFY_KEY --niches "dental,hvac,roofing"
+"""
+
+import argparse
+import csv
+import json
+import logging
+import os
+import re
+import sys
+import time
+from datetime import datetime
+from urllib.parse import urljoin
+
+try:
+    import requests
+except ImportError:
+    print("Error: requests package required. Install with: pip install requests")
+    sys.exit(1)
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+OUTPUT_DIR = os.path.join(SCRIPT_DIR, "output")
+CACHE_FILE = os.path.join(OUTPUT_DIR, "ns_scrape_cache.json")
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+)
+
+
+# ─── Scrape cache to avoid re-scraping already-scraped businesses ────────────
+def load_cache() -> dict:
+    """Load scrape cache (domain -> lead data) from disk."""
+    if os.path.exists(CACHE_FILE):
+        try:
+            with open(CACHE_FILE, "r") as f:
+                return json.load(f)
+        except (json.JSONDecodeError, IOError):
+            pass
+    return {}
+
+
+def save_cache(cache: dict):
+    """Save scrape cache to disk."""
+    with open(CACHE_FILE, "w") as f:
+        json.dump(cache, f, indent=2)
+
+
+def api_request_with_retry(method, url, max_retries=3, **kwargs):
+    """Make an HTTP request with exponential backoff retry."""
+    kwargs.setdefault("timeout", 60)
+    for attempt in range(max_retries + 1):
+        try:
+            resp = requests.request(method, url, **kwargs)
+            if resp.status_code in (429, 500, 502, 503, 504) and attempt < max_retries:
+                wait = 2 ** (attempt + 1)
+                logging.warning(f"  HTTP {resp.status_code}, retrying in {wait}s...")
+                time.sleep(wait)
+                continue
+            return resp
+        except requests.RequestException as e:
+            if attempt < max_retries:
+                wait = 2 ** (attempt + 1)
+                logging.warning(f"  Request failed ({e}), retrying in {wait}s...")
+                time.sleep(wait)
+            else:
+                raise
+    return resp
+
+# ─── Nova Scotia regions to search ───────────────────────────────────────────
+NS_REGIONS = [
+    "Halifax, Nova Scotia",
+    "Dartmouth, Nova Scotia",
+    "Sydney, Nova Scotia",
+    "Truro, Nova Scotia",
+    "New Glasgow, Nova Scotia",
+    "Glace Bay, Nova Scotia",
+    "Kentville, Nova Scotia",
+    "Amherst, Nova Scotia",
+    "Bridgewater, Nova Scotia",
+    "Yarmouth, Nova Scotia",
+    "Antigonish, Nova Scotia",
+    "Wolfville, Nova Scotia",
+    "Windsor, Nova Scotia",
+    "Stellarton, Nova Scotia",
+    "Bedford, Nova Scotia",
+    "Lower Sackville, Nova Scotia",
+]
+
+# ─── All niches to target ────────────────────────────────────────────────────
+# Service mapping logic:
+#   inbound  = high call volume, appointment-based, loses $ from missed calls
+#   outbound = runs ads / has leads to follow up / dormant CRM contacts / estimates
+NICHES = {
+    # ── Healthcare / Wellness ─────────────────────────────────────────────────
+    "dental": {
+        "queries": ["dentist", "dental office", "dental clinic"],
+        "services": ["inbound", "outbound"],
+        "label": "Dental",
+    },
+    "med_spa": {
+        "queries": ["med spa", "medical spa", "aesthetic clinic", "medspa"],
+        "services": ["inbound", "outbound"],
+        "label": "Med Spa",
+    },
+    "chiropractic": {
+        "queries": ["chiropractor", "chiropractic clinic"],
+        "services": ["inbound"],
+        "label": "Chiropractic",
+    },
+    "physiotherapy": {
+        "queries": ["physiotherapy", "physical therapy clinic", "physio"],
+        "services": ["inbound"],
+        "label": "Physiotherapy",
+    },
+    "optometry": {
+        "queries": ["optometrist", "eye clinic", "optometry"],
+        "services": ["inbound"],
+        "label": "Optometry",
+    },
+    "wellness": {
+        "queries": ["wellness center", "IV clinic", "naturopath"],
+        "services": ["inbound", "outbound"],
+        "label": "Wellness",
+    },
+    "mental_health": {
+        "queries": ["therapist", "counseling clinic", "psychologist office", "mental health clinic"],
+        "services": ["inbound"],
+        "label": "Mental Health",
+    },
+    # ── Beauty / Personal Care ────────────────────────────────────────────────
+    "salon": {
+        "queries": ["hair salon", "barbershop", "beauty salon"],
+        "services": ["inbound"],
+        "label": "Salon & Barbershop",
+    },
+    "spa": {
+        "queries": ["spa", "massage therapy", "day spa"],
+        "services": ["inbound", "outbound"],
+        "label": "Spa & Massage",
+    },
+    # ── Home Services / Trades ────────────────────────────────────────────────
+    "hvac": {
+        "queries": ["HVAC", "heating and cooling", "furnace repair"],
+        "services": ["inbound", "outbound"],
+        "label": "HVAC",
+    },
+    "plumbing": {
+        "queries": ["plumber", "plumbing company"],
+        "services": ["inbound", "outbound"],
+        "label": "Plumbing",
+    },
+    "electrical": {
+        "queries": ["electrician", "electrical contractor"],
+        "services": ["inbound", "outbound"],
+        "label": "Electrical",
+    },
+    "roofing": {
+        "queries": ["roofing company", "roofer"],
+        "services": ["inbound", "outbound"],
+        "label": "Roofing",
+    },
+    "landscaping": {
+        "queries": ["landscaping company", "lawn care"],
+        "services": ["inbound", "outbound"],
+        "label": "Landscaping",
+    },
+    "pest_control": {
+        "queries": ["pest control", "exterminator"],
+        "services": ["inbound", "outbound"],
+        "label": "Pest Control",
+    },
+    # ── Professional Services ─────────────────────────────────────────────────
+    "real_estate": {
+        "queries": ["real estate agency", "realtor office", "property management"],
+        "services": ["inbound", "outbound"],
+        "label": "Real Estate",
+    },
+    "insurance": {
+        "queries": ["insurance agency", "insurance broker"],
+        "services": ["outbound"],
+        "label": "Insurance",
+    },
+    "law_firm": {
+        "queries": ["law firm", "lawyer", "legal office"],
+        "services": ["inbound"],
+        "label": "Law Firm",
+    },
+    "accounting": {
+        "queries": ["accounting firm", "accountant", "CPA", "bookkeeper"],
+        "services": ["inbound"],
+        "label": "Accounting",
+    },
+    # ── Automotive ─────────────────────────────────────────────────────────────
+    "auto_repair": {
+        "queries": ["auto repair", "mechanic", "auto body shop"],
+        "services": ["inbound", "outbound"],
+        "label": "Auto Repair",
+    },
+    "car_dealership": {
+        "queries": ["car dealership", "used car dealer", "auto dealer"],
+        "services": ["inbound", "outbound"],
+        "label": "Car Dealership",
+    },
+    # ── Fitness ───────────────────────────────────────────────────────────────
+    "fitness": {
+        "queries": ["gym", "fitness center", "CrossFit", "yoga studio"],
+        "services": ["inbound", "outbound"],
+        "label": "Fitness & Gym",
+    },
+    # ── Home Care ────────────────────────────────────────────────────────────
+    "homecare": {
+        "queries": ["home care agency", "senior care", "home health"],
+        "services": ["inbound"],
+        "label": "Home Care",
+    },
+    # ── Staffing (recruiting only) ───────────────────────────────────────────
+    "staffing": {
+        "queries": ["staffing agency", "temp agency", "employment agency"],
+        "services": ["recruiting"],
+        "label": "Staffing Agency",
+    },
+}
+
+# Apify actor ID for Google Maps Scraper (Compass)
+APIFY_ACTOR_ID = "compass~crawler-google-places"
+APIFY_BASE_URL = "https://api.apify.com/v2"
+
+
+def run_apify_scrape(api_key: str, search_queries: list, max_results: int = 100) -> list:
+    """Run the Apify Google Maps scraper and return results."""
+    headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
+
+    actor_input = {
+        "searchStringsArray": search_queries,
+        "maxCrawledPlacesPerSearch": max_results,
+        "language": "en",
+        "deeperCityScrape": False,
+        "onePerDomain": False,
+        "scrapeEmails": True,
+    }
+
+    url = f"{APIFY_BASE_URL}/acts/{APIFY_ACTOR_ID}/runs"
+    logging.info(f"  Starting Apify run with {len(search_queries)} queries...")
+
+    resp = api_request_with_retry("POST", url, headers=headers, json=actor_input)
+    if resp.status_code != 201:
+        logging.error(f"  Failed to start actor: {resp.status_code} {resp.text}")
+        return []
+
+    run_data = resp.json().get("data", {})
+    run_id = run_data.get("id")
+    logging.info(f"  Actor run started: {run_id}")
+
+    # Poll for completion with progress tracking
+    status_url = f"{APIFY_BASE_URL}/actor-runs/{run_id}"
+    start_time = time.time()
+    for attempt in range(120):  # up to 10 minutes
+        time.sleep(5)
+        try:
+            status_resp = api_request_with_retry("GET", status_url, headers=headers, timeout=30)
+            status = status_resp.json().get("data", {}).get("status")
+        except (requests.RequestException, ValueError) as e:
+            logging.warning(f"  Poll attempt {attempt + 1} failed: {e}. Retrying...")
+            continue
+        elapsed = int(time.time() - start_time)
+        if status == "SUCCEEDED":
+            logging.info(f"  Run completed in {elapsed}s")
+            break
+        elif status in ("FAILED", "ABORTED", "TIMED-OUT"):
+            logging.error(f"  Run failed with status: {status} after {elapsed}s")
+            return []
+        elif attempt % 12 == 11:
+            logging.info(f"  Still running... ({elapsed}s elapsed)")
+    else:
+        logging.error("  Run timed out after 10 minutes")
+        return []
+
+    # Fetch results from dataset
+    try:
+        dataset_id = status_resp.json().get("data", {}).get("defaultDatasetId")
+    except (ValueError, AttributeError):
+        logging.error("  Failed to parse dataset ID from response")
+        return []
+
+    results_url = f"{APIFY_BASE_URL}/datasets/{dataset_id}/items?format=json&limit=10000"
+    try:
+        results_resp = api_request_with_retry("GET", results_url, headers=headers)
+        if results_resp.status_code != 200:
+            logging.error(f"  Failed to fetch results: {results_resp.status_code}")
+            return []
+        items = results_resp.json()
+    except (requests.RequestException, ValueError) as e:
+        logging.error(f"  Failed to fetch/parse results: {e}")
+        return []
+
+    logging.info(f"  Retrieved {len(items)} places")
+    return items
+
+
+# Common junk emails to filter out
+JUNK_EMAIL_PATTERNS = [
+    "noreply", "no-reply", "donotreply", "do-not-reply",
+    "mailer-daemon", "postmaster", "webmaster",
+    "sentry", "example.com", "test@", "wix.com",
+    "squarespace.com", "wordpress.com", "godaddy.com",
+]
+
+# Email regex for scraping websites
+EMAIL_REGEX = re.compile(
+    r"[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}",
+    re.IGNORECASE,
+)
+
+
+def is_valid_email(email: str) -> bool:
+    """Filter out junk/generic emails."""
+    email_lower = email.lower().strip()
+    if not email_lower or len(email_lower) > 254:
+        return False
+    for pattern in JUNK_EMAIL_PATTERNS:
+        if pattern in email_lower:
+            return False
+    # Must have a real TLD
+    if not re.match(r".+@.+\..{2,}", email_lower):
+        return False
+    return True
+
+
+def score_email(email: str, domain: str) -> int:
+    """Score an email for quality. Higher = better for outreach."""
+    score = 0
+    email_lower = email.lower()
+    domain_lower = domain.lower()
+
+    # Emails matching the business domain are strongly preferred
+    if domain_lower in email_lower:
+        score += 50
+
+    # Personal-sounding emails (owner names) are best for B2B
+    personal_patterns = re.compile(r'^[a-z]+[._]?[a-z]+@', re.IGNORECASE)
+    if personal_patterns.match(email_lower):
+        score += 20
+
+    # Generic role-based emails are okay but not ideal
+    role_prefixes = {
+        "info@": 10, "contact@": 9, "hello@": 8, "office@": 7,
+        "admin@": 5, "reception@": 5, "sales@": 3, "support@": 2,
+        "billing@": 1, "accounts@": 1,
+    }
+    for prefix, pts in role_prefixes.items():
+        if email_lower.startswith(prefix):
+            score += pts
+            break
+
+    return score
+
+
+def scrape_email_from_website(website: str, timeout: int = 10) -> str:
+    """Try to scrape an email from a business website's contact/about pages."""
+    if not website:
+        return ""
+
+    if not website.startswith("http"):
+        website = "https://" + website
+
+    # More pages to check for better coverage
+    paths_to_try = [
+        "", "/contact", "/contact-us", "/about", "/about-us",
+        "/team", "/our-team", "/staff", "/connect",
+    ]
+
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
+    }
+
+    found_emails = set()
+
+    for path in paths_to_try:
+        try:
+            url = urljoin(website, path)
+            resp = requests.get(url, headers=headers, timeout=timeout, allow_redirects=True)
+            if resp.status_code != 200:
+                continue
+
+            raw_emails = EMAIL_REGEX.findall(resp.text)
+            for email in raw_emails:
+                if is_valid_email(email):
+                    found_emails.add(email.lower().strip())
+
+            # If we found emails on contact or about page, stop
+            if found_emails and path in ("/contact", "/contact-us", "/about"):
+                break
+
+        except (requests.RequestException, Exception):
+            continue
+
+    if not found_emails:
+        return ""
+
+    # Score and rank all found emails
+    domain = website.replace("https://", "").replace("http://", "").split("/")[0].lower()
+    scored = sorted(found_emails, key=lambda e: score_email(e, domain), reverse=True)
+    return scored[0]
+
+
+def parse_apify_result(item: dict, niche: str, niche_label: str, services: list = None) -> dict:
+    """Parse a single Apify Google Maps result into a lead record."""
+    title = item.get("title", "")
+    phone = item.get("phone", "")
+    website = item.get("website", "")
+    address = item.get("address", "")
+    city = item.get("city", "")
+    rating = item.get("totalScore", 0)
+    reviews = item.get("reviewsCount", 0)
+    category = item.get("categoryName", "")
+    place_url = item.get("url", "")
+
+    # Get email from Apify's scrapeEmails feature
+    email = ""
+    apify_emails = item.get("emails", [])
+    if apify_emails:
+        # Filter and pick the best one
+        valid = [e for e in apify_emails if is_valid_email(e)]
+        if valid:
+            email = valid[0]
+
+    # Clean phone
+    if phone:
+        phone = phone.strip()
+
+    # Extract domain from website
+    domain = ""
+    if website:
+        domain = website.replace("https://", "").replace("http://", "").split("/")[0]
+
+    return {
+        "company_name": title,
+        "email": email,
+        "phone": phone,
+        "website": website,
+        "domain": domain,
+        "address": address,
+        "city": city or "",
+        "province": "Nova Scotia",
+        "rating": rating,
+        "reviews": reviews,
+        "category": category,
+        "niche": niche,
+        "niche_label": niche_label,
+        "services": ",".join(services or []),
+        "google_maps_url": place_url,
+    }
+
+
+# Known franchise brands to filter out — owner can't make buying decisions
+FRANCHISE_KEYWORDS = [
+    "mcdonald", "tim horton", "subway", "burger king", "wendy", "starbucks",
+    "pizza hut", "domino", "kfc", "taco bell", "popeye", "a&w", "dairy queen",
+    "dunkin", "chick-fil-a", "five guys", "chipotle", "panera", "arby",
+    "little caesars", "papa john", "sonic drive", "jack in the box",
+    "jiffy lube", "midas", "meineke", "mr. lube", "valvoline", "maaco",
+    "servpro", "servicemaster", "stanley steemer", "chem-dry",
+    "h&r block", "liberty tax", "jackson hewitt",
+    "anytime fitness", "planet fitness", "orangetheory", "f45", "snap fitness",
+    "great clips", "supercuts", "sport clips", "fantastic sams",
+    "massage envy", "hand & stone", "elements massage",
+    "comfort inn", "holiday inn", "best western", "super 8", "days inn",
+    "hampton inn", "marriott", "hilton", "ramada", "quality inn", "motel 6",
+    "century 21", "re/max", "remax", "coldwell banker", "keller williams",
+    "royal lepage", "exit realty",
+    "shoppers drug mart", "rexall", "jean coutu", "lawton",
+    "specsavers", "lenscrafters", "pearle vision",
+    "hertz", "enterprise rent", "budget rent", "avis",
+    "walmart", "costco", "home depot", "lowe's", "canadian tire",
+]
+
+
+def is_franchise(company_name: str) -> bool:
+    """Check if a company name matches a known franchise brand."""
+    name_lower = company_name.lower().strip()
+    return any(kw in name_lower for kw in FRANCHISE_KEYWORDS)
+
+
+def deduplicate_leads(leads: list) -> list:
+    """Deduplicate by domain or company name."""
+    seen_domains = set()
+    seen_names = set()
+    unique = []
+
+    for lead in leads:
+        domain = lead.get("domain", "").lower().strip()
+        name = lead.get("company_name", "").lower().strip()
+
+        # Skip if we've seen this domain (and it's not empty)
+        if domain and domain in seen_domains:
+            continue
+        # Skip if exact name match
+        if name and name in seen_names:
+            continue
+
+        if domain:
+            seen_domains.add(domain)
+        if name:
+            seen_names.add(name)
+        unique.append(lead)
+
+    return unique
+
+
+def save_leads_csv(leads: list, output_path: str):
+    """Save leads to CSV."""
+    if not leads:
+        logging.warning("No leads to save")
+        return
+
+    fieldnames = [
+        "company_name", "email", "phone", "website", "domain", "address", "city",
+        "province", "rating", "reviews", "category", "niche", "niche_label",
+        "services", "google_maps_url",
+    ]
+
+    with open(output_path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(leads)
+
+    logging.info(f"Saved {len(leads)} leads to {output_path}")
+
+
+def estimate_cost(niches_to_run: dict, regions: list, max_per_search: int) -> dict:
+    """Estimate Apify cost before running."""
+    total_queries = 0
+    for niche_key, niche_data in niches_to_run.items():
+        queries_per_niche = len(niche_data["queries"]) * len(regions)
+        total_queries += queries_per_niche
+
+    # Apify pricing: $0.004 per place + $0.007 per run start
+    estimated_places = total_queries * max_per_search
+    cost_per_place = 0.004
+    cost_per_run = 0.007
+
+    # We batch all queries for a niche into one run
+    num_runs = len(niches_to_run)
+    estimated_cost = (estimated_places * cost_per_place) + (num_runs * cost_per_run)
+
+    return {
+        "total_niches": len(niches_to_run),
+        "total_queries": total_queries,
+        "estimated_places": estimated_places,
+        "num_runs": num_runs,
+        "estimated_cost_usd": round(estimated_cost, 2),
+    }
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Nova Scotia Lead Scraper via Apify")
+    parser.add_argument("--api-key", required=True, help="Apify API key")
+    parser.add_argument("--dry-run", action="store_true", help="Estimate cost only, don't scrape")
+    parser.add_argument("--niches", default="all", help="Comma-separated niches to scrape (default: all)")
+    parser.add_argument("--max-per-search", type=int, default=100, help="Max results per search query (default: 100)")
+    parser.add_argument("--regions", default="all", help="Comma-separated regions (default: all)")
+    args = parser.parse_args()
+
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+    # Filter niches
+    if args.niches == "all":
+        niches_to_run = NICHES
+    else:
+        selected = [n.strip().lower() for n in args.niches.split(",")]
+        niches_to_run = {k: v for k, v in NICHES.items() if k in selected}
+        if not niches_to_run:
+            logging.error(f"No matching niches found. Available: {', '.join(NICHES.keys())}")
+            sys.exit(1)
+
+    # Filter regions
+    if args.regions == "all":
+        regions = NS_REGIONS
+    else:
+        selected_regions = [r.strip() for r in args.regions.split(",")]
+        regions = [r for r in NS_REGIONS if any(sr.lower() in r.lower() for sr in selected_regions)]
+        if not regions:
+            regions = [f"{r}, Nova Scotia" for r in selected_regions]
+
+    # Cost estimate
+    estimate = estimate_cost(niches_to_run, regions, args.max_per_search)
+    logging.info("=" * 60)
+    logging.info("NOVA SCOTIA LEAD SCRAPE — COST ESTIMATE")
+    logging.info("=" * 60)
+    logging.info(f"  Niches:            {estimate['total_niches']}")
+    logging.info(f"  Search queries:    {estimate['total_queries']}")
+    logging.info(f"  Est. places:       {estimate['estimated_places']:,}")
+    logging.info(f"  Apify runs:        {estimate['num_runs']}")
+    logging.info(f"  Estimated cost:    ${estimate['estimated_cost_usd']:.2f} USD")
+    logging.info("=" * 60)
+
+    if args.dry_run:
+        logging.info("DRY RUN — no scraping performed")
+        # Save estimate
+        estimate_path = os.path.join(OUTPUT_DIR, "ns_scrape_estimate.json")
+        with open(estimate_path, "w") as f:
+            json.dump(estimate, f, indent=2)
+        logging.info(f"Estimate saved to {estimate_path}")
+        return
+
+    # Load cache to skip already-scraped domains
+    cache = load_cache()
+    cached_domains = set(cache.keys())
+    logging.info(f"Loaded {len(cached_domains)} cached domains (will skip re-scraping)")
+
+    # Run scrapes per niche
+    all_leads = []
+    niche_stats = {}
+    total_niches = len(niches_to_run)
+    for niche_idx, (niche_key, niche_data) in enumerate(niches_to_run.items(), 1):
+        logging.info(f"\n{'=' * 40}")
+        logging.info(f"[{niche_idx}/{total_niches}] Scraping: {niche_data['label']}")
+        logging.info(f"{'=' * 40}")
+
+        # Build search queries: each query x each region
+        search_queries = []
+        for query in niche_data["queries"]:
+            for region in regions:
+                search_queries.append(f"{query} in {region}")
+
+        results = run_apify_scrape(args.api_key, search_queries, args.max_per_search)
+
+        new_from_niche = 0
+        cached_from_niche = 0
+        for item in results:
+            lead = parse_apify_result(item, niche_key, niche_data["label"], niche_data["services"])
+            if not lead["company_name"]:
+                continue
+            domain = lead.get("domain", "").lower()
+            if domain and domain in cached_domains:
+                cached_from_niche += 1
+                continue
+            all_leads.append(lead)
+            new_from_niche += 1
+            if domain:
+                cache[domain] = {"company": lead["company_name"], "niche": niche_key, "scraped_at": datetime.now().isoformat()}
+                cached_domains.add(domain)
+
+        niche_stats[niche_key] = {"raw": len(results), "new": new_from_niche, "cached_skip": cached_from_niche}
+        logging.info(f"  {niche_data['label']}: {len(results)} raw, {new_from_niche} new, {cached_from_niche} cached/skipped")
+
+    # Save updated cache
+    save_cache(cache)
+
+    # Deduplicate
+    unique_leads = deduplicate_leads(all_leads)
+    logging.info(f"\nTotal raw: {len(all_leads)} → Deduplicated: {len(unique_leads)}")
+
+    # Filter out franchises — can't sell to franchise managers
+    pre_filter = len(unique_leads)
+    unique_leads = [l for l in unique_leads if not is_franchise(l.get("company_name", ""))]
+    franchise_removed = pre_filter - len(unique_leads)
+    if franchise_removed:
+        logging.info(f"  Removed {franchise_removed} franchise locations")
+
+    # Scrape emails from websites for leads that Apify didn't find emails for
+    missing_email = [l for l in unique_leads if not l.get("email")]
+    if missing_email:
+        logging.info(f"\nScraping emails from {len(missing_email)} websites (no Apify email)...")
+        scraped_count = 0
+        for i, lead in enumerate(missing_email):
+            if lead.get("website"):
+                email = scrape_email_from_website(lead["website"])
+                if email:
+                    lead["email"] = email
+                    scraped_count += 1
+                if (i + 1) % 50 == 0:
+                    logging.info(f"  Processed {i + 1}/{len(missing_email)} websites, found {scraped_count} emails")
+        logging.info(f"  Website scraping found {scraped_count} additional emails")
+
+    total_with_email = len([l for l in unique_leads if l.get("email")])
+    logging.info(f"  Total leads with email: {total_with_email}/{len(unique_leads)}")
+
+    # Save master CSV
+    master_path = os.path.join(OUTPUT_DIR, "ns_leads_all.csv")
+    save_leads_csv(unique_leads, master_path)
+
+    # Save per-niche CSVs
+    for niche_key in niches_to_run:
+        niche_leads = [l for l in unique_leads if l["niche"] == niche_key]
+        if niche_leads:
+            niche_path = os.path.join(OUTPUT_DIR, f"ns_leads_{niche_key}.csv")
+            save_leads_csv(niche_leads, niche_path)
+
+    # Summary report
+    logging.info("\n" + "=" * 60)
+    logging.info("SCRAPE COMPLETE — SUMMARY REPORT")
+    logging.info("=" * 60)
+    logging.info(f"  {'Niche':25s} {'Leads':>6} {'Email':>6} {'Rate':>6}")
+    logging.info(f"  {'-' * 25} {'-' * 6} {'-' * 6} {'-' * 6}")
+    for niche_key, niche_data in niches_to_run.items():
+        niche_leads = [l for l in unique_leads if l["niche"] == niche_key]
+        with_email = len([l for l in niche_leads if l.get("email")])
+        rate = f"{with_email / len(niche_leads) * 100:.0f}%" if niche_leads else "0%"
+        logging.info(f"  {niche_data['label']:25s} {len(niche_leads):>6} {with_email:>6} {rate:>6}")
+    total_emails = len([l for l in unique_leads if l.get("email")])
+    total_rate = f"{total_emails / len(unique_leads) * 100:.0f}%" if unique_leads else "0%"
+    logging.info(f"  {'-' * 25} {'-' * 6} {'-' * 6} {'-' * 6}")
+    logging.info(f"  {'TOTAL':25s} {len(unique_leads):>6} {total_emails:>6} {total_rate:>6}")
+    logging.info("=" * 60)
+    logging.info(f"  Franchises removed:  {franchise_removed}")
+    logging.info(f"  Cached domains:      {len(cached_domains)}")
+    logging.info(f"  Output:              {master_path}")
+    logging.info("=" * 60)
+
+
+if __name__ == "__main__":
+    main()
