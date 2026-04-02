@@ -225,8 +225,52 @@ def find_leads_instantly(api_key, niche_key, location, limit=25):
     return [l for l in (leads if isinstance(leads, list) else []) if is_quality_lead(l)]
 
 
+def _extract_email_from_website(website):
+    """Quick scrape a website for email addresses."""
+    if not website:
+        return ""
+    url = website if website.startswith("http") else f"https://{website}"
+    # Clean tracking params
+    url = re.sub(r'\?utm_.*$', '', url)
+
+    contact_paths = ["", "/contact", "/about", "/contact-us", "/about-us"]
+    emails_found = []
+
+    for path in contact_paths:
+        try:
+            resp = requests.get(url.rstrip("/") + path, timeout=8,
+                                headers={"User-Agent": "Mozilla/5.0"}, allow_redirects=True)
+            if resp.status_code != 200:
+                continue
+            # Find emails in page
+            found = re.findall(r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}', resp.text)
+            for e in found:
+                e_lower = e.lower()
+                # Skip junk
+                if any(e_lower.endswith(d) for d in [".png", ".jpg", ".gif", ".svg"]):
+                    continue
+                domain = e_lower.split("@")[1]
+                if domain in {"example.com", "wix.com", "wixpress.com", "sentry.io",
+                              "sentry-next.wixpress.com", "godaddy.com", "squarespace.com",
+                              "facebook.com", "instagram.com", "google.com", "gmail.com",
+                              "yahoo.com", "hotmail.com", "outlook.com"}:
+                    continue
+                emails_found.append(e_lower)
+        except Exception:
+            continue
+
+    if not emails_found:
+        return ""
+
+    # Prefer personal emails over generic
+    personal = [e for e in emails_found if e.split("@")[0] not in GENERIC_PREFIXES]
+    if personal:
+        return personal[0]
+    return emails_found[0]
+
+
 def find_leads_apify(apify_key, niche_key, location, limit=20):
-    """Fallback: find leads via Apify Google Maps scraper."""
+    """Fallback: find leads via Apify Google Maps scraper + email extraction."""
     niche = VOICE_AGENT_NICHES.get(niche_key, {})
     queries = niche.get("queries", [niche_key.replace("_", " ")])
 
@@ -253,6 +297,7 @@ def find_leads_apify(apify_key, niche_key, location, limit=20):
 
         # Poll for completion
         status_url = f"{APIFY_BASE}/actor-runs/{run_id}"
+        status = ""
         for _ in range(60):
             time.sleep(5)
             s_resp = apify_request("GET", status_url, apify_key)
@@ -273,19 +318,41 @@ def find_leads_apify(apify_key, niche_key, location, limit=20):
         if not items_resp:
             continue
 
-        for item in items_resp.json():
-            if item.get("title") and item.get("website"):
-                all_leads.append({
-                    "business_name": item.get("title", ""),
-                    "phone": item.get("phone", ""),
-                    "website": item.get("website", ""),
-                    "category": item.get("categoryName", ""),
-                    "city": location,
-                    "source": "apify",
-                })
+        raw_items = items_resp.json()
+        print(f"    Found {len(raw_items)} businesses, extracting emails...")
+
+        for item in raw_items:
+            if not item.get("title") or not item.get("website"):
+                continue
+
+            website = item.get("website", "")
+            # Extract email from their website
+            email = _extract_email_from_website(website)
+
+            lead = {
+                "company_name": item.get("title", ""),
+                "phone": item.get("phone", ""),
+                "website": re.sub(r'\?utm_.*$', '', website),
+                "category": item.get("categoryName", ""),
+                "city": location,
+                "source": "apify",
+            }
+
+            if email:
+                lead["email"] = email
+                # Try to extract name from email
+                local = email.split("@")[0]
+                if "." in local:
+                    parts = local.split(".")
+                    lead["first_name"] = parts[0].capitalize()
+                    lead["last_name"] = parts[-1].capitalize()
+
+            all_leads.append(lead)
 
         time.sleep(2)
 
+    with_email = sum(1 for l in all_leads if l.get("email"))
+    print(f"    Total: {len(all_leads)} businesses, {with_email} with email")
     return all_leads
 
 
@@ -447,11 +514,16 @@ def create_inbound_campaign(api_key, leads, leads_per_day=15, dry_run=False):
     print(f"  Name: {campaign_name}")
     print(f"  Evergreen: {leads_per_day} leads/day auto-added")
 
-    # Upload leads
-    if leads:
-        print(f"\n  Uploading {len(leads)} leads...")
+    # Upload leads (only those with email — Instantly requires email)
+    leads_with_email = [l for l in leads if l.get("email")]
+    leads_no_email = len(leads) - len(leads_with_email)
+    if leads_no_email:
+        print(f"  Skipping {leads_no_email} leads without email (phone-only)")
+
+    if leads_with_email:
+        print(f"\n  Uploading {len(leads_with_email)} leads with email...")
         uploaded = 0
-        for i, lead in enumerate(leads):
+        for i, lead in enumerate(leads_with_email):
             payload = {
                 "campaign": campaign_id,
                 "email": lead.get("email", ""),
@@ -466,6 +538,7 @@ def create_inbound_campaign(api_key, leads, leads_per_day=15, dry_run=False):
                     "industry": lead.get("industry", ""),
                     "city": lead.get("city", ""),
                     "phone": lead.get("phone", ""),
+                    "niche": lead.get("niche", ""),
                     "source": lead.get("source", "scaling_engine"),
                 },
             }
@@ -476,7 +549,7 @@ def create_inbound_campaign(api_key, leads, leads_per_day=15, dry_run=False):
                 print(f"  Progress: {uploaded}/{i + 1}")
                 time.sleep(1)
 
-        print(f"  Uploaded: {uploaded}/{len(leads)}")
+        print(f"  Uploaded: {uploaded}/{len(leads_with_email)}")
 
     # Save state
     os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -558,12 +631,14 @@ def main():
             else:
                 leads = find_leads_instantly(instantly_key, niche, location, limit=per_search)
 
-            # Dedup
+            # Dedup — use email if available, otherwise website
             new = 0
             for lead in leads:
                 email = lead.get("email", "").lower()
-                if email and email not in seen_emails:
-                    seen_emails.add(email)
+                website = lead.get("website", "").lower()
+                dedup_key = email or website
+                if dedup_key and dedup_key not in seen_emails:
+                    seen_emails.add(dedup_key)
                     lead["niche"] = niche
                     lead["city"] = lead.get("city", location)
                     all_leads.append(lead)
